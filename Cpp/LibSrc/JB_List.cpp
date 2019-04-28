@@ -1,0 +1,178 @@
+
+// By Theodore H. Smith, released under zlib licence v1.2.11
+/* zlib.h -- interface of the 'zlib' general purpose compression library
+  version 1.2.11, January 15th, 2017
+
+  Copyright (C) 1995-2017 Jean-loup Gailly and Mark Adler
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
+
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
+
+  Jean-loup Gailly        Mark Adler
+  jloup@gzip.org          madler@alumni.caltech.edu
+*/
+
+/*
+	Copyright (C) 2017 Theodore H. Smith.
+*/
+
+
+
+
+/*
+    List Definition:
+        * A list contains nodes.
+        * A list points to the first node, and it points to the next node. And so on.
+        * No node can point to anything without being contained by a list.
+            * List destructor should clear all node fields BEFORE decrementing the node
+            * Therefor, if in a linkedlist destructor, we find next/back, then we have a problem. 
+            * AND, we can't set to .next if we don't have a backref!
+
+*/
+
+
+    
+
+#include "JB_List.h"
+
+extern "C" {
+
+JBClassPlace3( JB_LinkedList,     JB_LinkedList_Destructor,     JB_AsClass(Saveable), 0 );
+
+
+void JB_LinkedList_Constructor(JB_LinkedList* self) {
+	self->_BackRef = nil;
+	self->_Next = nil;
+}
+
+
+JB_LinkedList* JB_LinkedList_PrepareMoveTo_(JB_LinkedList* self, JB_LinkedList** Where, JB_LinkedList* OldNext) {
+    dbgexpect2(self);
+	JB_LinkedList** B = self->_BackRef;
+	self->_BackRef = Where;
+	JB_LinkedList* N = self->_Next;
+	self->_Next = OldNext;
+	if (OldNext) {
+		OldNext->_BackRef = &self->_Next;
+	}
+	if (N) {
+		N->_BackRef = B;
+	}
+	if (B) {
+        *B = N;
+    } else {
+		JB_Incr(self);
+	}
+    return N;
+}
+
+
+JB_LinkedList* JB_LinkedList_Remove(JB_LinkedList* self) {
+	require (self and self->_BackRef);
+    JB_LinkedList* N = JB_LinkedList_PrepareMoveTo_(self, nil, nil);
+    JB_Decr(self);
+    return N;
+}
+
+
+void JB_LinkedList_ClearAll(JB_LinkedList* self) {
+    require0 (self);
+    if (self->_BackRef) {
+        *(self->_BackRef) = 0;
+    }
+    JB_LinkedList* C = self;
+    while (C) {
+        JB_LinkedList* N = C->_Next;
+        C->_Next = 0;
+        C->_BackRef = 0;
+        if (C->RefCount) {  // Fix to allow call from destructor.
+            JB_Decr(C);
+        }
+        C = N;
+    };
+}
+
+
+void JB_LinkedList_Destructor(JB_LinkedList* self) {
+    dbgexpect(!self->_BackRef); // Should really never happen
+    require0(self->_Next);      // should also never happen. The list owns nodes.
+                                // And the list should clear our refs on it's destructor. 
+    JB_DoAt(1);
+    JB_LinkedList_ClearAll(self);
+}
+
+
+
+void JB_LinkedList_ListSanity(JB_LinkedList* Self);
+// OK so... here's the plan... first we remove.
+// then we add... Makes sense?
+void JB_LinkedList_StoreAt(JB_LinkedList* self, JB_LinkedList** Place) {
+	JB_LinkedList_ListSanity(self);
+    
+    JB_LinkedList** Back = self->_BackRef;    // remove
+    if (Back) {
+        JB_LinkedList* Next = self->_Next;
+        if (Next) {
+            Next->_BackRef = Back;
+        }
+        *Back = Next;
+    } else {
+        JB_Incr(self);
+    }
+    
+    JB_LinkedList* OldValue = *Place;         // add
+    self->_Next = OldValue;
+    if (OldValue) {
+        OldValue->_BackRef = &self->_Next; 
+    }
+    *Place = self;
+    self->_BackRef = Place; 
+    
+	JB_LinkedList_ListSanity(self);
+}
+
+void JB_LinkedList_StoreAtOld(JB_LinkedList* self, JB_LinkedList** Place) {
+    dbgexpect(self);
+    if (*Place == self) {
+        debugger;
+    }
+	JB_LinkedList_ListSanity(self);
+    
+	JB_LinkedList* OldNext = *Place;
+	*Place = self;
+	JB_LinkedList** B = self->_BackRef;
+	self->_BackRef = Place;
+	JB_LinkedList* N = self->_Next;
+	self->_Next = OldNext;
+	if (OldNext) {
+		OldNext->_BackRef = &self->_Next;
+	}
+    
+	if (N) {
+		N->_BackRef = B;
+	}
+	if (B) {
+        *B = N;
+    } else {
+		JB_Incr(self);
+	}
+    
+	JB_LinkedList_ListSanity(self);
+}
+
+
+} // 
+
