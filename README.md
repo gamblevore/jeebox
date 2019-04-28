@@ -1,6 +1,6 @@
 # jeebox
 
-http://jeebox.org theo@jeebox.org
+website: http://jeebox.org email: theo@jeebox.org
 
 Compile using:
 
@@ -14,9 +14,13 @@ Jeebox tries to fulfil the goal of describing everything. Here's an example of J
 
 [See real syntax examples here](http://jeebox.org/stuff/introduction). While Jeebox is useful for describing code, and save-files, and natural-language, the original goal was to allow describing the meaning-of-code, as a goal towards artificial-intelligence. But Jeebox doesn't have any AI in it, it's simply a data-format! A good one.
 
-Basically, Jeebox is a parser. So it parses source-code, and creates a tree. Just like an XML-parser, Jeebox is extensible, it has no keywords. This means you can describe anything very easily.
+Basically, Jeebox is a parser. It turns source-code into a tree. Just like an XML-parser, Jeebox is extensible, it has no keywords. This means you can describe anything very easily.
 
-Jeebox has a C-API and a C++-API. It parses UTF-8 only. The parse-speed is around the same as TinyXML2's parse-speed, it's pretty fast! Jeebox is also pretty memory-tight, the C++ interface is quite easy to use (you don't have to worry about memory-management).
+Jeebox has a C-API and a C++ API. It parses UTF-8 only. The parse-speed is around the same as TinyXML2's parse-speed, it's pretty fast! Jeebox tends to be very expressive, meaning your documents are much smaller than if they were in XML/JSON.
+
+Jeebox is also pretty memory-tight, the C++ interface is quite easy to use (you don't have to worry about memory-management). And the model for Jeebox is very simple! There is nothing like XMLDocument/XMLElement/XMLText/XMLPI/XMLCData... etc like we have in XML. Jeebox has just one class we care about, the `Message`. Which has a string name, and a string type. So each `message` "node" can be described with only two strings.
+
+Jeebox really has so many features designed for programmers, compiled from my 20 year programming experience. For example the string support is pretty good, it can describe nested expressions in strings and the escape-code parsing is strong too. Read the website to get an idea of what I put into Jeebox.
 
 This is the first release so email any questions to theo@jeebox.org!
 
