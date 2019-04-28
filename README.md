@@ -1,6 +1,6 @@
 # jeebox
 
-website: http://jeebox.org email: theo@jeebox.org
+http://jeebox.org – theo@jeebox.org
 
 Compile using:
 
@@ -18,9 +18,9 @@ Basically, Jeebox is a parser. It turns source-code into a tree. Just like an XM
 
 Jeebox has a C-API and a C++ API. It parses UTF-8 only. The parse-speed is around the same as TinyXML2's parse-speed, it's pretty fast! Jeebox tends to be very expressive, meaning your documents are much smaller than if they were in XML/JSON.
 
-Jeebox is also pretty memory-tight, the C++ interface is quite easy to use (you don't have to worry about memory-management). And the model for Jeebox is very simple! There is nothing like XMLDocument/XMLElement/XMLText/XMLPI/XMLCData... etc like we have in XML. Jeebox has just one class we care about, the `Message`. Which has a string name, and a string type. So each `message` "node" can be described with only two strings.
+Jeebox is also pretty memory-tight, the C++ interface is quite easy to use (you don't have to worry about memory-management). And the model for Jeebox is very simple! Jeebox nodes can be described with two strings only, the name and the type (both strings).
 
-Jeebox really has so many features designed for programmers, compiled from my 20 year programming experience. For example the string support is pretty good, it can describe nested expressions in strings and the escape-code parsing is strong too. Read the website to get an idea of what I put into Jeebox.
+Jeebox has many features designed for programmers, compiled from my 20 year experience. For example string support is pretty good, strings can have embedded expressions, and the escape-code parsing is strong too. Read the website to get an idea of what I put into Jeebox.
 
 This is the first release so email any questions to theo@jeebox.org!
 
