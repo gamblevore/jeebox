@@ -31,7 +31,7 @@ Well... Jeebox has so many uses, the question might be "why not use Jeebox?" I'v
 
 Being open-sourced on github means that if you were worried about me not adding things you needed, you could add them yourself. So I'm not controlling anyone's future.
 
-Jeebox can also describe human language, like English/Spanish/German/etc. I think writing a translation program (convert English/Spanish/etc to other languages) would be a great idea! This would help test Jeebox's use for describing meaning, and I'd get a chance to improve Jeebox's syntax "real world meanings". Only minor improvements would be needed, perhaps none.
+Jeebox can also describe human language, like English/Spanish/German/etc. I think writing a translation program (convert English/Spanish/etc to other languages) would be a great idea! This would help test Jeebox's use for describing meaning, and I'd get a chance to improve Jeebox's syntax for "real world meanings". Only minor improvements would be needed, perhaps none.
 
 Jeebox has incredible potential when it comes to translation, because it captures the grammatical structure of a sentance, it can allow for near-perfect translations. And the syntax is very light, considering the amount of grammatical structure it describes!
     
