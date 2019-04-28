@@ -12,7 +12,7 @@ Jeebox tries to fulfil the goal of describing everything. Here's an example of J
 
 	\You can (% describe anything, in: Jeebox)
 
-[See real syntax examples here](http://jeebox.org/stuff/introduction). While Jeebox is useful for describing code, and save-files, and natural-language, the original goal was to allow describing the meaning-of-code, as a goal towards artificial-intelligence. But Jeebox doesn't have any AI in it, it's simply a data-format! A good one. The library is small at 160K compiled.
+[See real syntax examples here](http://jeebox.org/stuff/introduction). While Jeebox is useful for describing code, and save-files, and natural-language, the original goal was to allow describing the meaning-of-code, as a goal towards artificial-intelligence. But Jeebox doesn't have any AI in it, it's simply a data-format! A good one. The library is small at 165K compiled.
 
 Basically, Jeebox parses source-code into a tree. Just like an XML, Jeebox is extensible, it has no keywords. This means you can describe anything very easily.
 
