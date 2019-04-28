@@ -12,9 +12,9 @@ Jeebox tries to fulfil the goal of describing everything. Here's an example of J
 
 	\You can (% describe anything, in: Jeebox)
 
-[See real syntax examples here](http://jeebox.org/stuff/introduction). While Jeebox is useful for describing code, and save-files, and natural-language, the original goal was to allow describing the meaning-of-code, as a goal towards artificial-intelligence. But Jeebox doesn't have any AI in it, it's simply a data-format! A good one.
+[See real syntax examples here](http://jeebox.org/stuff/introduction). While Jeebox is useful for describing code, and save-files, and natural-language, the original goal was to allow describing the meaning-of-code, as a goal towards artificial-intelligence. But Jeebox doesn't have any AI in it, it's simply a data-format! A good one. The library compiles to about 160K so it's quite tight!
 
-Basically, Jeebox is a parser. It turns source-code into a tree. Just like an XML-parser, Jeebox is extensible, it has no keywords. This means you can describe anything very easily.
+Basically, Jeebox source-code into a tree. Just like an XML, Jeebox is extensible, it has no keywords. This means you can describe anything very easily.
 
 Jeebox has a C-API and a C++ API. It parses UTF-8 only. The parse-speed is around the same as TinyXML2's parse-speed, it's pretty fast! Jeebox tends to be very expressive, meaning your documents are much smaller than if they were in XML/JSON.
 
