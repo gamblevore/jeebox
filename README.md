@@ -29,7 +29,7 @@ This is the first release so email any questions to theo@jeebox.org!
 
 Well... Jeebox has so many uses, the question might be "why not use Jeebox?" I've built a programming language around Jeebox, so I know it's really easy to use and fun to use. The language is beautiful, and I never feel "restricted", because I can always just use more of the existing Jeebox syntax. If you were writing a programming language, then using Jeebox means you basically don't need to write your own parser.
 
-Being on github also means that if you were worried about me not adding things you needed, you could add them yourself. So I'm not controlling anyone's future.
+Being open-sourced on github means that if you were worried about me not adding things you needed, you could add them yourself. So I'm not controlling anyone's future.
 
 Jeebox can also describe human language, like English/Spanish/German/etc. I think writing a translation program (convert English/Spanish/etc to other languages) would be a great idea! This would help test Jeebox's use for describing meaning, and I'd get a chance to improve Jeebox's syntax "real world meanings". Only minor improvements would be needed, perhaps none.
 
