@@ -23,7 +23,7 @@ This is the first release so email any questions to theo@jeebox.org!
 
 # Why use Jeebox?
 
-Well... almost anything can use Jeebox. So the question might be "why not use Jeebox?" I've built a programming language around Jeebox, so I know it's really easy to use and fun to use. The language is beautiful, and I never feel "restricted", because I can always just use more of the existing Jeebox syntax. If you were writing a programming language, then using Jeebox means you basically don't need to write your own parser.
+Well... Jeebox has so many uses, the question might be "why not use Jeebox?" I've built a programming language around Jeebox, so I know it's really easy to use and fun to use. The language is beautiful, and I never feel "restricted", because I can always just use more of the existing Jeebox syntax. If you were writing a programming language, then using Jeebox means you basically don't need to write your own parser.
 
 You just use Jeebox and get an incredible language with all sorts of features designed specifically for programming languages.
 
