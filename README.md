@@ -16,7 +16,7 @@ Jeebox tries to fulfil the goal of describing everything. Here's an example of J
 
 Basically, Jeebox parses source-code into a tree. Just like an XML, Jeebox is extensible, it has no keywords. This means you can describe anything very easily.
 
-Jeebox has a C-API and a C++ API. It parses UTF-8 only. The parse-speed is around the same as TinyXML2's parse-speed, it's pretty fast! Jeebox tends to be very expressive, meaning your documents are much smaller than if they were in XML/JSON.
+Jeebox has a C-API and a C++ API. It parses UTF-8 only. The parse-speed is around the same as TinyXML2's parse-speed, it's pretty fast! Jeebox tends to be very expressive, meaning documents can be much smaller than XML/JSON.
 
 Jeebox is also pretty memory-tight, the C++ interface is quite easy to use (you don't have to worry about memory-management). And the model for Jeebox is very simple! Jeebox nodes can be described with two strings only, the name and the type (both strings).
 
