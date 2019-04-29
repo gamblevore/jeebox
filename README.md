@@ -27,7 +27,7 @@ The original goal was to describe the meaning-of-code, as a step towards artific
 
 Jeebox parses a UTF-8 string into a tree of 'nodes'. Jeebox is simple because each node only needs two strings to describe it, the `name` and the `type`. Jeebox is extensible like XML (no keywords), meaning you can describe anything.
 
-Jeebox has a C-API and a C++ API. The parse-speed is around the same as TinyXML2's, it's pretty fast! Jeebox tends to be very expressive, meaning that (depending on what you are doing) documents can be much smaller than XML/JSON, but never bigger. Jeebox is small at 158K compiled.
+Jeebox has a C-API and a C++ API. The parse-speed is around the same as TinyXML2's, it's pretty fast! Jeebox is highly expressive, meaning that (depending on what you are doing) documents **can be** much smaller than XML/JSON, but never bigger. Jeebox is small at 158K compiled.
 
 The C++ interface is quite easy to use. Being simple makes Jeebox memory-tight.
 
@@ -42,7 +42,7 @@ Well... Jeebox has so many uses, the question might be "why not?"
 
 Using Jeebox means you'll never need to write another parser again, you'll get all the most advanced features built-in. Also, assuming enough languages are expressed in Jeebox, this could reduce code-size because we replace many parsers with Jeebox! You could literally build an entire world where everything is expressed in Jeebox.
 
-I built a programming language (`Speedie`) around Jeebox, so I know it's really easy to use and fun. The language is beautiful. I never feel "restricted" or get forced to make a mess (like C++ did). If you are writing a programming language, using Jeebox means you don't need to write your own parser. You could "upgrade" a programming language to use Jeebox, similar to how people upgraded programs to use Unicode around in the past.
+I built a programming language `Speedie` around Jeebox, so I know it's really easy to use and fun. The language is beautiful. I never feel "restricted" or get forced to make a mess (like C++ did). If you are writing a programming language, using Jeebox means you don't need to write your own parser. You could "upgrade" a programming language to use Jeebox, similar to how people upgraded programs to use Unicode around in the past.
 
 Being open-sourced on github means that if you were worried about me not adding things you need, you could add them yourself. I'm not controlling anyone's future.
 
