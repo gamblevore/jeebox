@@ -21,7 +21,6 @@ Jeebox is useful for describing:
 * Save-files : For just about anything.
 * Natural-language : English/Spanish/Russian/etc.
 * Other things : Like maths! Or freely mix any combination of the above.
-* Efficiency : A tighter more expressive alternative to JSON/XML.
 
 (The original goal was to describe the meaning-of-code, as a step towards artificial-intelligence. But Jeebox doesn't have any AI in it, it's just a good data-format!)
 
@@ -55,7 +54,7 @@ Jeebox has a lot of potential. It could become "The Unicode of programming langu
 
 # Notes
 
-Jeebox has a C-API and a C++ API. The C++ version is much easier to use, because you don't do memory-management. The C-version requires you to do memory-management, which isn't fun.
+Jeebox has a C-API and a C++ API. The C++ version is much easier to use, because you can "just use Jeebox" and everything looks nice and clean. The C-API requires you to do memory-management, which isn't fun.
 
 For the moment Jeebox is single-threaded and 32-bit only. I am working on making it 64-bit clean.
 
