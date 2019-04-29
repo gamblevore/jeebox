@@ -25,11 +25,11 @@ Jeebox is useful for describing:
 
 The original goal was to describe the meaning-of-code, as a step towards artificial-intelligence. But Jeebox doesn't have any AI in it, it's just a good data-format!
 
-Jeebox parses a UTF-8 string into a tree of 'nodes'. Jeebox is simple because each node only needs two strings to describe it, the `name` and the `type`. Jeebox is extensible (no keywords), meaning you can describe **anything** unambiguously.
+Jeebox parses a UTF-8 string into a tree of 'nodes'. Jeebox is simple because each node only needs two strings to describe it, the `name` and the `type`. Jeebox is extensible (no keywords), meaning you can describe **anything** unambiguously. Being simple also makes Jeebox memory-tight.
 
-Jeebox has a C-API and a C++ API. The parse-speed is near that of TinyXML2's, it's pretty fast! Jeebox is highly expressive, meaning that (depending on what you are doing) documents **can be** much smaller than XML/JSON, but never bigger. Jeebox is small at 158K compiled.
+Jeebox has a C-API and a C++ API (the C++ version is much easier to use).
 
-The C++ interface is quite easy to use. Being simple makes Jeebox memory-tight.
+Jeebox's parse-speed is near that of TinyXML2's, it's pretty fast! Jeebox is highly expressive, meaning that (depending on what you are doing) documents **can be** much smaller than XML/JSON, but never bigger. Jeebox is small at 158K compiled.
 
 Jeebox has many features to make programmers lives easier and better. For example: "Double-quoted" strings can have embedded expressions, unicode and byte escape codes, or use \`backtick\` strings with none of that! [Read the website](http://jeebox.org/stuff/introduction) to see what I put into Jeebox. Also Jeebox **doesn't** have the bug that Javascript / C# / Java has, where a codepoint above `&#xFFFF;` can't be expressed.
 
