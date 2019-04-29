@@ -25,7 +25,7 @@ Jeebox is useful for describing:
 
 The original goal was to describe the meaning-of-code, as a step towards artificial-intelligence. But Jeebox doesn't have any AI in it, it's just a good data-format!
 
-Jeebox parses a UTF-8 string into a tree of 'nodes'. A node only needs two strings to describe it, the `name` and the `type`. Jeebox is extensible like XML (no keywords), meaning you can describe anything.
+Jeebox parses a UTF-8 string into a tree of 'nodes'. Jeebox is simple because each node only needs two strings to describe it, the `name` and the `type`. Jeebox is extensible like XML (no keywords), meaning you can describe anything.
 
 Jeebox has a C-API and a C++ API. The parse-speed is around the same as TinyXML2's, it's pretty fast! Jeebox tends to be very expressive, meaning that (depending on what you are doing) documents can be much smaller than XML/JSON, but never bigger. Jeebox is small at 158K compiled.
 
