@@ -2,7 +2,7 @@
 
 http://jeebox.org - theo@jeebox.org
 
-Compile using:
+Compile:
 
     cd </path/to/jeebox-master>
     cmake -BBuild; cd Build; sudo make install
@@ -17,11 +17,11 @@ Jeebox tries to fulfil the goal of describing everything. Here's an example of J
 
 Jeebox is useful for describing:
 
-* Code (build a programming language using Jeebox)
-* Save-files (for just about anything)
-* Natural-language (English/Spanish/Russian/etc)
-* A tighter more expressive alternative to JSON/XML.
-* Other things (maths), or freely mix any combination of these.
+* Code : Build a programming language using Jeebox, or anything with code-like syntax (databases).
+* Save-files : For just about anything.
+* Natural-language : English/Spanish/Russian/etc.
+* Other things : Like maths! Or freely mix any combination of the above.
+* Efficiency : A tighter more expressive alternative to JSON/XML.
 
 The original goal was to describe the meaning-of-code, as a step towards artificial-intelligence. But Jeebox doesn't have any AI in it, it's just a good data-format!
 
