@@ -149,7 +149,7 @@ public:
         return jb_msg_create(_self, X._self, Name._self);
     }
 
-    __nodebug Syntax  syntax () const  {return jb_msg_syntax(_self);}
+    __nodebug Syntax  type () const    {return jb_msg_type(_self);}
     __nodebug String  name () const    {return jb_msg_name(_self);}
     __nodebug int     position() const {return jb_msg_position(_self);}
     __nodebug void*   tag () const     {return jb_msg_tag(_self);}
@@ -169,7 +169,7 @@ __nodebug Message convertreadable()const{return jb_msg_convertreadable(_self);}
 
     __nodebug void    remove()    {return jb_msg_remove(_self);}
     
-    __nodebug void    syntax (const Syntax& s) {jb_msg_syntaxset(_self, s._self);}
+    __nodebug void    type (const Syntax& s)   {jb_msg_typeset(_self, s._self);}
     __nodebug void    name (const String& s)   {jb_msg_nameset(_self, s._self);}
     __nodebug void    position(int s)          {jb_msg_positionset(_self, s);}
     __nodebug void    tag (void* s)            {jb_msg_tagset(_self, s);}
