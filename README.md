@@ -25,11 +25,11 @@ Jeebox is useful for describing:
 
 The original goal was to describe the meaning-of-code, as a step towards artificial-intelligence. But Jeebox doesn't have any AI in it, it's just a good data-format!
 
-Jeebox parses a UTF-8 string into a tree of 'nodes'. Jeebox is extensible (like XML), it has no keywords. This means you can describe anything very easily.
+Jeebox parses a UTF-8 string into a tree of 'nodes'. A node only needs two strings to describe it, the `name` and the `type`. Jeebox is extensible like XML (no keywords), meaning you can describe anything.
 
-Jeebox has a C-API and a C++ API. The parse-speed is around the same as TinyXML2's parse-speed, it's pretty fast! Jeebox tends to be very expressive, meaning that (depending on what you are doing) documents can be much smaller than XML/JSON. Jeebox is small at 158K compiled.
+Jeebox has a C-API and a C++ API. The parse-speed is around the same as TinyXML2's, it's pretty fast! Jeebox tends to be very expressive, meaning that (depending on what you are doing) documents can be much smaller than XML/JSON, but never bigger. Jeebox is small at 158K compiled.
 
-The C++ interface is quite easy to use. The model for Jeebox is simple, a node needs only two strings to describe it, the `name` and the `type`. Being simple makes Jeebox memory-tight.
+The C++ interface is quite easy to use. Being simple makes Jeebox memory-tight.
 
 Jeebox has many features designed for programmers, collected from my 20 year experience. For example: "Strings" can have embedded expressions, unicode and byte escape codes, or just use a version of \`strings\` with none of that! [Read the website](http://jeebox.org/stuff/introduction) to see what I put into Jeebox.
 
