@@ -42,7 +42,7 @@ Well... Jeebox has so many uses, the question might be "why not?"
 
 Using Jeebox means you'll never need to write another parser again, you'll get all the most advanced features built-in. Also, assuming enough languages are expressed in Jeebox, this could reduce code-size because we replace many parsers with Jeebox! You could literally build an entire world where everything is expressed in Jeebox.
 
-I built a programming language `Speedie` around Jeebox, so I know it's really easy to use and fun. The language is beautiful. I never feel "restricted" or get forced to make a mess (like C++ did). If you are writing a programming language, using Jeebox means you don't need to write your own parser. You could "upgrade" a programming language to use Jeebox, similar to how people upgraded programs to use Unicode around in the past.
+I built a programming language `Speedie` around Jeebox, so I know it's really easy to use and fun. `Speedie` is beautiful. I never feel "restricted" or get forced to make a mess (like C++ or many languages did).
 
 Being open-sourced on github means that if you were worried about me not adding things you need, you could add them yourself. I'm not controlling anyone's future.
 
