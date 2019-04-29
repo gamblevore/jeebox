@@ -49,11 +49,11 @@ void ExampleOfModifyingJeebox (String S) {
     
                 // Modify the name and syntax of a message
     auto F = M.first();
-    if (F.syntax() == $tmp) {                   
+    if (F.type() == $tmp) {                   
         F.name("when");
         auto They = F.first().first();
         They.name("fred");                           // Rename something in the tree!
-        They.syntax($name);                          // but only if it's a "tmp" (above test (F.syntax()==$tmp))
+        They.type($name);                          // but only if it's a "tmp" (above test (F.type()==$tmp))
     }
     M.render().print();
     M.renderreadable().printline();

@@ -2031,7 +2031,7 @@ Message* JB_Msg__NewWithLayerCopy(MemoryLayer* _L, Message* other);
 
 JB_String* jb_msg_name(Message* self);
 
-Syntax* jb_msg_syntax(Message* self);
+Syntax* jb_msg_type(Message* self);
 
 int jb_msg_position(Message* self);
 
@@ -2039,7 +2039,7 @@ _voidptr jb_msg_tag(Message* self);
 
 void jb_msg_nameset(Message* self, JB_String* Result);
 
-void jb_msg_syntaxset(Message* self, Syntax* Result);
+void jb_msg_typeset(Message* self, Syntax* Result);
 
 void jb_msg_positionset(Message* self, int Result);
 

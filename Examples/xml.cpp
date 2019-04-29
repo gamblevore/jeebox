@@ -12,7 +12,7 @@ void ExampleOfJeeboxToXML (Message M, int Depth=0) {
     for (int i = 0; i < Depth; i++) { // indent
         putchar('\t'); 
     }
-    putchar('<'); M.syntax().name().print(); putchar('>'); M.name().print();
+    putchar('<'); M.type().name().print(); putchar('>'); M.name().print();
 
     for (auto C : M) {
         putchar('\n');
@@ -25,7 +25,7 @@ void ExampleOfJeeboxToXML (Message M, int Depth=0) {
             putchar('\t'); 
         }
     }
-    printf("</"); M.syntax().name().print(); putchar('>');
+    printf("</"); M.type().name().print(); putchar('>');
     if (!Depth) {
         putchar('\n');
     }

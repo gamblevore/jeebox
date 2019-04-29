@@ -44,11 +44,11 @@ typedef void* _voidptr;
 		// Message functions
 
 jbstring* jb_msg_name(jbmessage* self); /* The name of the node! */
-jbsyntax* jb_msg_syntax(jbmessage* self); /* The node's syntactic-type. For example parsing "{}" would give a node of type 'arg', but parsing "()" would give a node of type 'list'. */
+jbsyntax* jb_msg_type(jbmessage* self); /* The node's syntactic-type. For example parsing "{}" would give a node of type 'arg', but parsing "()" would give a node of type 'list'. */
 int jb_msg_position(jbmessage* self); /* The byte-position of the original syntax that created this node. Useful for error-reporting. */
 _voidptr jb_msg_tag(jbmessage* self); /* Attached user-defined value. */
 void jb_msg_nameset(jbmessage* self, jbstring* Result); /* Sets the name. */
-void jb_msg_syntaxset(jbmessage* self, jbsyntax* Result); /* Sets the syntactic type */
+void jb_msg_typeset(jbmessage* self, jbsyntax* Result); /* Sets the syntactic type */
 void jb_msg_positionset(jbmessage* self, int Result); /* Sets the byte-position. Jeebox doesn't use this value other than to store it for you. You might want to set the position if you created some nodes yourself via jb_msg_create. Obviously those nodes wouldn't have a position. */
 void jb_msg_tagset(jbmessage* self, _voidptr Result); /* In case you want to attach a user-defined value to the node, to use for your own purposes. */
 void jb_msg_firstset(jbmessage* self, jbmessage* Result); /* Inserts 'Result' as the first child, and safely-removes it from it's old tree. You don't need to do anything to keep the next/prev/parent/etc values correct! They are updated for you. Same for all tree-node setters: jb_msg_lastset, jb_msg_prevset, jb_msg_nextset */
