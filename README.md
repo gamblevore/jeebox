@@ -48,7 +48,7 @@ Being open-sourced on github means that if you were worried about me not adding 
 
 Jeebox can also describe human language, like English/Spanish/Hebrew/etc. A great idea would be to write a translation program based on jeebox! This would help improve Jeebox's use for real-world meaning. Only minor improvements would be needed, perhaps none.
 
-Jeebox has incredible potential for translation, because it captures the grammatical structure of a sentance, it could improve accuracy by 10x-100x. The syntax is light, considering the amount of grammatical structure it describes!
+Jeebox has incredible potential for translation, because it captures the grammatical structure of a sentance, it could improve accuracy by 10x-100x. The syntax is light, considering the amount of structure it describes!
     
 Jeebox isn't unchanging, I will modify it slightly over time. But on the whole (been using it for 7 years) it's barely changed, just a few additions, almost no changes that break anything. Jeebox is stable and mature.
 
