@@ -23,7 +23,7 @@ Jeebox is useful for describing:
 * Other things : Like maths! Or freely mix any combination of the above.
 * Efficiency : A tighter more expressive alternative to JSON/XML.
 
-The original goal was to describe the meaning-of-code, as a step towards artificial-intelligence. But Jeebox doesn't have any AI in it, it's just a good data-format!
+(The original goal was to describe the meaning-of-code, as a step towards artificial-intelligence. But Jeebox doesn't have any AI in it, it's just a good data-format!)
 
 Jeebox parses a UTF-8 string into a tree of 'nodes'. Jeebox is simple because each node only needs two strings to describe it, the `name` and the `type`. Jeebox is extensible (no keywords), meaning you can describe **anything** unambiguously. Being simple also makes Jeebox memory-tight.
 
