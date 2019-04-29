@@ -31,7 +31,7 @@ Jeebox has a C-API and a C++ API. The parse-speed is near that of TinyXML2's, it
 
 The C++ interface is quite easy to use. Being simple makes Jeebox memory-tight.
 
-Jeebox has many features designed for programmers, collected from my 20 year experience. For example: "Strings" can have embedded expressions, unicode and byte escape codes, or just use a version of \`strings\` with none of that! [Read the website](http://jeebox.org/stuff/introduction) to see what I put into Jeebox.
+Jeebox has many features designed for programmers, collected from my 20 year experience. For example: "Double-quoted" strings can have embedded expressions, unicode and byte escape codes, or just use \`backtick\` strings with none of that! [Read the website](http://jeebox.org/stuff/introduction) to see what I put into Jeebox.
 
 This is my first release! Please email questions to theo@jeebox.org if you have any troubles using it! Emailing me **rather than giving up** will help me so much!
 
