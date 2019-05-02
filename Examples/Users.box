@@ -14,7 +14,7 @@ user_list (count:3) {
 	
 	user GhostmanMLG420xXxX (35619104) {
 		screen_name "dat sniper yo"
-		inventory (sidney_sleeper)
+		inventory (sidney_sleeper,)
 		clothing (sniper_outfit1,tactical_boots)
 	}
 }

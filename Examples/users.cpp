@@ -26,6 +26,7 @@ public:;
     vector<std::string> Clothing;
 };
 
+
 Message MessageError (Message self, Syntax S, const char* ErrorName, const char* ItemName) {
     if (self) {
 // Replace this with your own error reporting code. In case printf isn't good enough.
@@ -38,10 +39,9 @@ Message MessageError (Message self, Syntax S, const char* ErrorName, const char*
     }
     // now we need some way to "locate" this message in the original string... sigh.
     // layers. We need layers. 
-    // Do the whole thing in jeebox... just return an error string! and an error integer.
-    // or put it on the error-list... sigh. lol.
     return 0;
 }
+
 
 Message ExpectMatch (Message F, Syntax S, const char* NameMatch=0, Message self=nullptr) {
     if (!F) {
@@ -57,9 +57,16 @@ Message ExpectMatch (Message F, Syntax S, const char* NameMatch=0, Message self=
 Message First (Message self, Syntax S, const char* NameMatch=nullptr) {
     return ExpectMatch(self.first(), S, NameMatch, self); 
 }
+Message FirstOK (Message self, Syntax S, const char* NameMatch=nullptr) {
+    return ExpectMatch(self.first(), S, NameMatch, 0); 
+}
 
 Message Next (Message self, Syntax S, const char* NameMatch=nullptr) {
     return ExpectMatch(self.next(), S, NameMatch, self); 
+}
+
+Message NextOK (Message self, Syntax S, const char* NameMatch=nullptr) {
+    return ExpectMatch(self.next(), S, NameMatch, 0); 
 }
 
 Message Any (Message self, Syntax S, const char* NameMatch=nullptr) {
@@ -73,36 +80,18 @@ Message Any (Message self, Syntax S, const char* NameMatch=nullptr) {
     return ExpectMatch(self, S, NameMatch, nullptr); 
 }
 
-int mem_to_i(const char* buf, int len) {
-    int n = 0;
-    while (len--) {
-        n = n*10 + (*buf++ - '0');
-    }
-
-    return n;
-}
-
-int name_int(const String& s) {
-    return mem_to_i(s.address(), s.length());
-}
-
 vector <UserDemo*> UsrList;
 
 
 void LoadUserArg (UserDemo* User, Message Arg) {
     auto Screen = Any(Arg, $tmp, "screen_name");
-    User->ScreenName = Screen.name();
+    User->ScreenName = First(Screen, $str).name();
     auto Inv = Any(Arg, $tmp, "inventory");
-    for (auto Name : First(Inv, $list)) {
+    for (auto Name : FirstOK(Inv, $list)) {
         ExpectMatch(Name, $thg);
         User->Inventory.push_back(Name.name());
     }
 /*
-    auto Clothing = Arg[$tmp, "clothing"][0, @list]
-    for (auto Name : Clothing) {
-        Name.expect($thg)
-        User->Inventory.push_back(Name.name());
-    }
     || Clothing = Arg[@tmp, "clothing"][0, @list]
     for (Name : Clothing) {
         expect (Name = @thg) (Name)
@@ -110,19 +99,19 @@ void LoadUserArg (UserDemo* User, Message Arg) {
     }
 */    
     auto Clothing = Any(Arg, $tmp, "clothing");
-    for (auto Name : First(Clothing, $list)) {
+    for (auto Name : FirstOK(Clothing, $list)) {
         ExpectMatch(Name, $thg);
         User->Inventory.push_back(Name.name());
     }
 }
 
 
-void UsersExample (String S) {
+void LoadUsers (String S) {
     Message Root = S.parse();
-    Message user_list = First(Root, $tmp, "user_list");
-    user_list = First(user_list, $bra);
-    user_list = Next( user_list, $arg);
+    Message user_list = Next( First(First(Root, $tmp, "user_list"), $bra), $arg);
     for (auto U : user_list) {
+        if (!Jeebox::ok()) return;
+
         if (ExpectMatch(U, $tmp, "user")) {
             auto User = new UserDemo();
             UsrList.push_back(User);
@@ -132,25 +121,39 @@ void UsersExample (String S) {
             auto IDMsg = Next(NameMsg,   $bra);
             auto Arg = Next(IDMsg, $arg);
             IDMsg = First(IDMsg,   $num);
-            User->ID = name_int(IDMsg.name());
+            User->ID = (int)IDMsg.nameint();
 
             LoadUserArg(User, Arg);
         }
     }
-    
-    // want to add a user, and alter a user.
 }
 
 
+void UsersExample (String S) {
+    // want to add a user, and alter a user.
+    // first lets load the users file!
+    LoadUsers(S);
+    if (!Jeebox::ok()) return;
+    
+    
+    
+}
 
-int main() {
-    jb_init(0);
-    String S = jb_readfile("Users.txt", false);
-    UsersExample(S);
-    auto Err = Jeebox::errors();
-    if (Err) {
+
+void PrintErrors() {
+    for (auto Err : Jeebox::errors()) {
+        printf("Error: ");
         Err.name().printline();
     }
+}
+
+
+int main() {
+    String S = jb_readfile("Users.box", false);
+    if (Jeebox::ok()) {
+        UsersExample(S);
+    }
+    PrintErrors();
     return jb_shutdown();
 }
 

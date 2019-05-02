@@ -36,26 +36,38 @@ void JB_ErrorHandleFileC(const char* Path, int err, const char* Operation) {
     JB_ErrorHandleFile(JB_Str_FromCString_(Path), err, Operation);
 }
 
-int JB_ErrorHandleFile(JB_String* self, int err, const char* Operation) {
-    JB_Error* Err = JB_Err__New();
+
+static JB_String* Desc_(JB_String* self, int err, const char* Operation) {
     FastString* FS = JB_FS__FastNew(0);
-    
     JB_FS_AppendIntegerAsText(FS, err, 1);
     JB_FS_AppendCString(FS, " (");
     JB_FS_AppendCString(FS, strerror(err));
     JB_FS_AppendCString(FS, ") occured trying to ");
     JB_FS_AppendCString(FS, Operation);
-    JB_FS_AppendCString(FS, " file.");
-    
-    if (self and JB_Str_ByteValue(self, 0)!= '/') {
-        JB_FS_AppendCString(FS, " (at ");
-        char* cwd = getcwd( 0, 0 );
-        JB_FS_AppendCString(FS, cwd);
-        free( cwd );
-        JB_FS_AppendCString(FS, "/).");
-    }
+    JB_FS_AppendCString(FS, " file: '");
+    JB_FS_AppendString(FS, self);
+    JB_FS_AppendCString(FS, "'.");
+    return JB_FS_GetResult(FS);
+}
 
-    JB_Err_Fill(Err, self, JB_FS_GetResult(FS) ); 
+static JB_String* Path_(JB_String* self) {
+    if (!self or JB_Str_ByteValue(self, 0)== '/') {
+        return self;
+    }
+    FastString* FS = JB_FS__FastNew(0);
+    char* cwd = getcwd( 0, 0 );
+    JB_FS_AppendCString(FS, cwd);
+    free( cwd );
+    JB_FS_AppendByte(FS, '/');
+    JB_FS_AppendString(FS, self);
+    return JB_FS_GetResult(FS);
+}
+
+int JB_ErrorHandleFile(JB_String* self, int err, const char* op) {
+    JB_Error* Err = JB_Err__New();
+    JB_String* Desc = Desc_(self, err, op);
+    JB_String* Path = Path_(self);
+    JB_Err_Fill(Err, Path, Desc ); 
     JB_Rec_NewItem(JB_StdErr, Err);
 
     return 0;

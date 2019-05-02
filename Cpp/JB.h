@@ -2,7 +2,7 @@
 
  // Auto-generated file, by speedie.
 
-/***LICENCE-TEXT***
+/* jeebox-licence:
     By Theodore H. Smith, 2019, theo@jeebox.org
 
     This software is provided 'as-is', without any warranty.
@@ -16,11 +16,11 @@
     1. The origin of this software must not be misrepresented; you must not
         claim that you wrote the original software.
     2. If you use this software or portions of this software in a product, you
-        are required to acknowledge this in one of:
+        are required to acknowledge this in at least one of:
         About-window / launch-screen / help-files / read-me-file
     3. Altered source versions must be plainly marked as such, and must not be
         misrepresented as being the original software.
-    4. This notice may not be removed or altered from any source distribution.
+    4. Any jeebox-licence note may not be removed/altered from any source distribution.
 */
 
 
@@ -337,6 +337,18 @@ JBClass ( Message , RingTree ,
 // module: Compression
 
 
+// module: ErrorColors
+#define kJB__ErrorColors_bold (JB_str_158)
+#define kJB__ErrorColors_error (JB_str_159)
+#define kJB__ErrorColors_good (JB_str_160)
+#define kJB__ErrorColors_normal (JB_str_157)
+#define kJB__ErrorColors_underline (JB_str_160)
+#define kJB__ErrorColors_warn (JB_str_161)
+//
+
+
+
+
 // module: JB_API
 extern u32 JB__JB_API_NilHappened;
 //
@@ -424,7 +436,7 @@ extern Array* JB__Tk_StyleArray;
 extern int JB_BaseMessagePosition;
 extern Array* JB_FuncArray;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_157)
+#define kJB_SaverStart1 (JB_str_156)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -593,7 +605,11 @@ extern JB_String* JB_str_245;
 extern JB_String* JB_str_246;
 extern JB_String* JB_str_247;
 extern JB_String* JB_str_248;
+extern JB_String* JB_str_249;
 extern JB_String* JB_str_25;
+extern JB_String* JB_str_250;
+extern JB_String* JB_str_251;
+extern JB_String* JB_str_252;
 extern JB_String* JB_str_26;
 extern JB_String* JB_str_27;
 extern JB_String* JB_str_28;
@@ -1101,6 +1117,9 @@ extern bool JB__FAP_Tested;
 
 
 // Compression
+
+
+// ErrorColors
 
 
 // JB_API
@@ -1857,8 +1876,6 @@ void JB_Err_Destructor(JB_Error* self);
 void JB_Err_Fill(JB_Error* self, JB_String* path, JB_String* desc);
 
 bool JB_Err_IsWarning(JB_Error* self);
-
-JB_String* JB_Err_Render(JB_Error* self, FastString* fs_in);
 
 JB_Error* JB_Err__Alloc();
 

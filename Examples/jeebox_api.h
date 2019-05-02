@@ -1,5 +1,5 @@
 
-/***LICENCE-TEXT***
+/* jeebox-licence:
     By Theodore H. Smith, 2019, theo@jeebox.org
 
     This software is provided 'as-is', without any warranty.
@@ -13,11 +13,11 @@
     1. The origin of this software must not be misrepresented; you must not
         claim that you wrote the original software.
     2. If you use this software or portions of this software in a product, you
-        are required to acknowledge this in one of:
+        are required to acknowledge this in at least one of:
         About-window / launch-screen / help-files / read-me-file
     3. Altered source versions must be plainly marked as such, and must not be
         misrepresented as being the original software.
-    4. This notice may not be removed or altered from any source distribution.
+    4. Any jeebox-licence note may not be removed/altered from any source distribution.
 */
 
 
@@ -33,6 +33,10 @@ struct jbstring : jbobject {};
 
 typedef const char* _cstring;
 typedef void* _voidptr;
+#ifndef s64
+    typedef long long  s64; 
+#endif
+
 
 
 		// Message functions
@@ -87,6 +91,7 @@ jbstring* jb_string_copy(jbstring* self); /* Copies the string into a new string
 jbmessage* jb_string_parse(jbstring* self); /* Parses the string into a tree! Parsing is the most important function in Jeebox! Returns nil if invalid jeebox code is detected. You must call jb_errors to detect that parse-error or else you can't parse more jeebox code. */
 void jb_string_print(jbstring* self); /* Prints this string to console. Useful for debugging. */
 void jb_string_printline(jbstring* self); /* Same as jb_string_print except it ends with a \n. */
+s64 jb_string_int(jbstring* self, jbmessage* m); /* Parses this string into an integer. Allows hex also, like '0xffff'. If you pass a 'message' into this, then non-numeric strings will get reported into jb_errors()  */
 
 
 		// Global functions
@@ -95,6 +100,8 @@ jbsyntax* jb_syntax(jbstring* name); /* Looks up the syntax of that name from th
 jbstring* jb_str(_cstring Str, int Length, _voidptr Release, _voidptr Tag); /* Creates a JBString from a c-string. Expects the c-string to remain unchanged until the JBString is freed. Length is optional. Can optionally pass a call-back to release your c-string, during freeing the JBString. */
 void jb_delete_(jbobject* obj); /* Deletes the object from memory. Don't call directly, use jb_incr jb_decr. */
 jbmessage* jb_errors(); /* Returns the first parse-error (if any), and removes it from error-list. The node's name is the error-description and the node's position is the error-position. */
+bool jb_ok(); /* Returns if any errors were detected. Doesn't change anything. Call jb_errors to actually get the error-list and remove them. */
+void jb_debug(jbobject* o); /* Prints a description of this object, useful for debugging. */
 int jb_init(int Flags); /* Inits Jeebox. Call this before any other Jeebox functions. Pass 1 to succeed silently, or else a message is printed. Returns zero for success.
     
 If jb_init fails it will try print a debug message. If jb_init returns 0x10000 that means an out-of-memory error occurred. You can free memory and try again. */

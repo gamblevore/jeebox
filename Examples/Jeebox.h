@@ -64,6 +64,7 @@ public:
     __nodebug Syntax (jbsyntax* s) { _self = s; }
     __nodebug String name() const;
     __nodebug String longname() const;
+    __nodebug Message create (const String& Name);
 };
 
 
@@ -108,6 +109,7 @@ __nodebug bool operator==(const char* s) const{return !strncmp(s, address(), len
 __nodebug bool operator!=(const char* s) const{return !(*this == s);}
     __nodebug operator jbstring*() const           {if (length()) return _self; return 0;}
     __nodebug operator std::string() const    {return std();}
+    char operator[] (int index) {return jb_string_address(_self)[index];} 
 };
 
 
@@ -173,6 +175,8 @@ __nodebug Message convertreadable()const{return jb_msg_convertreadable(_self);}
     __nodebug void    next(const Message& s)   {jb_msg_nextset(_self, s._self);}
         
     __nodebug void    append(const Message& s)   {last(s);}
+    
+    __nodebug s64    nameint()                 {return jb_string_int(jb_msg_name(_self),_self);}
 
 //   __declspec(property(get = position, put = position)) int poss;
 };
@@ -201,8 +205,15 @@ __nodebug String Syntax::name() const {
 __nodebug String Syntax::longname() const {
     return jb_syx_longname(_self);
 }
+__nodebug Message Syntax::create (const String& Name) {
+    return jb_msg_create(nullptr, _self, Name._self);
+}
 __nodebug Message errors() {
     return jb_errors();
+}
+
+__nodebug bool ok() {
+    return jb_ok();
 }
 __nodebug Syntax syntax(const String& name) {
     return jb_syntax(name._self);
@@ -211,6 +222,7 @@ __nodebug Syntax syntax(const String& name) {
 __nodebug String readfile(_cstring path, bool AllowMissingFile=false) {
     return jb_readfile(path, AllowMissingFile);
 }
+
 
 
 
@@ -225,7 +237,7 @@ __nodebug String string_owned(const char* Addr, int n) {
 
 
 __nodebug String string_copy(const char* Addr, int n) {
-    return String(Addr,n).copy();
+    return String(Addr, n).copy();
 }
 
 
