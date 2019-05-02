@@ -61,7 +61,7 @@ Jeebox can also describe human language. I think Jeebox could really do with a r
 
 The thing is, I've done far too much alone. Translation is something I'd need to be paid to do, and I'm not a business person (at all). Don't ask me to come up with a business plan. Just because I know it could transform the world of translation, doesn't mean I can even think about how to make money from it.
 
-I mean the way my mind works is like "Hey, this could make everything better for everyone, surely we should be supported for that? Considering the value of our translation stuff could probably saving people billions of dollars time-worth". Unfortunately that's not how the world works, but it is how **my mind** works, and I'm not gonna change I work or feel, because I just get frazzled and ruined if I have to think about how to be accepted "just for money".
+I mean the way my mind works is like "Hey, this could make everything better for everyone, surely we should be supported for that? Considering the value of our translation stuff could probably saving people billions of dollars time-worth". Unfortunately that's not how the world works, but it is how **my mind** works, and I'm not gonna change how I work or feel, because I just get frazzled and ruined if I have to think about how to be accepted "just for money".
 
 However if someone else already has the structure in place... I could come in and help within that.
 
