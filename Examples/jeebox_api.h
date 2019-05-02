@@ -1,30 +1,24 @@
 
 /***LICENCE-TEXT***
-	By Theodore H. Smith, 2019, theo@jeebox.org
+    By Theodore H. Smith, 2019, theo@jeebox.org
 
-	This software is provided 'as-is', without any warranty.
-	In no event will the authors be held liable for any damages
-	arising from the use of this software.
+    This software is provided 'as-is', without any warranty.
+    In no event will the authors be held liable for any damages
+    arising from the use of this software.
 
-	Permission is granted to anyone to use this software for any purpose,
-	including commercially, and to alter it and redistribute it
-	freely, subject to the following restrictions:
+    Permission is granted to anyone to use this software for any purpose,
+    including commercially, and to alter it and redistribute it
+    freely, subject to the following restrictions:
 
-	1. The origin of this software must not be misrepresented; you must not
-		claim that you wrote the original software.
+    1. The origin of this software must not be misrepresented; you must not
+        claim that you wrote the original software.
     2. If you use this software or portions of this software in a product, you
         are required to acknowledge this in one of:
         About-window / launch-screen / help-files / read-me-file
-	3. Altered source versions must be plainly marked as such, and must not be
-		misrepresented as being the original software.
-	4. This notice may not be removed or altered from any source distribution.
-
-
-**PERSONAL-NOTE***
-	Sorry about asking for acknowledgement of using Jeebox, but I have no career
-	at all. I don't think it's too much to ask that people with careers give a
-	chance to someone with none.
-***/
+    3. Altered source versions must be plainly marked as such, and must not be
+        misrepresented as being the original software.
+    4. This notice may not be removed or altered from any source distribution.
+*/
 
 
 		// API
