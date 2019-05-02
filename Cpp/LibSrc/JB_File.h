@@ -73,6 +73,7 @@ int JB_File_MoveTo(JB_File* self, JB_String* New);
 bool JB_File_Exists( JB_File* self );
 Date JB_File_Modified( JB_File* self );
 Date JB_File_Created( JB_File* self );
+JB_String* JB_cPath_ReadAll (const char* path, bool AllowMissingFile, int MaxFile);
 
 long JB_File__chdir( JB_String* Path );
 JB_String* JB_File__CWD( );

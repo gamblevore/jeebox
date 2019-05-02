@@ -1,9 +1,9 @@
 # Build like this:
 # cd </path/to/jeebox-master>
-# cmake -BBuild; cd Build; sudo make
+# cmake -BBuild; cd Build; sudo make install
 
 cmake_minimum_required(VERSION 3.4)
-project(Jeebox VERSION 1.0.0 DESCRIPTION "Beautiful, extensible language to describe anything. The ultimate life-form of parsers.")
+project(Jeebox VERSION 1.0.1 DESCRIPTION "Beautiful, extensible language to describe anything. The ultimate life-form of parsers.")
 
 set(Root ${CMAKE_SOURCE_DIR})
 set(JbCpp ${Root}/Cpp)
@@ -16,7 +16,7 @@ set(MainSrc ${MainSrc} ${JbCpp}/JB.cpp)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS YES CACHE BOOL "Export all symbols")
 
 add_compile_definitions(TARGET_UNIX=1 AS_LIBRARY=1)
-add_compile_options(${ARCH} -Wno-return-type-c-linkage -Wno-invalid-source-encoding -std=gnu++1y -stdlib=libc++ -fno-strict-aliasing -march=core2 -mfpmath=sse -mmmx -msse -msse2 -msse4.1 -msse4.2 -mtune=native -Os)
+add_compile_options(${ARCH} -Wno-return-type-c-linkage -Wno-invalid-source-encoding -std=gnu++1y -stdlib=libc++ -fno-strict-aliasing -fvisibility=hidden -march=core2 -mfpmath=sse -mmmx -msse -msse2 -msse4.1 -msse4.2 -mtune=native -Os)
 add_link_options(${ARCH} -flto)
 
 message( "${MainSrc}" )
@@ -50,13 +50,13 @@ install(
 )
 
 
-add_executable(xml ${Root}/Examples/xml.cpp)
-target_link_libraries(xml JeeboxStatic)
+add_executable(example_xml ${Root}/Examples/xml.cpp)
+target_link_libraries(example_xml JeeboxStatic) 		# test static
 
-add_executable(test ${Root}/Examples/test.cpp)
-target_link_libraries(test Jeebox)
+add_executable(example_test ${Root}/Examples/test.cpp)
+target_link_libraries(example_test Jeebox)				# test dynamic
 
-
-# export.sym? -fvisibility=hidden?
-# CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS? we don't want that?
+add_executable(jb ${Root}/Examples/jb.cpp)
+target_link_libraries(jb Jeebox)
+install( TARGETS jb RUNTIME DESTINATION bin )
 

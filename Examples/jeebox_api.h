@@ -1,30 +1,30 @@
 
-// By Theodore H. Smith, released under zlib licence v1.2.11
+/***LICENCE-TEXT***
+	By Theodore H. Smith, 2019, theo@jeebox.org
 
-/* zlib.h -- interface of the 'zlib' general purpose compression library
-  version 1.2.11, January 15th, 2017
+	This software is provided 'as-is', without any warranty.
+	In no event will the authors be held liable for any damages
+	arising from the use of this software.
 
-  Copyright (C) 1995-2017 Jean-loup Gailly and Mark Adler
+	Permission is granted to anyone to use this software for any purpose,
+	including commercially, and to alter it and redistribute it
+	freely, subject to the following restrictions:
 
-  This software is provided 'as-is', without any express or implied
-  warranty.  In no event will the authors be held liable for any damages
-  arising from the use of this software.
+	1. The origin of this software must not be misrepresented; you must not
+		claim that you wrote the original software.
+    2. If you use this software or portions of this software in a product, you
+        are required to acknowledge this in one of:
+        About-window / launch-screen / help-files / read-me-file
+	3. Altered source versions must be plainly marked as such, and must not be
+		misrepresented as being the original software.
+	4. This notice may not be removed or altered from any source distribution.
 
-  Permission is granted to anyone to use this software for any purpose,
-  including commercial applications, and to alter it and redistribute it
-  freely, subject to the following restrictions:
 
-  1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
-  2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
-  3. This notice may not be removed or altered from any source distribution.
-
-  Jean-loup Gailly        Mark Adler
-  jloup@gzip.org          madler@alumni.caltech.edu
-*/
+**PERSONAL-NOTE***
+	Sorry about asking for acknowledgement of using Jeebox, but I have no career
+	at all. I don't think it's too much to ask that people with careers give a
+	chance to someone with none.
+***/
 
 
 		// API
@@ -105,6 +105,10 @@ int jb_init(int Flags); /* Inits Jeebox. Call this before any other Jeebox funct
     
 If jb_init fails it will try print a debug message. If jb_init returns 0x10000 that means an out-of-memory error occurred. You can free memory and try again. */
 int jb_shutdown(); /* Frees all memory used by jeebox! */
+int jb_version();
+jbstring* jb_readfile(_cstring path, bool AllowMissingFile); /* Reads entire file at this path. Relative paths are allowed. Will create jeebox-errors if the file can't be read for any reason (missing file, out of memory, disk-error, etc).
+    
+    If AllowMissingFile is true then it's OK for the file to not exist, no error is created in that case. This helps make your code is a bit less pedantic. */
 
 
 		// Jeebox Syntax
@@ -115,6 +119,7 @@ extern jbsyntax* JB_SyxAdj;
 extern jbsyntax* JB_SyxARel;
 extern jbsyntax* JB_SyxArr;
 extern jbsyntax* JB_SyxBack;
+extern jbsyntax* JB_SyxSStr;
 extern jbsyntax* JB_SyxBra;
 extern jbsyntax* JB_SyxBRel;
 extern jbsyntax* JB_SyxChar;
@@ -154,6 +159,7 @@ extern jbsyntax* JB_SyxBin;
 #define $arel JB_SyxARel      // After_Relationship
 #define $arr JB_SyxArr        // Array
 #define $back JB_SyxBack      // Backtick
+#define $sstr JB_SyxSStr      // Super_String
 #define $bra JB_SyxBra        // Bracket
 #define $brel JB_SyxBRel      // Before_Relationship
 #define $char JB_SyxChar      // Character

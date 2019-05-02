@@ -37,4 +37,4 @@ Thumbs.db
 ########################
 /Jeebox.input
 /Build
-
+*.xcodeproj

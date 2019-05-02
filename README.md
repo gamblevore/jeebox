@@ -1,6 +1,8 @@
 # jeebox
 
-http://jeebox.org - theo@jeebox.org
+[http://jeebox.org](http://jeebox.org) \- [theo@jeebox.org](mailto:theo@jeebox.org)
+
+Join the reddit group [http://reddit/r/jeebox](http://reddit/r/Jeebox)
 
 Compile:
 
@@ -11,9 +13,9 @@ Compile:
 
 Jeebox tries to fulfil the goal of describing everything. Here's an example of Jeebox syntax.
 
-	You can (% describe anything, in: Jeebox)
+    You can (% describe anything, in: Jeebox)
 
-[See real syntax examples here](http://jeebox.org/stuff/introduction). 
+[See real syntax examples here](http://jeebox.org/stuff/introduction).
 
 Jeebox is useful for describing:
 
@@ -26,37 +28,48 @@ Jeebox is useful for describing:
 
 Jeebox parses a UTF-8 string into a tree of 'nodes'. Jeebox is simple because each node only needs two strings to describe it, the `name` and the `type`. Jeebox is extensible (no keywords), meaning you can describe **anything** unambiguously. Being simple also makes Jeebox memory-tight.
 
-Jeebox's parse-speed is near that of TinyXML2's, it's pretty fast! Jeebox is highly expressive, meaning that (depending on what you are doing) documents **can be** much smaller than XML/JSON, but never bigger. Jeebox is small at 158K compiled.
+Jeebox's parse-speed is near that of TinyXML2's, it's pretty fast! Jeebox is highly expressive, meaning that (depending on what you are doing) documents **can be** much smaller than XML/JSON, but never bigger. Jeebox itself is small at 149K compiled.
 
-Jeebox has many features to make programmers lives easier and better. For example: "Double-quoted" strings can have embedded expressions, unicode and byte escape codes, or use \`backtick\` strings with none of that! [Read the website](http://jeebox.org/stuff/introduction) to see what I put into Jeebox. Also Jeebox **doesn't** have the bug that Javascript / C# / Java has, where a codepoint above `&#xFFFF;` can't be expressed.
-
-Please email questions to theo@jeebox.org if you have any troubles using it! Emailing me **rather than giving up** will help me so much!
-
+I added many features to make programmers lives easier. For example: "Double-quoted" strings allow embedded expressions, unicode and byte escape codes. But \`backtick\` strings have none of that. [Read the website](http://jeebox.org/stuff/introduction) to see what I put into Jeebox. Jeebox is clean, because unlike [Javascript / C# / Java](https://msdn.microsoft.com/en-us/data/aa664669(v=vs.85)) Jeebox strings **can** express characters above `&#xFFFF;` without 'surrogates'!
 
 # Why use Jeebox?
 
-Well... Jeebox has so many uses, the question might be "why not?"
+The issues surrounding Jeebox are not a matter of how good it is. There seems to be "invisible rules" guiding society, including on technical things. People want to move things in a certain direction, and I was moving in a different direction.
 
-Using Jeebox means you'll never need to write another parser again, you'll get all the most advanced features built-in. Also, assuming enough languages are expressed in Jeebox, this could reduce code-size because we replace many parsers with Jeebox! You could literally build an entire world where everything is expressed in Jeebox.
+I guess I'm moving towards unity/simplicity, while most people move towards fragmentation/complexity. There's other issues like me "not being part of any power-system" (I've never worked at, or have friends with people at apple/google/intel/etc).
 
-I built a programming language `Speedie` around Jeebox, so I know it's really easy to use and fun. `Speedie` is beautiful. I never feel "restricted" or get forced to make a mess (like C++ or many languages did).
+I'm a very spiritual person, but I get frazzled trying to get Jeebox accepted by people, it ruins who I am as a person. I was never frazzled before trying to get accepted, really the opposite. I'm trying to save myself from that stress, it was never who I am, at all.
+
+And I notice that all big popular stuff (XML/JSON) never had to "get accepted from the outside". They were created by powerful groups in the first place. So, maybe a new approach is needed?
+
+Maybe the best way forward is for me to help particular people integrate Jeebox into their app as a paid work for them? If that sounds good email me at theo@jeebox.org. I'm just throwing out ideas. It could help make Jeebox easier to use for others anyhow, because then "I'm eating my own dogfood". I'm using Jeebox from within `Speedie`, but what about the C++ library version? If I do integration for people, then I will use it!
+
+
+# Jeebox Is Still Great
+
+If you just look at the code and how easy it is to use... Jeebox is truely amazing! Really frees you from a lot of things.
+
+Like needing to write parsers. You get a load of advanced features built-in. Also, assuming enough languages are expressed in Jeebox, this could reduce code-size because we replace many parsers with Jeebox!
+
+I built a programming language `Speedie` around Jeebox, so I know it's really easy to use and fun. `Speedie` is beautiful and Jeebox never restricts me.
 
 Being open-sourced on github means that if you were worried about me not adding things you need, you could add them yourself. I'm not controlling anyone's future.
 
-Jeebox can also describe human language, like English/Spanish/Hebrew/etc. A great idea would be to write a translation program based on jeebox! This would help improve Jeebox's use for real-world meaning. Only minor improvements would be needed, perhaps none.
+# Looking for a translation app, as a real-world-test
 
-Jeebox has incredible potential for translation, because it captures the grammatical structure of a sentance, it could improve accuracy by 10x-100x. The syntax is light, considering the amount of structure it describes!
-    
-Jeebox isn't unchanging, I will modify it slightly over time. But on the whole (been using it for 7 years) it's barely changed, just a few additions, almost no changes that break anything. Jeebox is stable and mature.
+Jeebox can also describe human language. I think Jeebox could really do with a real-world translation app to test it, just like I tested Jeebox with my compiler `speedie`. I actually barely modified jeebox during the making of speedie, but minor tweaks can be important. I think it will be the same for translation too?
 
-Jeebox has a lot of potential. It could become "The Unicode of programming languages". (I know that's just an idealistic version of reality! I know reality doesn't work like that.) I did say "potential".
+The thing is, I've done far too much alone. Translation is something I'd need to be paid to do, and I'm not a business person (at all). Don't ask me to come up with a business plan. Just because I know it could transform the world of translation, doesn't mean I can even think about how to make money from it. I mean the way my mind works is like "Hey, this could make everything better for everyone, surely we should be supported for that? Considering the value of our translation stuff could probably saving people billions of dollars time-worth". Unfortunately that's not how the world works, but it is how **my mind** works, and I'm not gonna change I work or feel, because I just get frazzled and ruined and turned into someone else if I try to change "just for money".
 
+However if someone else already has the structure in place... I could come in and help within that.
+
+Jeebox has a lot of potential. By capturing the grammatical structure of a sentence, Jeebox can improve translation accuracy by 10x-100x. And the Syntax is light. It could be very useful for medical documents, or technical documents (electronics/engineering/etc) which need precise translation.
 
 # Notes
 
-Jeebox has a C-API and a C++ API. The C++ version is much easier to use, because you can "just use Jeebox" and everything looks nice and clean. The C-API requires you to do memory-management, which isn't fun.
+Jeebox has a C-API and a C++ API. The C++ version is better, because you can "just use it". The C-API requires you to do memory-management, which is ugly and error-prone. But useful if you are writing a Jeebox binding for another language (python/ruby/etc).
 
-For the moment Jeebox is single-threaded and 32-bit only. I am working on making it 64-bit clean.
+Jeebox is single-threaded and 32-bit right now. I am working on making it 64-bit clean.
 
 The Cpp/JB.cpp file is actually auto-generated by my compiler, `Speedie`. This means any changes to it, will be a little hard to merge back into the main source.
 

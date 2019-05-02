@@ -27,10 +27,7 @@
 
 
 #include "JB_Umbrella.h"
-
-#ifndef AS_LIBRARY
 #include <unistd.h>
-#endif
 
 extern "C" {
 
@@ -58,36 +55,27 @@ void JB_ErrorHandle2C(const char* Desc, bool CanFreeDesc, const char* Path, bool
 
 
 
-#ifndef AS_LIBRARY
-void JB_ErrorHandleFileC(u8* Path, int err, const char* Operation) {
-    JB_String C;
-    C.Addr = Path;
-    C.Length = (int)strlen((const char*)Path);
-    JB_ErrorHandleFile(&C, err, Operation);
+void JB_ErrorHandleFileC(const char* Path, int err, const char* Operation) {
+    JB_ErrorHandleFile(JB_Str_FromCString_(Path), err, Operation);
 }
 
 int JB_ErrorHandleFile(JB_String* self, int err, const char* Operation) {
     JB_Error* Err = JB_Err__New();
     FastString* FS = JB_FS__FastNew(0);
     
-    JB_FS_AppendCString(FS, "Error ");
     JB_FS_AppendIntegerAsText(FS, err, 1);
-    JB_FS_AppendCString(FS, " '");
+    JB_FS_AppendCString(FS, " (");
     JB_FS_AppendCString(FS, strerror(err));
-    JB_FS_AppendCString(FS, "' occured trying to ");
+    JB_FS_AppendCString(FS, ") occured trying to ");
     JB_FS_AppendCString(FS, Operation);
+    JB_FS_AppendCString(FS, " file.");
     
-    if (self) {
-        JB_FS_AppendCString(FS, " file: '");
-        int c0 = JB_Str_ByteValue(self, 0);
-        if (c0 != '/') {
-            char* cwd = getcwd( 0, 0 );
-            JB_FS_AppendCString(FS, cwd);
-            free( cwd );
-            JB_FS_AppendByte(FS, '/');
-        }
-        JB_FS_AppendString(FS, self);
-        JB_FS_AppendByte(FS, '\'');
+    if (self and JB_Str_ByteValue(self, 0)!= '/') {
+        JB_FS_AppendCString(FS, " (at ");
+        char* cwd = getcwd( 0, 0 );
+        JB_FS_AppendCString(FS, cwd);
+        free( cwd );
+        JB_FS_AppendCString(FS, "/).");
     }
 
     JB_Err_Fill(Err, self, JB_FS_GetResult(FS) ); 
@@ -95,7 +83,6 @@ int JB_ErrorHandleFile(JB_String* self, int err, const char* Operation) {
 
     return 0;
 }
-#endif
 
 int JB_ErrorHandleC(const char* Desc, bool CanFreeDesc) {
     JB_Error* Err = JB_Err__New();

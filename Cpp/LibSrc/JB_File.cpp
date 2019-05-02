@@ -136,7 +136,7 @@ extern "C" {
 #define kDefaultMode (S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
 
 extern "C" {
-void JB_ErrorHandleFileC(u8* Path, int err, const char* Operation);
+void JB_ErrorHandleFileC(const char* Path, int err, const char* Operation);
 
 bool HasFD (JB_File*f) {
     return (f->FileDes >= 0);
@@ -255,7 +255,7 @@ int InterRead(int fd, void* buffer, int N, JB_String* Path) {
     }
     
     if (!Path and isatty(fd)) {
-        JB_ErrorHandleFileC((u8*)ttyname(fd), errno, "read");
+        JB_ErrorHandleFileC(ttyname(fd), errno, "read");
     } else {
         ErrorHandleStr_( -1, Path, "read" );
     }
@@ -713,7 +713,10 @@ bool JB_File_IsDir (JB_File* self) {
 
 }
 
+#else 
+
 #endif
+
 
     
 

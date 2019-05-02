@@ -37,6 +37,7 @@
 
 #include "jeebox_api.h"
 #include <stdlib.h>
+#include <string>
 
 
 //#undef __nodebug
@@ -59,17 +60,8 @@ class Syntax {
 // no need refcount. they always exist and are never destroyed.
 public:
     jbsyntax* _self;
-    __nodebug operator bool() const { return _self; }
+    __nodebug operator jbsyntax*() const { return _self; }
     __nodebug Syntax (jbsyntax* s) { _self = s; }
-
-
-    __nodebug bool operator==(const jbsyntax* other) {
-      return _self == other;
-    }
-    __nodebug bool operator!=(const jbsyntax* other) {
-      return _self != other;
-    }
-
     __nodebug String name() const;
     __nodebug String longname() const;
 };
@@ -79,6 +71,9 @@ class String {
 public:
     jbstring* _self;
     __nodebug ~String () {jb_decr(_self);}
+    __nodebug String () {
+        jb_incr(_self = nullptr);
+    }
     __nodebug String (jbstring* s) {
         jb_incr(_self = s);
     }
@@ -88,6 +83,10 @@ public:
     __nodebug String (const char* s, int n) {
         jb_incr(_self = jb_str(s,n,0,0));
     }
+    __nodebug String (const std::string& s) {
+        jb_incr(_self = jb_str(s.data(),s.size(),0,0));
+    }
+    
     __nodebug String (const String &s) {
         jb_incr(_self = s._self);
     }
@@ -104,22 +103,27 @@ public:
     __nodebug const char* address ()const     {return jb_string_address(_self);}
     __nodebug int         length () const     {return jb_string_length(_self);}
     __nodebug String      copy () const       {return jb_string_copy(_self);}
-
-    __nodebug operator bool() const           { return length(); }
+    __nodebug std::string std () const        {return std::string(address(), length());}
+__nodebug bool operator==(const char* s) const{return !strncmp(s, address(), length());}
+__nodebug bool operator!=(const char* s) const{return !(*this == s);}
+    __nodebug operator jbstring*() const           {if (length()) return _self; return 0;}
+    __nodebug operator std::string() const    {return std();}
 };
-
 
 
 class Message {
 public:
     jbmessage* _self;
-    __nodebug operator bool() const { return _self; }
+    __nodebug operator jbmessage*() const { return _self; }
     
     __nodebug ~Message () {
         jb_decr(_self);
     }
     __nodebug Message (jbmessage* s) {
         jb_incr(_self = s);
+    }
+    __nodebug Message () {
+        jb_incr(_self = nullptr);
     }
     __nodebug Message (const Message &s) {
         jb_incr(_self = s._self);
@@ -130,17 +134,7 @@ public:
         jb_decr(Old);
         return *this;
     }
-/*    Message operator[] (int index) {
-        if (index < 0) {
-            return Message(0);
-        }
-        auto F = jb_msg_first(_self);
-        while (F and index-- >= 1) {
-            F = jb_msg_next(F);
-        }
-        return F;
-    }
-*/
+
     __nodebug MessageIterator begin () const; 
     __nodebug MessageIterator end () const;
     
@@ -179,11 +173,24 @@ __nodebug Message convertreadable()const{return jb_msg_convertreadable(_self);}
     __nodebug void    next(const Message& s)   {jb_msg_nextset(_self, s._self);}
         
     __nodebug void    append(const Message& s)   {last(s);}
+
+//   __declspec(property(get = position, put = position)) int poss;
 };
 
+/* // doesn't work :(
+struct S {
+   int i;
+   void putprop(int j) {
+      i = j;
+   }
 
+   int getprop() {
+      return i;
+   }
 
-
+   __declspec(property(get = getprop, put = putprop)) int the_prop;
+};
+*/
 
 __nodebug Message String::parse () const {
     return jb_string_parse(_self);
@@ -199,6 +206,10 @@ __nodebug Message errors() {
 }
 __nodebug Syntax syntax(const String& name) {
     return jb_syntax(name._self);
+}
+
+__nodebug String readfile(_cstring path, bool AllowMissingFile=false) {
+    return jb_readfile(path, AllowMissingFile);
 }
 
 
@@ -235,7 +246,9 @@ public:
     }
  
     __nodebug const MessageIterator& operator++ () {
-        msg = jb_msg_next(msg);
+        if (msg) { // nil is acceptable;
+            msg = jb_msg_next(msg);
+        }
         return *this;
     }
  
@@ -245,7 +258,7 @@ private:
 
 
 __nodebug MessageIterator Message::begin () const {
-    return MessageIterator( jb_msg_first(_self) );
+    return MessageIterator( _self ? jb_msg_first(_self) : 0 );
 }
 
 __nodebug MessageIterator Message::end () const {

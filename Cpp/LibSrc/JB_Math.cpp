@@ -60,10 +60,6 @@ extern "C" {
     }
 
     float JB_PowInt(float x, u32 n) {
-    // leave this. I don't need it.
-    // it's cool but wierd... I mean, the situation is wierd... sigh.
-    // shutdown people with no real energy... dominating everything. They don't need to exist.
-    // LEAVE... LEAVE LEAVE..... LEAAAVE.
         float z = 1;
         float base = x;
 

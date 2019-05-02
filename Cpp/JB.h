@@ -1,5 +1,34 @@
 
 
+ // Auto-generated file, by speedie.
+
+/***LICENCE-TEXT***
+	By Theodore H. Smith, 2019, theo@jeebox.org
+
+	This software is provided 'as-is', without any warranty.
+	In no event will the authors be held liable for any damages
+	arising from the use of this software.
+
+	Permission is granted to anyone to use this software for any purpose,
+	including commercially, and to alter it and redistribute it
+	freely, subject to the following restrictions:
+
+	1. The origin of this software must not be misrepresented; you must not
+		claim that you wrote the original software.
+    2. If you use this software or portions of this software in a product, you
+        are required to acknowledge this in one of:
+        About-window / launch-screen / help-files / read-me-file
+	3. Altered source versions must be plainly marked as such, and must not be
+		misrepresented as being the original software.
+	4. This notice may not be removed or altered from any source distribution.
+
+
+**PERSONAL-NOTE***
+	Sorry about asking for acknowledgement of using Jeebox, but I have no career
+	at all. I don't think it's too much to ask that people with careers give a
+	chance to someone with none.
+***/
+
 
 #ifndef __JB_H__
 #define __JB_H__
@@ -295,10 +324,10 @@ struct Message_Behaviour: RingTree_Behaviour {
 };
 
 JBClass ( Message , RingTree , 
-	int Position;
 	JB_Object* Obj;
-	Syntax* Func;
+	Syntax* Type;
 	JB_String* Name;
+	int Position;
 );
 
 
@@ -568,6 +597,8 @@ extern JB_String* JB_str_243;
 extern JB_String* JB_str_244;
 extern JB_String* JB_str_245;
 extern JB_String* JB_str_246;
+extern JB_String* JB_str_247;
+extern JB_String* JB_str_248;
 extern JB_String* JB_str_25;
 extern JB_String* JB_str_26;
 extern JB_String* JB_str_27;
@@ -682,6 +713,7 @@ extern Syntax* JB_SyxSCom;
 extern Syntax* JB_SyxSDot;
 extern Syntax* JB_SyxSheb;
 extern Syntax* JB_SyxSOpp;
+extern Syntax* JB_SyxSStr;
 extern Syntax* JB_SyxSThg;
 extern Syntax* JB_SyxStr;
 extern Syntax* JB_SyxThg;
@@ -1185,6 +1217,10 @@ Message* JB_Tk__fShebang(int Start);
 Message* JB_Tk__fStatementOpen(int Start);
 
 Message* JB_Tk__fString(int Start);
+
+Message* JB_Tk__fStrSub(int Start, JB_String* Ender, Syntax* syx);
+
+Message* JB_Tk__fSuperStr(int Start);
 
 Message* JB_Tk__fSyntacticComment(int Start);
 
@@ -1989,6 +2025,8 @@ void JB_Msg_Sheb__(Message* self, FastString* fs);
 
 void JB_Msg_SOpp__(Message* self, FastString* fs);
 
+void JB_Msg_SStr__(Message* self, FastString* fs);
+
 void JB_Msg_SThg__(Message* self, FastString* fs);
 
 void JB_Msg_Str__(Message* self, FastString* fs);
@@ -2109,6 +2147,10 @@ int jb_init(int Flags);
 
 int jb_shutdown();
 
+int jb_version();
+
+JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
+
 
 //// HEADER SyntaxConstants.h
 #define kSyxArg 0
@@ -2117,38 +2159,39 @@ int jb_shutdown();
 #define kSyxARel 3
 #define kSyxArr 4
 #define kSyxBack 5
-#define kSyxBra 6
-#define kSyxBRel 7
-#define kSyxChar 8
-#define kSyxDecl 9
-#define kSyxDot 10
-#define kSyxEmb 11
-#define kSyxERel 12
-#define kSyxFunc 13
-#define kSyxItem 14
-#define kSyxList 15
-#define kSyxPrm 16
-#define kSyxName 17
-#define kSyxNum 18
-#define kSyxOat 19
-#define kSyxOpp 20
-#define kSyxSOpp 21
-#define kSyxRel 22
-#define kSyxTRel 23
-#define kSyxSDot 24
-#define kSyxSCom 25
-#define kSyxSheb 26
-#define kSyxStr 27
-#define kSyxSThg 28
-#define kSyxThg 29
-#define kSyxChn 30
-#define kSyxTmp 31
-#define kSyxAna 32
-#define kSyxSCnj 33
-#define kSyxCnj 34
-#define kSyxType 35
-#define kSyxUnit 36
-#define kSyxBin 37
+#define kSyxSStr 6
+#define kSyxBra 7
+#define kSyxBRel 8
+#define kSyxChar 9
+#define kSyxDecl 10
+#define kSyxDot 11
+#define kSyxEmb 12
+#define kSyxERel 13
+#define kSyxFunc 14
+#define kSyxItem 15
+#define kSyxList 16
+#define kSyxPrm 17
+#define kSyxName 18
+#define kSyxNum 19
+#define kSyxOat 20
+#define kSyxOpp 21
+#define kSyxSOpp 22
+#define kSyxRel 23
+#define kSyxTRel 24
+#define kSyxSDot 25
+#define kSyxSCom 26
+#define kSyxSheb 27
+#define kSyxStr 28
+#define kSyxSThg 29
+#define kSyxThg 30
+#define kSyxChn 31
+#define kSyxTmp 32
+#define kSyxAna 33
+#define kSyxSCnj 34
+#define kSyxCnj 35
+#define kSyxType 36
+#define kSyxUnit 37
+#define kSyxBin 38
 
 
 
@@ -2158,38 +2201,39 @@ int jb_shutdown();
  "ARel = 3" ,\
  "Arr = 4" ,\
  "Back = 5" ,\
- "Bra = 6" ,\
- "BRel = 7" ,\
- "Char = 8" ,\
- "Decl = 9" ,\
- "Dot = 10" ,\
- "Emb = 11" ,\
- "ERel = 12" ,\
- "Func = 13" ,\
- "Item = 14" ,\
- "List = 15" ,\
- "Prm = 16" ,\
- "Name = 17" ,\
- "Num = 18" ,\
- "Oat = 19" ,\
- "Opp = 20" ,\
- "SOpp = 21" ,\
- "Rel = 22" ,\
- "TRel = 23" ,\
- "SDot = 24" ,\
- "SCom = 25" ,\
- "Sheb = 26" ,\
- "Str = 27" ,\
- "SThg = 28" ,\
- "Thg = 29" ,\
- "Chn = 30" ,\
- "Tmp = 31" ,\
- "Ana = 32" ,\
- "SCnj = 33" ,\
- "Cnj = 34" ,\
- "Type = 35" ,\
- "Unit = 36" ,\
- "Bin = 37" ,\
+ "SStr = 6" ,\
+ "Bra = 7" ,\
+ "BRel = 8" ,\
+ "Char = 9" ,\
+ "Decl = 10" ,\
+ "Dot = 11" ,\
+ "Emb = 12" ,\
+ "ERel = 13" ,\
+ "Func = 14" ,\
+ "Item = 15" ,\
+ "List = 16" ,\
+ "Prm = 17" ,\
+ "Name = 18" ,\
+ "Num = 19" ,\
+ "Oat = 20" ,\
+ "Opp = 21" ,\
+ "SOpp = 22" ,\
+ "Rel = 23" ,\
+ "TRel = 24" ,\
+ "SDot = 25" ,\
+ "SCom = 26" ,\
+ "Sheb = 27" ,\
+ "Str = 28" ,\
+ "SThg = 29" ,\
+ "Thg = 30" ,\
+ "Chn = 31" ,\
+ "Tmp = 32" ,\
+ "Ana = 33" ,\
+ "SCnj = 34" ,\
+ "Cnj = 35" ,\
+ "Type = 36" ,\
+ "Unit = 37" ,\
+ "Bin = 38" ,\
 
 
 
