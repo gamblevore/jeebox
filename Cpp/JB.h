@@ -2129,6 +2129,8 @@ void jb_string_print(JB_String* self);
 
 void jb_string_printline(JB_String* self);
 
+s64 jb_string_int(JB_String* self, Message* m);
+
 Syntax* jb_syntax(JB_String* name);
 
 JB_String* jb_str(_cstring Str, int Length, _voidptr Release, _voidptr Tag);
@@ -2136,6 +2138,10 @@ JB_String* jb_str(_cstring Str, int Length, _voidptr Release, _voidptr Tag);
 void jb_delete_(JB_Object* obj);
 
 Message* jb_errors();
+
+bool jb_ok();
+
+void jb_debug(JB_Object* o);
 
 int jb_init(int Flags);
 

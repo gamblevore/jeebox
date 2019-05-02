@@ -5040,6 +5040,11 @@ __lib__ void jb_string_printline(JB_String* self) {
 	JB_Str_PrintLine(self);
 }
 
+__lib__ s64 jb_string_int(JB_String* self, Message* m) {
+	return JB_Str_TextIntegerValid(self, m);
+	return 0;
+}
+
 __lib__ Syntax* jb_syntax(JB_String* name) {
 	return ((Syntax*)JB_Dict_Value(JB_SyxDict, name));
 	return nil;
@@ -5066,6 +5071,15 @@ __lib__ Message* jb_errors() {
 	return nil;
 }
 
+__lib__ bool jb_ok() {
+	return JB_Rec_OK(JB_StdErr);
+	return false;
+}
+
+__lib__ void jb_debug(JB_Object* o) {
+	JB_DebugPrint(o);
+}
+
 __lib__ int jb_init(int Flags) {
 	return JB_JB_API__Init(Flags);
 	return 0;
@@ -5078,7 +5092,7 @@ __lib__ int jb_shutdown() {
 }
 
 __lib__ int jb_version() {
-	return 2019050211;
+	return 2019050212;
 }
 
 __lib__ JB_String* jb_readfile(_cstring path, bool AllowMissingFile) {
