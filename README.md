@@ -13,7 +13,7 @@ Compile:
 
 Jeebox tries to fulfil the goal of describing everything. Here's an example of Jeebox syntax.
 
-    You can (% describe anything, in: Jeebox)
+    You can %describe (anything, in: Jeebox)
 
 [See real syntax examples here](http://jeebox.org/stuff/introduction).
 
