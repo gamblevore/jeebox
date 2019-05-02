@@ -13,13 +13,15 @@ struct {
     bool xml;
 } Options;
 
-
-void PrintErrors() {
-    auto List = Jeebox::errors();
-    for (auto Err : List) {
-        std::cerr << " :: Error: "; Err.name().print(); std::cerr << " :: \n";
-    }
-}
+const char* kHelpStr = R"(Just a simple util for Jeebox.
+    Usage: jb /path/to/jb_file.txt
+    -r = turn readable-ast into jeebox-syntax
+    -i = use stdin
+    -s = string escape
+    -d = show input
+    -q = less noisy
+    -x = print as XML
+)";
 
 
 void JeeboxToXML (Message M, int Depth=0) {
@@ -115,7 +117,7 @@ int main(int argc, const char* argv[]) {
     for (auto c = argv+1; *c; c++) {
         HandleSwitch(*c);
     }
-    if (((int)Options.xml + (int)Options.string + (int)Options.readable) >= 2) {
+    if (((int)Options.xml + (int)Options.string + (int)Options.readable) > 1) {
         std::cerr << "bad switch: -x / -s / -r are exclusive\n";
         exit(-1);
     }
@@ -126,17 +128,13 @@ int main(int argc, const char* argv[]) {
     if (Options.Stdin) {
         ParseStdIn();
     } else if (!Options.GotAny) {
-        std::cout << R"(Just a simple util for Jeebox.
-    Usage: jb /path/to/jb_file.txt
-    -r = turn readable-ast into jeebox-syntax
-    -i = use stdin
-    -s = string escape
-    -d = show input
-    -q = less noisy
-)";
+        std::cout << kHelpStr;
     }
 
-    PrintErrors(); // if any!
+    for (auto Err : Jeebox::errors()) {
+        std::cerr << " :: Error: "; Err.name().print(); std::cerr << " :: \n";
+    }
+
     return jb_shutdown();
 }
 

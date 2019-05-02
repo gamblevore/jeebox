@@ -338,12 +338,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_159)
-#define kJB__ErrorColors_error (JB_str_160)
-#define kJB__ErrorColors_good (JB_str_161)
-#define kJB__ErrorColors_normal (JB_str_158)
-#define kJB__ErrorColors_underline (JB_str_161)
-#define kJB__ErrorColors_warn (JB_str_162)
+#define kJB__ErrorColors_bold (JB_str_160)
+#define kJB__ErrorColors_error (JB_str_161)
+#define kJB__ErrorColors_good (JB_str_162)
+#define kJB__ErrorColors_normal (JB_str_159)
+#define kJB__ErrorColors_underline (JB_str_162)
+#define kJB__ErrorColors_warn (JB_str_163)
 //
 
 
@@ -436,7 +436,7 @@ extern Array* JB__Tk_StyleArray;
 extern int JB_BaseMessagePosition;
 extern Array* JB_FuncArray;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_157)
+#define kJB_SaverStart1 (JB_str_158)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -611,6 +611,7 @@ extern JB_String* JB_str_250;
 extern JB_String* JB_str_251;
 extern JB_String* JB_str_252;
 extern JB_String* JB_str_253;
+extern JB_String* JB_str_254;
 extern JB_String* JB_str_26;
 extern JB_String* JB_str_27;
 extern JB_String* JB_str_28;
@@ -1506,6 +1507,8 @@ void JB_StructSaveTest_SaveWrite(StructSaveTest* self, ObjectSaver* Saver);
 
 
 // byte
+bool JB_byte_CanPrintAsNormalChar(byte self);
+
 bool JB_byte_IsNum(byte self);
 
 bool JB_byte_IsNumeric(byte self);
