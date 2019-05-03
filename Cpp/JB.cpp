@@ -35,7 +35,7 @@ extern Object_Behaviour JB_Object_FuncTable_;
 //
 
 
-u32 JB__JB_API_NilHappened;
+u32 JB__API_NilHappened;
 //
 
 
@@ -426,7 +426,7 @@ inline bool JB_Obj_NilCheck(JB_Object* self) {
 	if (self) {
 		return true;
 	}
-	return JB_JB_API__NilHandler();
+	return JB_API__NilHandler();
 }
 
 inline bool JB_DictionaryReader_SyntaxCastBool(DictionaryReader* self) {
@@ -454,7 +454,7 @@ inline TokenHandler_fp JB_ParseHandler_cast(ParseHandler self) {
 
 
 
-Message* JB_JB_API__errors() {
+Message* JB_API__errors() {
 	if (JB_Rec_OK(JB_StdErr)) {
 		return nil;
 	}
@@ -474,7 +474,7 @@ Message* JB_JB_API__errors() {
 	return result;
 }
 
-int JB_JB_API__Init(int flags) {
+int JB_API__Init(int flags) {
 	if ((!(JB_StdErr == nil))) {
 		return nil;
 	}
@@ -499,23 +499,23 @@ int JB_JB_API__Init(int flags) {
 	return 0;
 }
 
-int JB_JB_API__Init_() {
+int JB_API__Init_() {
 	{
-		JB__JB_API_NilHappened = 0;
+		JB__API_NilHappened = 0;
 	};
 	return 0;
 }
 
-void JB_JB_API__NilCallBack(JB_String* ErrorMessage) {
+void JB_API__NilCallBack(JB_String* ErrorMessage) {
 	JB_Str_PrintLine(ErrorMessage);
 }
 
-bool JB_JB_API__NilHandler() {
+bool JB_API__NilHandler() {
 	debugger;
-	if ((!(JB__JB_API_NilHappened++ < 16))) {
+	if ((!(JB__API_NilHappened++ < 16))) {
 		return nil;
 	}
-	JB_JB_API__NilCallBack(JB_str_44);
+	JB_API__NilCallBack(JB_str_44);
 	return false;
 }
 
@@ -2342,7 +2342,7 @@ int JB_Init_() {
 		JB_SetRef(JB_SyxBin, JB_Fn__StdNew(JB_Msg_Bin__, 38, JB_str_253, JB_str_254));
 	};
 	//// JB_API;
-	JB_JB_API__Init_();
+	JB_API__Init_();
 	//// Jeebox;
 	JB_Constants__Init_();
 	//// parser;
@@ -3716,7 +3716,7 @@ void JB_Rec_Constructor(JB_ErrorReceiver* self) {
 	self->Source = JB_str_0;
 	JB_LinkedList_StoreAt(self, ((JB_LinkedList**)((&JB_StdErr))));
 	self->MaxErrors = 512;
-	JB__JB_API_NilHappened = nil;
+	JB__API_NilHappened = nil;
 }
 
 void JB_Rec_Destructor(JB_ErrorReceiver* self) {
@@ -5090,7 +5090,7 @@ __lib__ Syntax* jb_syntax(JB_String* name) {
 }
 
 __lib__ JB_String* jb_str(_cstring Str, int Length, _voidptr Release, _voidptr Tag) {
-	JB_JB_API__Init(0);
+	JB_API__Init(0);
 	if ((!Str) or (Length < 0)) {
 		return JB_str_0;
 	}
@@ -5106,7 +5106,7 @@ __lib__ void jb_delete_(JB_Object* obj) {
 }
 
 __lib__ Message* jb_errors() {
-	return JB_JB_API__errors();
+	return JB_API__errors();
 	return nil;
 }
 
@@ -5120,7 +5120,7 @@ __lib__ void jb_debug(JB_Object* o) {
 }
 
 __lib__ int jb_init(int Flags) {
-	return JB_JB_API__Init(Flags);
+	return JB_API__Init(Flags);
 	return 0;
 }
 
@@ -5135,7 +5135,7 @@ __lib__ int jb_version() {
 }
 
 __lib__ JB_String* jb_readfile(_cstring path, bool AllowMissingFile) {
-	JB_JB_API__Init(0);
+	JB_API__Init(0);
 	return JB_cPath_ReadAll(path, AllowMissingFile, 100000000);
 	return JB_str_0;
 }

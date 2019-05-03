@@ -349,8 +349,8 @@ JBClass ( Message , RingTree ,
 
 
 
-// module: JB_API
-extern u32 JB__JB_API_NilHappened;
+// module: API
+extern u32 JB__API_NilHappened;
 //
 
 
@@ -1124,16 +1124,16 @@ extern bool JB__FAP_Tested;
 // ErrorColors
 
 
-// JB_API
-Message* JB_JB_API__errors();
+// API
+Message* JB_API__errors();
 
-int JB_JB_API__Init(int flags);
+int JB_API__Init(int flags);
 
-int JB_JB_API__Init_();
+int JB_API__Init_();
 
-void JB_JB_API__NilCallBack(JB_String* ErrorMessage);
+void JB_API__NilCallBack(JB_String* ErrorMessage);
 
-bool JB_JB_API__NilHandler();
+bool JB_API__NilHandler();
 
 
 
