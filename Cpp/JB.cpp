@@ -871,17 +871,17 @@ void JB_Tk__ErrorEvent2(int Start, int ExpectedBits, int RealBits) {
 			JB_Incr(_tmp315);
 			byte illegal = JB_Str_SyntaxAccess(_tmp315, Start);
 			JB_Decr(_tmp315);
-			if ((!JB_byte_CanPrintAsNormalChar(illegal))) {
-				JB_FS_AppendString(Err, JB_str_130);
-				JB_FS_AppendHex(Err, illegal, 2);
-				JB_FS_AppendByte(Err, ' ');
-			} else {
+			if (JB_byte_CanPrintAsNormalChar(illegal)) {
 				JB_FS_AppendByte(Err, '\'');
 				JB_String* _tmp316 = JB_Tk__Data();
 				JB_Incr(_tmp316);
 				JB_FS_AppendByte(Err, JB_Str_SyntaxAccess(_tmp316, Start));
 				JB_Decr(_tmp316);
 				JB_FS_AppendByte(Err, '\'');
+			} else {
+				JB_FS_AppendString(Err, JB_str_130);
+				JB_FS_AppendHex(Err, illegal, 2);
+				JB_FS_AppendByte(Err, ' ');
 			}
 		} else {
 			JB_FS_AppendByte(Err, '\'');
@@ -5131,7 +5131,7 @@ __lib__ int jb_shutdown() {
 }
 
 __lib__ int jb_version() {
-	return 2019050220;
+	return 2019050321;
 }
 
 __lib__ JB_String* jb_readfile(_cstring path, bool AllowMissingFile) {
