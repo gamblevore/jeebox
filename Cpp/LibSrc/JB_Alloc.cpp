@@ -122,11 +122,14 @@ MemoryWorld MemoryManager = {
 
 
 
-fpDestructor GetDestructor_(AllocationBlock* B) {
+static fpDestructor GetDestructor_(AllocationBlock* B) {
     return (fpDestructor)(B->FuncTable->__destructor__);
 }
 
-JBObject_Behaviour DummyFuncTable = {0, 0};
+
+static JBObject_Behaviour DummyFuncTable = {0, 0};
+
+
 #if DEBUG
 static void Sanity(AllocationBlock* B);
 int DB = 0;
@@ -534,8 +537,8 @@ static inline void SetupSuper_(SuperBlock* Super, MemoryWorld* W) {
         Curr->Super = Super;
         #ifdef DEBUG
         Curr->FuncTable = &SuperSanityTable;
-        Curr->Unused_ = DB++;
         #endif
+        Curr->Owner = 0; // for clearing
         Curr->Next = Next;
         Curr = Next;
     }
@@ -763,6 +766,9 @@ static AllocationBlock* ReturnSpare_(MemoryLayer* Mem) {
     NewBlock = Mem->SpareBlock;
     Sanity(NewBlock);
     if (NewBlock) { // Improvement?: Stick the spareblock on the normal "next" list. And just test that it's a spare. 1 less branch!
+        if (NewBlock->Owner!=Mem) {
+            debugger; // big problem, our cleanspares function assumes this!
+        }
         Mem->SpareBlock = 0;
         NewBlock->Super->BlocksActive++;
         return NewBlock;
@@ -817,7 +823,7 @@ static void ResetClass_( JB_Class* Cls ) {
     Cls->DefaultBlock = (AllocationBlock*)&(Cls->Memory.Dummy);
 }
 
-static void CleanSpares_( SuperBlock* Super, bool ResettingApp ) {
+static void CleanSpares_( SuperBlock* Super ) {
     MemoryWorld* World = Super->World;
     int N = 1 << World->BlockSize;
     AllocationBlock* Curr = StartBlock_(Super);
@@ -826,14 +832,34 @@ static void CleanSpares_( SuperBlock* Super, bool ResettingApp ) {
     while (Curr < End) { // not too sure this test is correct!
         MemoryLayer* Mem = Curr->Owner;
         if ( Mem ) { // Only exists if its a spare, seeing as the superblock's refcount is 0.
-            if (ResettingApp) {
-                ResetClass_(Mem->Class);
-            } 
-            Mem->SpareBlock = 0;
+            AllocationBlock* MemSpare = Mem->SpareBlock;
+            if (MemSpare >= Curr and MemSpare <= End) {
+                JB_DoAt(1); // inside!
+                Mem->SpareBlock = 0;
+            }
         }
         Curr = JBShift(Curr, N);
     }
 }
+
+
+static void CleanSpores_( SuperBlock* Super ) {
+    MemoryWorld* World = Super->World;
+    int N = 1 << World->BlockSize;
+    AllocationBlock* Curr = StartBlock_(Super);
+    AllocationBlock* End = EndBlock_(Super);
+
+    while (Curr < End) { // not too sure this test is correct!
+        MemoryLayer* Mem = Curr->Owner;
+        if ( Mem ) { // Only exists if its a spare, seeing as the superblock's refcount is 0.
+            ResetClass_(Mem->Class);
+            Mem->SpareBlock = 0; // why not?
+        }
+        Curr->Owner = 0;
+        Curr = JBShift(Curr, N);
+    }
+}
+
 
 
 static void PossiblyLast_(SuperBlock* Super) {
@@ -849,17 +875,15 @@ static void PossiblyLast_(SuperBlock* Super) {
 }
 
 
-static void JustGetRidOfIt_(SuperBlock* Super, bool ActuallyGetRidOfIt, bool ResettingApp) {
+static void JustGetRidOfIt_(SuperBlock* Super, bool ResettingApp) {
     GoodBlock(Super);
     GoodBlock(Super->Next);
     PossiblyLast_(Super);
     Unlink_( (LinkHelper*)Super );
-    CleanSpares_( Super, ResettingApp );
-    if (ActuallyGetRidOfIt) {
-        Super_free(Super);
-    } else {
-        SuperBlockSetup_(Super, Super->World);
+    if (!ResettingApp) {
+        CleanSpares_( Super );
     }
+    Super_free(Super);
 }
 
 
@@ -871,7 +895,7 @@ static bool IsAlone_(SuperBlock* Super) {
 static void SuperBlockFree_(SuperBlock* Super) {
     MemoryWorld* World = Super->World;
     if ( World->SpareSuper ) {
-        JustGetRidOfIt_(Super, true, false);
+        JustGetRidOfIt_(Super, false);
 
     } else if ( !IsAlone_( Super ) ) {
         World->SpareSuper = Super; // issue?
@@ -884,9 +908,7 @@ static void BlockFree_( AllocationBlock* FreeBlock ) {
     MemoryLayer* Mem = FreeBlock->Owner;
     SuperBlock* Super = FreeBlock->Super;
     if (Mem->RefCount == 2) {
-//        DebuggerAt(1);
         if (!Mem->World->SpareSuper and IsAlone_( Super ) ) { // avoid freeing last super, avoid thrashing.
-//            printf("Super: %s Keeping %i blocks\n", Super->World->Name, Super->BlocksActive);
             return;
         }
     }
@@ -899,6 +921,7 @@ static void BlockFree_( AllocationBlock* FreeBlock ) {
         SetCurrBlock_(Mem, NewCurr);
     }
     Unlink_((LinkHelper*)FreeBlock);
+//    FreeBlock->Owner = 0;
 
     if (!Mem->SpareBlock) {
         Mem->SpareBlock = FreeBlock;
@@ -928,7 +951,7 @@ static void BlockFree_( AllocationBlock* FreeBlock ) {
 
 //  OK so we got an issue where we decr an object, it's deleted, then we incr it
 //  how to stop? delete could "mark as deleted"? And Incr could test for shit?
-void JB_DeleteSub_( FreeObject* Obj, AllocationBlock* Block ) {
+static void JB_DeleteSub_( FreeObject* Obj, AllocationBlock* Block ) {
     Obj->Next = Block->FirstFree;
     Block->FirstFree = Obj;
     
@@ -956,6 +979,7 @@ void JB_DeleteSub_( FreeObject* Obj, AllocationBlock* Block ) {
         BlockFree_( Block );
     }
 }
+
 
 
 __hot void JB_Delete( FreeObject* Obj ) {
@@ -1011,31 +1035,19 @@ MemoryWorld* JB_MemStandardWorld() {
 
 
 void JB_MemFree(MemoryWorld* World) {
-    JB_MemoryReset(World, 0);
-}
-
-
-void JB_MemoryReset(MemoryWorld* World, int Max) {
     SuperBlock* First = World->CurrSuper;
     SuperBlock* Super = First;
+    do {
+        CleanSpores_(Super);
+        Super = Super->Next;
+    } while (Super != First);
+
     SuperBlock* Next = 0;
-    int Count = 0;
-    while (Next != First) {
+    while (Next != First and World->CurrSuper) {
         Next = Super->Next;
-        if ((u32)Count >= (u32)Max) {
-            Count++;
-            JustGetRidOfIt_(Super, true, true);
-        } else {
-            JustGetRidOfIt_(Super, false, true);
-        }
-        if (!World->CurrSuper) {
-            break; // last remaining.
-        }   
+        JustGetRidOfIt_(Super, true);
         Super = Next;
     }
-    #if DEBUG
-//    printf("freed %i supers\n", Count);
-    #endif
 }
 
 
