@@ -109,8 +109,7 @@ void ParseStdIn() {
 void HandleFile(const char* s) {
     if (s[0] and s[0] != '-') {
         Options.GotAny = true;
-        String File = Jeebox::readfile(s);
-        PrintReadable( File, s );
+        PrintReadable( Jeebox::readfile(s), s );
     }
 }
 
