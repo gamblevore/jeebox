@@ -24,6 +24,13 @@ const char* kHelpStr = R"(Just a simple util for Jeebox.
 )";
 
 
+void PrintErrors() {
+    for (auto Err : Jeebox::errors()) {
+        std::cerr << " :: Error: "; Err.name().print(); std::cerr << " :: \n";
+    }
+}
+
+
 void JeeboxToXML (Message M, int Depth=0) {
     for (int i = 0; i < Depth; i++) { // indent
         putchar('\t'); 
@@ -72,13 +79,26 @@ void PrintReadable(String A) {
             s.renderreadable().printline();
         }
     }
+    
+    PrintErrors();
 }
 
 
 void ParseStdIn() {
-    if (!Options.quiet) { std::cout << " :: Type some jeebox and press control-D once you are done! :: \n\n";}
-    std::string std_string(std::istreambuf_iterator<char>(std::cin), {}); // C++ is so baaad
-    PrintReadable(String(std_string));
+    if (!Options.GotAny) {
+        bool Quiet = Options.quiet; 
+        if (!Quiet) { std::cout << " :: Type lines of Jeebox, type empty line when you are done :: \n\n";}
+        Options.quiet = true; // stupid otherwise.
+        std::string input_line;
+        while (std::getline(std::cin, input_line) and input_line.size()) {
+            PrintReadable(String(input_line));
+            if (!Quiet) { std::cout << " :: Enter next line :: \n\n";}
+        }
+    } else {
+        if (!Options.quiet) { std::cout << " :: Type some jeebox and press control-D once you are done! :: \n\n";}
+        std::string std_string(std::istreambuf_iterator<char>(std::cin), {}); // C++ is so baaad
+        PrintReadable(String(std_string));
+    }
 }
 
 
@@ -102,8 +122,9 @@ void HandleSwitch(const char* s) {
         } else if (c == "i") {Options.Stdin=true; Options.GotAny=true;
         } else if (c == "r") {Options.readable=true; 
         } else if (c == "x") {Options.xml=true; 
+        } else if (c == "h") {std::cout << kHelpStr; exit(0); 
         } else {
-            std::cerr << "Unrecognised switch: " << c.address() << "\n";
+            std::cerr << "Unrecognised switch: " << c.address() << "\n" << kHelpStr;
             exit(-1);
         }
     }
@@ -125,15 +146,11 @@ int main(int argc, const char* argv[]) {
         HandleFile(*c);
     }
     
-    if (Options.Stdin) {
+    if (Options.Stdin or !Options.GotAny) {
         ParseStdIn();
-    } else if (!Options.GotAny) {
-        std::cout << kHelpStr;
     }
-
-    for (auto Err : Jeebox::errors()) {
-        std::cerr << " :: Error: "; Err.name().print(); std::cerr << " :: \n";
-    }
+    
+    PrintErrors();
 
     return jb_shutdown();
 }
