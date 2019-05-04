@@ -4,6 +4,7 @@
 using namespace Jeebox;
 
 struct {
+    unsigned short ParseErr;
     bool show_input;
     bool readable;
     bool Stdin;
@@ -16,7 +17,7 @@ struct {
 const char* kHelpStr = R"(Just a simple util for Jeebox.
     Usage: jb /path/to/jb_file.txt
     -r = turn readable-ast into jeebox-syntax
-    -i = use stdin
+    -i = multiple lines of input
     -s = string escape
     -d = show input
     -q = less noisy
@@ -26,6 +27,7 @@ const char* kHelpStr = R"(Just a simple util for Jeebox.
 
 void PrintErrors() {
     for (auto Err : Jeebox::errors()) {
+        Options.ParseErr++;
         Err.name().print();
     }
 }
@@ -152,6 +154,7 @@ int main(int argc, const char* argv[]) {
     
     PrintErrors();
 
-    return jb_shutdown();
+    jb_shutdown();
+    return -((bool)Options.ParseErr);
 }
 
