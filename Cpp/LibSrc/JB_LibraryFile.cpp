@@ -37,7 +37,7 @@ JB_String* JB_cPath_ReadAll (const char* path, bool AllowMissingFile, int MaxFil
     if (N < 0) {
         errr(path, "open");
     } else {
-        Result = JB_Str_New(N);
+        Result = JB_Str_New(N+1);
         if (!Result) {
             errr(path, "allocate memory");
         } else {
@@ -46,7 +46,9 @@ JB_String* JB_cPath_ReadAll (const char* path, bool AllowMissingFile, int MaxFil
                 errr(path, "read");
                 JB_Delete((FreeObject*)Result); Result = 0;
             } else {
-                Result = JB_Str_Realloc(&Result, Size);
+                Result = JB_Str_Realloc(&Result, Size+1);
+                Result->Addr[Size] = 0; // make life easier for c-folks.
+                Result->Length--; // not actual length, though.
             }
         }
     }

@@ -469,7 +469,18 @@ JB_String* JB_FS_GetResult(FastString* self) {
 		return JB_Str_Empty();
 	}
 
+#if AS_LIBRARY
+    Length++;
+#endif
 	JB_String* Result = JB_Str_Realloc(&self->Result, Length);
+
+#if AS_LIBRARY
+    if (Result) {
+        Result->Addr[--Length] = 0; // zero-terminate, make life easier for c-folks
+        Result->Length = Length;
+    }
+#endif
+
     self->Result = 0;
     JB_SafeDecr(Result);
 
