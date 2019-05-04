@@ -1,5 +1,4 @@
 
-// fireballs at da police's heads.
 // Copyright, Theodore H. Smith 2019.
 // Released under jeebox-licence http://jeebox.org/licence.txt
 
@@ -30,6 +29,8 @@
         * ALSO "non-default" MemoryLayers like for JB_Message... need to NOT hold onto the last spareblock
             * except "weakly". Or else it's refcount can never reach 0.
 */
+
+// fireballs at da police's heads.
 
 
 #include "JB_Umbrella.h"
@@ -1100,52 +1101,9 @@ bool JB_IsDebug() {
     #endif
 }
 
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 JBClassPlace3( MemoryLayer, JB_Mem_Destructor, JB_AsClass(JB_Object), 0 );
 
 }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 // tasks and threads... add it when I need it...
-
-
-/* Amazing abilities and qualities
-
-FAST
-    * Typically 5 instructions for allocation of an object.
-        * Refcount isn't set per object cos we know it's already zero!
-    * 11x faster than C++'s new/delete
-    * Instant block-reuse if old size matches new size.
-    * 3 anti-thrash systems in total. 1 for superblocks... 2 for normal blocks.
-    * Constructing simply over-writes. Doesn't pre-zero. FAST.
-    * Destructor is stored per-block, avoids 3 pointer chases.
-    * Refcounting is done with an optimised design... designed to be "optimised away".
-
-TIGHT
-    * Misaligned superblocks don't waste RAM.
-    * Less than 1% overhead.
-        * Class Information is stored once per block.
-    * Incredibly small! Only 6K of real code.
-        * Almost all code is debug only, headers, or utilities...
-
-AWESOME
-    * Multiple worlds allowed... objects + spacechunks.
-        * Block/Superblock sizes can be adjusted... doesn't need 4K blocks...
-    * Memory-layer oriented system allows grouping objects together meaningfully.
-    * Has optional sanity-checking system, in case of errors.
-
-HATED
-    * Humans hate me and everything I do... at least that's how the past has been. I want things to change.
-*/
-

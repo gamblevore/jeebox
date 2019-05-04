@@ -33,8 +33,9 @@
 ehthumbs.db
 Thumbs.db
 
-# Input/Output folders #
+# Jeebox specific #
 ########################
 /Jeebox.input
 /Build
+*.note
 *.xcodeproj
