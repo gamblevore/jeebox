@@ -24,7 +24,7 @@ JB_String* FreeableStr_(const char* Msg, bool CanFree) {
 
 
 void JB_ErrorHandle2C(const char* Desc, bool CanFreeDesc, const char* Path, bool CanFreePath) {
-    JB_Error* Err = JB_Err__New();
+    JB_Error* Err = JB_Err__New(0);
     JB_Err_Fill(Err, FreeableStr_(Path, CanFreePath), FreeableStr_(Desc, CanFreeDesc)); 
     JB_Rec_NewItem(JB_StdErr, Err);
 }
@@ -64,7 +64,7 @@ static JB_String* Path_(JB_String* self) {
 }
 
 int JB_ErrorHandleFile(JB_String* self, int err, const char* op) {
-    JB_Error* Err = JB_Err__New();
+    JB_Error* Err = JB_Err__New(0);
     JB_String* Desc = Desc_(self, err, op);
     JB_String* Path = Path_(self);
     JB_Err_Fill(Err, Path, Desc ); 
@@ -74,7 +74,7 @@ int JB_ErrorHandleFile(JB_String* self, int err, const char* op) {
 }
 
 int JB_ErrorHandleC(const char* Desc, bool CanFreeDesc) {
-    JB_Error* Err = JB_Err__New();
+    JB_Error* Err = JB_Err__New(0);
     JB_Err_Fill(Err, nil, FreeableStr_(Desc, CanFreeDesc)); 
     JB_Rec_NewItem(JB_StdErr, Err);
     return 0;

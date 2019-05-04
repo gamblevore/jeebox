@@ -3,7 +3,7 @@
 # cmake -BBuild; cd Build; sudo make install
 
 cmake_minimum_required(VERSION 3.4)
-project(Jeebox VERSION 1.0.1 DESCRIPTION "Beautiful, extensible language to describe anything. The ultimate life-form of parsers.")
+project(Jeebox VERSION 1.1.2 DESCRIPTION "Extensible language to describe anything. The ultimate life-form of parsers.")
 
 set(Root ${CMAKE_SOURCE_DIR})
 set(JbCpp ${Root}/Cpp)

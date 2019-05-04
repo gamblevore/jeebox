@@ -75,7 +75,7 @@ u8* EntityRead_( FastString* fs, u8 FirstChar, u8* NextRead, u8* SelfEnd, JB_Err
 
 
 
-// I can't do entity validation properly here, because there are too many error conditions,
+// I can’t do entity validation properly here, because there are too many error conditions,
 // and this class simply does not do validation. All it really needs to do, is parse
 // correct conditions properly, and handle incorrect enities gracefully, not ruining the
 // rest of the text that is valid.

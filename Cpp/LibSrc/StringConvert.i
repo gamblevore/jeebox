@@ -167,11 +167,11 @@ int c8to16_(u8* source, int Len, JB_String** ep) {
 	return 0;
 }
 //
-//// latin1 can't hold all the range. So, we will not totally ruin the data, just "clip"
-//// the chars like we clip sounds. This means it can't do a few more opts, but whatever!!
+//// latin1 can’t hold all the range. So, we will not totally ruin the data, just "clip"
+//// the chars like we clip sounds. This means it can’t do a few more opts, but whatever!!
 //int c8toL_(u8* source, int Len, JB_String** ep) {
 //    JB_String* e = JB_Str_Realloc( ep, Len );
-//	if ( e ) { // can't be longer!
+//	if ( e ) { // can’t be longer!
 //		u8* target = e->Addr;
 //		u8* targetStart = target;
 //		u8* sourceEnd = source + Len;

@@ -16,7 +16,7 @@
         * Maybe make the block allocator... try avoid "spareblocks".
             * if it finds a "spare" try search 1 or 2 further
         
-    * Non-spare blocks can't point to normal blocks, so they just won't.
+    * Non-spare blocks can’t point to normal blocks, so they just won't.
         * We'll need some flag to say if this block is in use or not.
             * OR the lack of ->Prev?
 
@@ -277,7 +277,7 @@ static void Sanity(AllocationBlock* B) {
 
 
 void JB_Class_Init(JB_Class* Cls, MemoryWorld* World, int Size) {
-    memzero(Cls, sizeof(JB_Class)); // can't use JB_Zero.
+    memzero(Cls, sizeof(JB_Class)); // can’t use JB_Zero.
     Cls->DefaultBlock = (AllocationBlock*)(&Cls->Memory.Dummy);
     Cls->Size = Size;
     Cls->Memory.RefCount = 1, // so it never goes away
@@ -302,12 +302,6 @@ void JB_Mem_Constructor( MemoryLayer* self, JB_Class* Cls ) {
 }
 
 
-
-void JB_Mem_InitAndUse(MemoryLayer* Mem, JB_Class* Cls) {
-    JB_Mem_Constructor(Mem, Cls);
-    JB_Mem_Use(Mem);
-}
-
 MemoryLayer* JB_Mem_CreateLayer(JB_Class* Cls, JB_Object* Obj) {
     MemoryLayer* Mem = JB_New(MemoryLayer);
     JB_Mem_Constructor(Mem, Cls);
@@ -316,9 +310,8 @@ MemoryLayer* JB_Mem_CreateLayer(JB_Class* Cls, JB_Object* Obj) {
 }
 
 MemoryLayer* JB_Mem_UseNewLayer(JB_Class* Cls, JB_Object* Obj) {
-    MemoryLayer* Mem = JB_New(MemoryLayer);
-    JB_Mem_InitAndUse(Mem, Cls); 
-    JB_SetRef(Mem->Obj, Obj); 
+    MemoryLayer* Mem = JB_Mem_CreateLayer(Cls,Obj);
+    JB_Mem_Use(Mem);
     return Mem;
 }
 
@@ -342,7 +335,8 @@ void JB_Mem_Use( MemoryLayer* self ) {
 
 
 void JB_Mem_Destructor( MemoryLayer* self ) {
-    JB_Decr( self->Obj );
+    JB_ClearRef( self->Obj );
+    JB_ClearRef( self->Obj2 );
 }
 
 
@@ -463,7 +457,7 @@ u8* JB_ObjClassBehaviours(JB_Object* Obj) {
         } while(true);
         // OK... so we are at the end of one block. We need to visit the next!
         Block = Block->Next;
-        // NOPE!! Can't do that! It's just the spare-list... Maybe in a future version we can use the prev-list somehow.
+        // NOPE!! Can’t do that! It's just the spare-list... Maybe in a future version we can use the prev-list somehow.
         // even then, how to remove a block? We need to know what block points TO IT.
         // unless we had TWO lists? A sparelist and a... normal list? Seems fair. But later.
         Obj = (JB_Object*)(((int)Block) &~ ((1<<kBlockSize)-1));
@@ -568,7 +562,7 @@ MiniStr BlockShadowRange (AllocationBlock* B) {
 
 
 static void InitObjectsInBlock_(AllocationBlock* NewBlock, MemoryWorld* W, int Size) {
-    // I'm pretty sure this loop is perfect. So if we get any errors... it can't be from here.
+    // I'm pretty sure this loop is perfect. So if we get any errors... it can’t be from here.
     NewBlock->ObjSize = Size;
     int BS = W->BlockSize;
     int BlockBits = (1 << BS) - 1;
@@ -786,7 +780,7 @@ u16 HiddenRef_(float R, int ObjSize) {
 
 
 FreeObject* JB_NewBlock( AllocationBlock* CurrBlock, MemoryLayer* Mem ) {
-// Needs both params... We basically can't correctly figure out one from the other in every situation...
+// Needs both params... We basically can’t correctly figure out one from the other in every situation...
     Sanity(CurrBlock);
 
     MemoryWorld* World = Mem->World;

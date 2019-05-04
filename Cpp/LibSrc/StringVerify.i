@@ -60,7 +60,7 @@ inline int VerifyUTF8_(u8* source, u8* sourceEnd) {
 	return -1;
 }
 
-// I can't seem to make up my mind and wasted all this time reworking the function! However,
+// I can’t seem to make up my mind and wasted all this time reworking the function! However,
 // if I have it like this, I can make up mind without barely any reworking.
 int JB_Str_Verify(JB_String* self, int utf) {
 	if (utf == 8) {

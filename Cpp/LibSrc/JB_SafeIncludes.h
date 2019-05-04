@@ -14,10 +14,11 @@ struct JB_Error;
 struct JB_ErrorReceiver;
 struct Array;
 struct Dictionary;
+struct Message;
 extern JB_ErrorReceiver* JB_StdErr;
 
 
-JB_Error* JB_Err__New();
+JB_Error* JB_Err__New(Message* Msg);
 void JB_Rec_NewItem(JB_ErrorReceiver* self, JB_Error* Err);
 void JB_Rec_NewItemWithNode(JB_ErrorReceiver* self, Message* node, JB_String* Desc);
 bool JB_Rec_OK(JB_ErrorReceiver* self);

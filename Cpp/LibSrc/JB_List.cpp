@@ -16,7 +16,7 @@
         * No node can point to anything without being contained by a list.
             * List destructor should clear all node fields BEFORE decrementing the node
             * Therefor, if in a linkedlist destructor, we find next/back, then we have a problem. 
-            * AND, we can't set to .next if we don't have a backref!
+            * AND, we can’t set to .next if we don't have a backref!
 
 */
 

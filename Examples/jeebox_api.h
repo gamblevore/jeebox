@@ -88,7 +88,9 @@ jbstring* jb_syx_longname(jbsyntax* self); /* The syntax's human-readable name, 
 _cstring jb_string_address(jbstring* self);
 int jb_string_length(jbstring* self); /* String length, in bytes. A nil-string is acceptable and gives 0 length. */
 jbstring* jb_string_copy(jbstring* self); /* Copies the string into a new string, which you can modify the contents as you like, before passing it to anything else. (Strings are meant to be "immutable" (their content doesn't change), but it's OK to modify it right after copying. */
-jbmessage* jb_string_parse(jbstring* self); /* Parses the string into a tree! Parsing is the most important function in Jeebox! Returns nil if invalid jeebox code is detected. You must call jb_errors to detect that parse-error or else you can't parse more jeebox code. */
+jbmessage* jb_string_parse(jbstring* self, jbstring* path); /* Parses the string into a tree! Parsing is the most important function in Jeebox! Returns nil if invalid jeebox code is detected. You must call jb_errors to detect that parse-error or else you can’t parse more jeebox code.
+
+The optional path is not used for anything except generating better error messages, but good error-messages are quite important! */
 void jb_string_print(jbstring* self); /* Prints this string to console. Useful for debugging. */
 void jb_string_printline(jbstring* self); /* Same as jb_string_print except it ends with a \n. */
 s64 jb_string_int(jbstring* self, jbmessage* m); /* Parses this string into an integer. Allows hex also, like '0xffff'. If you pass a 'message' into this, then non-numeric strings will get reported into jb_errors()  */
@@ -107,7 +109,7 @@ int jb_init(int Flags); /* Inits Jeebox. Call this before any other Jeebox funct
 If jb_init fails it will try print a debug message. If jb_init returns 0x10000 that means an out-of-memory error occurred. You can free memory and try again. */
 int jb_shutdown(); /* Frees all memory used by jeebox! */
 int jb_version();
-jbstring* jb_readfile(_cstring path, bool AllowMissingFile); /* Reads entire file at this path. Relative paths are allowed. Will create jeebox-errors if the file can't be read for any reason (missing file, out of memory, disk-error, etc).
+jbstring* jb_readfile(_cstring path, bool AllowMissingFile); /* Reads entire file at this path. Relative paths are allowed. Will create jeebox-errors if the file can’t be read for any reason (missing file, out of memory, disk-error, etc).
     
     If AllowMissingFile is true then it's OK for the file to not exist, no error is created in that case. This helps make your code is a bit less pedantic. */
 

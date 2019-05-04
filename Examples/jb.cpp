@@ -26,7 +26,7 @@ const char* kHelpStr = R"(Just a simple util for Jeebox.
 
 void PrintErrors() {
     for (auto Err : Jeebox::errors()) {
-        std::cerr << " :: Error: "; Err.name().print(); std::cerr << " :: \n";
+        Err.name().print();
     }
 }
 
@@ -55,7 +55,7 @@ void JeeboxToXML (Message M, int Depth=0) {
 }
 
 
-void PrintReadable(String A) {
+void PrintReadable(String A, String Path) {
     std::cout << "\n";
     if (Options.show_input) {
         if (!Options.quiet) {std::cout << " :: Displaying input. :: \n";}
@@ -63,13 +63,15 @@ void PrintReadable(String A) {
     }
     if (Options.string) {
         Syntax($str).create(A).render().printline();
-    } else {
-        Message s = A.parse();
-        if (!s) {return;}
+        
+    } else if (Jeebox::ok()) { // could be a file-read error!
+        Message s = A.parse(Path);
         if (Options.readable) {
             s = s.convertreadable();
         }
-        if (Options.xml) {
+        if (!Jeebox::ok()) {
+            // fall through
+        } else if (Options.xml) {
             JeeboxToXML(s);
         } else if (Options.readable) {
             if (!Options.quiet) {std::cout << " :: Converting back to jeebox-syntax! :: \n";}
@@ -91,13 +93,13 @@ void ParseStdIn() {
         Options.quiet = true; // stupid otherwise.
         std::string input_line;
         while (std::getline(std::cin, input_line) and input_line.size()) {
-            PrintReadable(String(input_line));
+            PrintReadable(String(input_line), "");
             if (!Quiet) { std::cout << " :: Enter next line :: \n\n";}
         }
     } else {
         if (!Options.quiet) { std::cout << " :: Type some jeebox and press control-D once you are done! :: \n\n";}
         std::string std_string(std::istreambuf_iterator<char>(std::cin), {}); // C++ is so baaad
-        PrintReadable(String(std_string));
+        PrintReadable(String(std_string), "");
     }
 }
 
@@ -106,9 +108,7 @@ void HandleFile(const char* s) {
     if (s[0] and s[0] != '-') {
         Options.GotAny = true;
         String File = Jeebox::readfile(s);
-        if (File) {
-            PrintReadable( File );
-        }
+        PrintReadable( File, s );
     }
 }
 

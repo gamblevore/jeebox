@@ -449,7 +449,7 @@ void JB_File_Destructor( JB_File* self ) {
 void JB_File_Close( JB_File* self ) {
     require0 ( HasFD(self) );
     if (self->FileDes <= 2) {
-        debugger; // Happens via stdin.readall? sigh. Can't reopen stdin either.
+        debugger; // Happens via stdin.readall? sigh. Can’t reopen stdin either.
         return;     // Let's not close it then.
     }
     int N = close( self->FileDes );
@@ -555,7 +555,7 @@ int JB_Str_CopyFile(JB_String* self, JB_String* To) {
         if (fstat( in_, &st ) == 0) {
         
             if (S_ISDIR(st.st_mode) ) {
-                ErrorHandleStr_(EISDIR, To, "copy");// we are copying a folder?? can't do that!
+                ErrorHandleStr_(EISDIR, To, "copy");// we are copying a folder?? can’t do that!
             } else {
                 int out_ = open((const char*)ToPath, O_CREAT | O_WRONLY | O_TRUNC, st.st_mode);
                 if (ErrorHandleStr_(out_, To, "copy")) {

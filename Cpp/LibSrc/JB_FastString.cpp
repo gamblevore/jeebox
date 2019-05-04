@@ -90,7 +90,7 @@ bool JB_FS_ResizeTo_(FastString* fs, int NewLength) {
     }
     
     if (!JB_Str_Realloc( &fs->Result, NewLength ) ) {
-        return false; // if we can't grow, just keep the old.
+        return false; // if we can’t grow, just keep the old.
     }
     
     fs->ResultPtr = fs->Result->Addr;
@@ -407,7 +407,7 @@ void JB_FS_AppendShort(FastString* self, int s) {
 }
 
 
-// can't share Appendint, due to float passing conventions :o(   )
+// can’t share Appendint, due to float passing conventions :o(   )
 void JB_FS_AppendSingle(FastString* self, float f) {
 	float* fp = (float*)JB_FS_WriteAlloc_( self, 4 );
 	if (fp) {
@@ -437,7 +437,7 @@ void JB_FS_AppendDouble(FastString* self, double d) {
 
 void CleanUTF8_(FastString* self, u32 Code) {
     if (Code >= 0x80) {
-        Code = '?'; // can't uncorrect it!
+        Code = '?'; // can’t uncorrect it!
     }
     u8* SelfPos = self->ResultPtr;
     u8* SelfEnd = SelfPos + self->Length;

@@ -150,7 +150,7 @@ JB_String* JB_Str_Realloc(JB_String** up, int Length) {
     }
     
     JB_String* CopyTo = JB_Str_New(Length);
-    if (CopyTo) { // always grows... can't over fill.
+    if (CopyTo) { // always grows... can’t over fill.
         if (u) {
             CopyBytes( u->Addr, CopyTo->Addr, u->Length );
         }

@@ -98,7 +98,8 @@ public:
         return *this;
     }
     
-    __nodebug Message     parse () const;
+    __nodebug Message     parse  (const String& Path) const;
+    __nodebug Message     parse  () const;
     __nodebug void        print () const      {jb_string_print(_self);}
     __nodebug void        printline () const  {jb_string_printline(_self);}
     __nodebug const char* address ()const     {return jb_string_address(_self);}
@@ -197,8 +198,13 @@ struct S {
 */
 
 __nodebug Message String::parse () const {
-    return jb_string_parse(_self);
+    return jb_string_parse(_self, nullptr);
 }
+
+__nodebug Message String::parse (const String& Path) const {
+    return jb_string_parse(_self, Path._self);
+}
+
 __nodebug String Syntax::name() const {
     return jb_syx_name(_self);
 }
@@ -221,6 +227,11 @@ __nodebug Syntax syntax(const String& name) {
 
 __nodebug String readfile(_cstring path, bool AllowMissingFile=false) {
     return jb_readfile(path, AllowMissingFile);
+}
+
+__nodebug Message parsefile(_cstring path, bool AllowMissingFile=false) {
+    String Data = jb_readfile(path, AllowMissingFile);
+    return Data.parse(path);
 }
 
 

@@ -156,6 +156,7 @@ struct MemoryLayer  { // is actually a JBObject... but a clang bug won't let me 
     MemoryWorld*        World;
     
     JB_Object*          Obj;
+    JB_Object*          Obj2;
     bool                Owned;
     bool                IsActive;
     u16                 HiddenRefCount;
@@ -270,6 +271,7 @@ u32 JB_ObjCount();
 #define JB_SafeDecr(Obj)    JB_SafeDecr_((JB_Object*)(Obj))
 #define JB_FreeIfDead(Obj)  ((__typeof__(Obj))JB_FreeIfDead_((JB_Object*)(Obj)))
 #define JB_SetRef(a,b)      JB_SetRef_((JB_Object**)(&a), (JB_Object*)(b))
+#define JB_InitRef(a,b)     JB_InitRef_((JB_Object**)(&a), (JB_Object*)(b))
 #define JB_ClearRef(a)      JB_ClearRef_((JB_Object**)(&a))
 #define JB_RefCount(a)      JB_RefCount_((JB_Object*)(a))
 
@@ -332,6 +334,11 @@ inline void JB_SetRef_(JB_Object** Place, JB_Object* New) {
     JB_Object* Old = *Place; // Decr MUST come last, or else
 	*Place = New; // a destructor can set a var into Place and we overwrite it.
 	JB_Decr(Old);
+}
+
+inline void JB_InitRef_(JB_Object** Place, JB_Object* New) {
+	JB_Incr(New); // for initing a library, we wanna just overwrite old garbage values.
+	*Place = New;
 }
 
 inline void JB_ClearRef_(JB_Object** WhereToStore) {

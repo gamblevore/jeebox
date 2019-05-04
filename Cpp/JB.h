@@ -94,9 +94,9 @@ struct RingTree_Behaviour;
 
 struct SaverClassInfo_Behaviour;
 
-struct Error_Behaviour;
-
 struct ErrorReceiver_Behaviour;
+
+struct Error_Behaviour;
 
 struct Message_Behaviour;
 
@@ -338,19 +338,19 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_160)
-#define kJB__ErrorColors_error (JB_str_161)
-#define kJB__ErrorColors_good (JB_str_162)
-#define kJB__ErrorColors_normal (JB_str_159)
-#define kJB__ErrorColors_underline (JB_str_162)
-#define kJB__ErrorColors_warn (JB_str_163)
+#define kJB__ErrorColors_bold (JB_str_162)
+#define kJB__ErrorColors_error (JB_str_163)
+#define kJB__ErrorColors_good (JB_str_164)
+#define kJB__ErrorColors_normal (JB_str_161)
+#define kJB__ErrorColors_underline (JB_str_164)
+#define kJB__ErrorColors_warn (JB_str_165)
 //
 
 
 
 
 // module: API
-extern u32 JB__API_NilHappened;
+extern u16 JB__API_NilHappened;
 //
 
 
@@ -385,6 +385,8 @@ extern Dictionary* JB__Constants_UnEscapeStr;
 
 
 // module: Tk
+extern int JB__Tk_BaseMessagePosition;
+extern Message* JB__Tk_ErrNode;
 extern Dictionary* JB__Tk_ErrorNames;
 #define kJB__Tk_adjectiveop (1)
 #define kJB__Tk_Allow (0)
@@ -417,7 +419,6 @@ extern Dictionary* JB__Tk_ErrorNames;
 #define kJB__Tk_words_line (131072)
 #define kJB__Tk_LargestFlag (18)
 extern int JB__Tk_StopBars;
-extern Array* JB__Tk_StyleArray;
 //
 
 
@@ -433,10 +434,9 @@ extern Array* JB__Tk_StyleArray;
 
 
 // module: JB
-extern int JB_BaseMessagePosition;
 extern Array* JB_FuncArray;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_158)
+#define kJB_SaverStart1 (JB_str_160)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -612,6 +612,7 @@ extern JB_String* JB_str_251;
 extern JB_String* JB_str_252;
 extern JB_String* JB_str_253;
 extern JB_String* JB_str_254;
+extern JB_String* JB_str_255;
 extern JB_String* JB_str_26;
 extern JB_String* JB_str_27;
 extern JB_String* JB_str_28;
@@ -949,10 +950,10 @@ extern Random JB__Random_Shared;
 // module: SaverClassInfo_Behaviour_
 
 
-// module: Error_Behaviour_
-
-
 // module: ErrorReceiver_Behaviour_
+
+
+// module: Error_Behaviour_
 
 
 // module: Message_Behaviour_
@@ -1134,6 +1135,8 @@ int JB_API__Init_();
 void JB_API__NilCallBack(JB_String* ErrorMessage);
 
 bool JB_API__NilHandler();
+
+Message* JB_API__Parse(JB_String* s, JB_String* path);
 
 
 
@@ -1343,6 +1346,8 @@ bool JB_TestCasting();
 
 
 // JB_ClassData
+void JB_ClassData_Restore(JB_Class* self);
+
 
 
 // f64
@@ -1561,10 +1566,10 @@ JB_String* JB_Date_Render(Date self, FastString* fs_in);
 // JB_SaverClassInfo_Behaviour
 
 
-// JB_Error_Behaviour
-
-
 // JB_ErrorReceiver_Behaviour
+
+
+// JB_Error_Behaviour
 
 
 // JB_Message_Behaviour
@@ -1701,13 +1706,15 @@ int JB_Str_InWhite(JB_String* self, int Start, int After);
 
 int JB_Str_JBFind(JB_String* self, int Off, int After, byte find);
 
+int JB_Str_LineCount(JB_String* self);
+
 bool JB_Str_OperatorContains(JB_String* self, JB_String* s);
 
 int JB_Str_OutCharSet(JB_String* self, int Start, int After, ByteMap* cs);
 
 int JB_Str_OutWhite(JB_String* self, int Start, int After);
 
-Message* JB_Str_Parse(JB_String* self);
+Message* JB_Str_Parse(JB_String* self, Message* Result);
 
 Message* JB_Str_ParseAs(JB_String* self, JB_String* name);
 
@@ -1729,6 +1736,8 @@ JB_String* JB_Str_Unescape(JB_String* self);
 
 // JB_StringFields
 void JB_FI_Constructor(StringFields* self, JB_String* Source, JB_String* Sep);
+
+int JB_FI_Count(StringFields* self);
 
 void JB_FI_Destructor(StringFields* self);
 
@@ -1875,19 +1884,35 @@ void JB_sci_Destructor(SaverClassInfo* self);
 
 
 // JB_Error
-void JB_Err_Constructor(JB_Error* self);
+void JB_Err_Constructor(JB_Error* self, Message* node);
 
 void JB_Err_Destructor(JB_Error* self);
 
 void JB_Err_Fill(JB_Error* self, JB_String* path, JB_String* desc);
 
+void JB_Err_GrabLine(JB_Error* self, FastString* fs, bool Usecolor);
+
+bool JB_Err_HasPosition(JB_Error* self);
+
 bool JB_Err_IsWarning(JB_Error* self);
+
+int JB_Err_LineCount(JB_Error* self);
+
+void JB_Err_LineIdentifiers(JB_Error* self, FastString* fs, JB_String* Path);
+
+int JB_Err_LinePos(JB_Error* self, JB_String* data);
+
+JB_String* JB_Err_OriginalData(JB_Error* self);
+
+JB_String* JB_Err_OriginalPath(JB_Error* self);
+
+JB_String* JB_Err_Render(JB_Error* self, FastString* fs_in);
 
 JB_Error* JB_Err__Alloc();
 
 void JB_Err__CantParseNum(Message* Where, JB_String* num, int Pos);
 
-JB_Error* JB_Err__New();
+JB_Error* JB_Err__New(Message* node);
 
 
 
@@ -1911,6 +1936,8 @@ void JB_Rec_NewItem(JB_ErrorReceiver* self, JB_Error* Err);
 int JB_Rec_TotalCount(JB_ErrorReceiver* self);
 
 JB_ErrorReceiver* JB_Rec__Alloc();
+
+JB_String* JB_Rec__ErrorType(bool IsWarning);
 
 JB_ErrorReceiver* JB_Rec__New();
 
@@ -2013,6 +2040,12 @@ JB_String* JB_Msg_Nyme(Message* self);
 void JB_Msg_Oat__(Message* self, FastString* fs);
 
 void JB_Msg_Opp__(Message* self, FastString* fs);
+
+JB_String* JB_Msg_OriginalParseData(Message* self);
+
+MemoryLayer* JB_Msg_OriginalParseLayer(Message* self);
+
+JB_String* JB_Msg_OriginalParsePath(Message* self);
 
 s64 JB_Msg_ParseInt(Message* self);
 
@@ -2146,7 +2179,7 @@ int jb_string_length(JB_String* self);
 
 JB_String* jb_string_copy(JB_String* self);
 
-Message* jb_string_parse(JB_String* self);
+Message* jb_string_parse(JB_String* self, JB_String* path);
 
 void jb_string_print(JB_String* self);
 
