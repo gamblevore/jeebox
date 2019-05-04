@@ -12,12 +12,14 @@ struct {
     bool GotAny;
     bool quiet;
     bool xml;
+    bool NoParseOut;
 } Options;
 
 const char* kHelpStr = R"(Just a simple util for Jeebox.
     Usage: jb /path/to/jb_file.txt
     -r = turn readable-ast into jeebox-syntax
     -i = multiple lines of input
+    -n = no parse output
     -s = string escape
     -d = show input
     -q = less noisy
@@ -60,7 +62,7 @@ void JeeboxToXML (Message M, int Depth=0) {
 void PrintReadable(String A, String Path) {
     std::cout << "\n";
     if (Options.show_input) {
-        if (!Options.quiet) {std::cout << " :: Displaying input. :: \n";}
+        if (!Options.quiet)             std::cout << " :: Displaying input. :: \n";
         A.printline();
     }
     if (Options.string) {
@@ -68,19 +70,17 @@ void PrintReadable(String A, String Path) {
         
     } else if (Jeebox::ok()) { // could be a file-read error!
         Message s = A.parse(Path);
-        if (Options.readable) {
-            s = s.convertreadable();
-        }
+        if (Options.readable)           s = s.convertreadable();
         if (!Jeebox::ok()) {
             // fall through
         } else if (Options.xml) {
             JeeboxToXML(s);
         } else if (Options.readable) {
-            if (!Options.quiet) {std::cout << " :: Converting back to jeebox-syntax! :: \n";}
-            s.render().printline();
+            if (!Options.quiet)         std::cout << " :: Converting back to jeebox-syntax! :: \n";
+            if (!Options.NoParseOut)    s.render().printline();
         } else {
-            if (!Options.quiet) {std::cout << " :: Displaying the parse tree for you! :: \n";}
-            s.renderreadable().printline();
+            if (!Options.quiet)         std::cout << " :: Displaying the parse tree for you! :: \n";
+            if (!Options.NoParseOut)    s.renderreadable().printline();
         }
     }
     
@@ -116,17 +116,18 @@ void HandleFile(const char* s) {
 
 
 void HandleSwitch(const char* s) {
-    if (s[0] == '-') {
-        String c = s+1;
+    if (s++[0] == '-') {
+        String c = s;
         if (c == "s") { Options.string=true;
         } else if (c == "d") {Options.show_input=true;
         } else if (c == "q") {Options.quiet=true;
         } else if (c == "i") {Options.Stdin=true; Options.GotAny=true;
         } else if (c == "r") {Options.readable=true; 
+        } else if (c == "n") {Options.NoParseOut=true; 
         } else if (c == "x") {Options.xml=true; 
         } else if (c == "h") {std::cout << kHelpStr; exit(0); 
         } else {
-            std::cerr << "Unrecognised switch: " << c.address() << "\n" << kHelpStr;
+            std::cerr << "Unrecognised switch: " << s << "\n" << kHelpStr;
             exit(-1);
         }
     }
