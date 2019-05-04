@@ -38,8 +38,6 @@ The issues surrounding Jeebox are not a matter of how good it is. There seems to
 
 I guess I'm moving towards unity/simplicity, while most people move towards fragmentation/complexity. There's other issues like me "not being part of any power-system" (I've never worked at, or have friends with people at apple/google/intel/etc).
 
-I'm a very spiritual person, but I get frazzled trying to get Jeebox accepted by people, it ruins who I am as a person. I was never frazzled before trying to get accepted, really the opposite. I'm trying to save myself from that stress, it was never who I am, at all.
-
 And I notice that all big popular stuff (XML/JSON) never had to "get accepted from the outside". They were created by powerful groups in the first place. So, maybe a new approach is needed?
 
 Maybe the best way forward is for me to help particular people integrate Jeebox into their app as a paid work for them? If that sounds good email me at theo@jeebox.org. I'm just throwing out ideas. It could help make Jeebox easier to use for others anyhow, because then "I'm eating my own dogfood". I'm using Jeebox from within `Speedie`, but what about the C++ library version? If I do integration for people, then I will use it!
