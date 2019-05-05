@@ -101,14 +101,14 @@ void LoadUserArg (UserDemo* User, Message Arg) {
     auto Clothing = Any(Arg, $tmp, "clothing");
     for (auto Name : FirstOK(Clothing, $list)) {
         ExpectMatch(Name, $thg);
-        User->Inventory.push_back(Name.name());
+        User->Clothing.push_back(Name.name());
     }
 }
 
 
 void LoadUsers (String S) {
     Message Root = S.parse();
-    Message user_list = Next( First(First(Root, $tmp, "user_list"), $bra), $arg);
+    Message user_list = Next( First(First(Root, $tmp, "user_list"), $list), $arg);
     for (auto U : user_list) {
         if (!Jeebox::ok()) return;
 
@@ -129,16 +129,76 @@ void LoadUsers (String S) {
 }
 
 
-void UsersExample (String S) {
-    // want to add a user, and alter a user.
-    // first lets load the users file!
-    LoadUsers(S);
-    if (!Jeebox::ok()) return;
-    
-    
-    
+UserDemo* GetUser(int ID) {
+    for (auto U : UsrList) {
+        if (U->ID == ID) {
+            return U;
+        }
+    }
+    return 0;
 }
 
+
+void AddUser() {
+    auto User = new UserDemo();
+    UsrList.push_back(User);
+
+    User->AccountName = "NewKid";
+    User->ID = 12345;
+    User->ScreenName = "Hai Im new, first tiem joinig lolxoxlolxdd!";
+    User->Inventory.push_back("wooden_sword");
+    User->Clothing.push_back("jeans");
+    User->Clothing.push_back("t_shirt");
+}
+
+
+void UsersExample (String S) {
+    LoadUsers(S);
+    if (!Jeebox::ok()) return;
+
+// add a new user to the user-list
+    AddUser();
+    
+// alter an existing user (give him a new item)
+    UserDemo* ToAdd = GetUser(85910191);
+    if (ToAdd) {
+        ToAdd->Inventory.push_back("scrying_sphere");
+        ToAdd->ScreenName = "Zach${}attack";
+    }
+    
+// save the user-list to a file...
+    FILE* f = fopen("../Build/Users_Altered.box", "w+");
+    if (f) {
+        fprintf(f, "user_list (count:%i) {\n", (int)UsrList.size());
+        for (auto U : UsrList) {
+            fprintf(f, "\tuser %s (%i) {\n", U->AccountName.c_str(), U->ID);
+            String Esc = String(U->ScreenName).escape();
+            fprintf(f, "\t\tscreen_name \"%s\"\n", Esc.address() );
+            fprintf(f, "\t\tinventory (");
+            for (auto I : U->Inventory) {
+                fprintf(f, "%s, ", I.c_str());
+            }
+            fprintf(f, ")\n");
+
+            fprintf(f, "\t\tclothing (");
+            for (auto I : U->Clothing) {
+                fprintf(f, "%s, ", I.c_str());
+            }
+            fprintf(f, ")\n");
+            fprintf(f, "\t}\n");
+        }
+        
+        fprintf(f, "}\n");
+        fclose(f);
+    }
+}
+
+/*	user UnicronKid (85910191) {
+		screen_name "üñîçrøñ Kî∂"
+		inventory (framed_glasses, glitter)
+		clothing (kids_unicron_suit,rainbow_boots)
+	}
+*/
 
 void PrintErrors() {
     for (auto Err : Jeebox::errors()) {

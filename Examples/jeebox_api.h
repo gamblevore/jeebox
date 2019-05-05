@@ -91,6 +91,7 @@ jbstring* jb_string_copy(jbstring* self); /* Copies the string into a new string
 jbmessage* jb_string_parse(jbstring* self, jbstring* path); /* Parses the string into a tree! Parsing is the most important function in Jeebox! Returns nil if invalid jeebox code is detected. You must call jb_errors to detect that parse-error or else you can’t parse more jeebox code.
 
 The optional path is not used for anything except generating better error messages, but good error-messages are quite important! */
+jbstring* jb_string_escape(jbstring* self); /* Turns a string like "${}" into a string like "\${}". To make it safe to be parsed b Jeebox. */
 void jb_string_print(jbstring* self); /* Prints this string to console. Useful for debugging. */
 void jb_string_printline(jbstring* self); /* Same as jb_string_print except it ends with a \n. */
 s64 jb_string_int(jbstring* self, jbmessage* m); /* Parses this string into an integer. Allows hex also, like '0xffff'. If you pass a 'message' into this, then non-numeric strings will get reported into jb_errors()  */

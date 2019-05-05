@@ -613,6 +613,7 @@ extern JB_String* JB_str_252;
 extern JB_String* JB_str_253;
 extern JB_String* JB_str_254;
 extern JB_String* JB_str_255;
+extern JB_String* JB_str_256;
 extern JB_String* JB_str_26;
 extern JB_String* JB_str_27;
 extern JB_String* JB_str_28;
@@ -2180,6 +2181,8 @@ int jb_string_length(JB_String* self);
 JB_String* jb_string_copy(JB_String* self);
 
 Message* jb_string_parse(JB_String* self, JB_String* path);
+
+JB_String* jb_string_escape(JB_String* self);
 
 void jb_string_print(JB_String* self);
 

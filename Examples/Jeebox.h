@@ -105,6 +105,7 @@ public:
     __nodebug const char* address ()const     {return jb_string_address(_self);}
     __nodebug int         length () const     {return jb_string_length(_self);}
     __nodebug String      copy () const       {return jb_string_copy(_self);}
+    __nodebug String      escape () const     {return jb_string_escape(_self);}
     __nodebug std::string std () const        {return std::string(address(), length());}
 __nodebug bool operator==(const char* s) const{return !strncmp(s, address(), length());}
 __nodebug bool operator!=(const char* s) const{return !(*this == s);}
