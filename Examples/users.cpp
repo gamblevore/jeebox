@@ -193,13 +193,6 @@ void UsersExample (String S) {
     }
 }
 
-/*	user UnicronKid (85910191) {
-		screen_name "üñîçrøñ Kî∂"
-		inventory (framed_glasses, glitter)
-		clothing (kids_unicron_suit,rainbow_boots)
-	}
-*/
-
 void PrintErrors() {
     for (auto Err : Jeebox::errors()) {
         printf("Error: ");
