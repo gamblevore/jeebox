@@ -9,13 +9,7 @@
 
 using namespace Jeebox;
 using namespace std;
-/*
-	user UnicronKid (85910191) {
-		screen_name "üñîçrøñ Kî∂"
-		inventory (framed_glasses, glitter)
-		clothing (kids_unicron_suit)
-	}
-*/
+
 
 class UserDemo {
 public:;
@@ -25,6 +19,7 @@ public:;
     vector<std::string> Inventory;
     vector<std::string> Clothing;
 };
+vector <UserDemo*> UsrList;
 
 
 Message MessageError (Message self, Syntax S, const char* ErrorName, const char* ItemName) {
@@ -37,8 +32,6 @@ Message MessageError (Message self, Syntax S, const char* ErrorName, const char*
             printf("\n");
         }
     }
-    // now we need some way to "locate" this message in the original string... sigh.
-    // layers. We need layers. 
     return 0;
 }
 
@@ -80,7 +73,6 @@ Message Any (Message self, Syntax S, const char* NameMatch=nullptr) {
     return ExpectMatch(self, S, NameMatch, nullptr); 
 }
 
-vector <UserDemo*> UsrList;
 
 
 void LoadUserArg (UserDemo* User, Message Arg) {
@@ -91,13 +83,7 @@ void LoadUserArg (UserDemo* User, Message Arg) {
         ExpectMatch(Name, $thg);
         User->Inventory.push_back(Name.name());
     }
-/*
-    || Clothing = Arg[@tmp, "clothing"][0, @list]
-    for (Name : Clothing) {
-        expect (Name = @thg) (Name)
-        User.Inventory ~ Name.name
-    }
-*/    
+
     auto Clothing = Any(Arg, $tmp, "clothing");
     for (auto Name : FirstOK(Clothing, $list)) {
         ExpectMatch(Name, $thg);
@@ -106,8 +92,7 @@ void LoadUserArg (UserDemo* User, Message Arg) {
 }
 
 
-void LoadUsers (String S) {
-    Message Root = S.parse();
+void LoadUsers (Message Root) {
     Message user_list = Next( First(First(Root, $tmp, "user_list"), $list), $arg);
     for (auto U : user_list) {
         if (!Jeebox::ok()) return;
@@ -152,8 +137,7 @@ void AddUser() {
 }
 
 
-void UsersExample (String S) {
-    LoadUsers(S);
+void UsersExample () {
     if (!Jeebox::ok()) return;
 
 // add a new user to the user-list
@@ -167,30 +151,42 @@ void UsersExample (String S) {
     }
     
 // save the user-list to a file...
-    FILE* f = fopen("../Build/Users_Altered.box", "w+");
-    if (f) {
-        fprintf(f, "user_list (count:%i) {\n", (int)UsrList.size());
-        for (auto U : UsrList) {
-            fprintf(f, "\tuser %s (%i) {\n", U->AccountName.c_str(), U->ID);
-            String Esc = String(U->ScreenName).escape();
-            fprintf(f, "\t\tscreen_name \"%s\"\n", Esc.address() );
-            fprintf(f, "\t\tinventory (");
-            for (auto I : U->Inventory) {
-                fprintf(f, "%s, ", I.c_str());
-            }
-            fprintf(f, ")\n");
+    FILE* f = fopen("Users_Altered.box", "w+");
+    if (!f) {return;}
 
-            fprintf(f, "\t\tclothing (");
-            for (auto I : U->Clothing) {
-                fprintf(f, "%s, ", I.c_str());
-            }
-            fprintf(f, ")\n");
-            fprintf(f, "\t}\n");
-        }
+    fprintf(f, "user_list (count:%i) {\n", (int)UsrList.size());
+    for (auto U : UsrList) {
+        fprintf(f, "\tuser %s (%i) {\n", U->AccountName.c_str(), U->ID);
         
-        fprintf(f, "}\n");
-        fclose(f);
+        fprintf(f, "\t\tscreen_name \"" );
+        String(U->ScreenName).escape().fwrite(f); // escaping strings is important
+        fprintf(f,"\"\n");                        // you can write strings with `` instead of ""
+                                                  // which doesn't need escaping, but I wanted to show escaping.
+        fprintf(f, "\t\tinventory (");
+        for (auto I : U->Inventory) {
+            fprintf(f, "%s, ", I.c_str());
+        }
+        fprintf(f, ")\n");
+
+        fprintf(f, "\t\tclothing (");
+        for (auto I : U->Clothing) {
+            fprintf(f, "%s, ", I.c_str());
+        }
+        fprintf(f, ")\n");
+        fprintf(f, "\t}\n");
     }
+    
+    fprintf(f, "}\n");
+    fclose(f);
+    
+    puts("File 'Users_Altered.box' created from 'Users.box'\n\n\
+Here we created a little demo, to show you reading a users account file in Jeebox\n\
+for a fictional game, altering the users data a little, and writing it back to disk.\n\
+The code is just a demo, showing how to parse a Jeebox file and use it for something!\n\
+Also how to handle errors in input, and do it cleanly, which is very important\n\
+when using Jeebox.\n\n\
+For example, if in Users.box, you replaced 'user_list (count:4) {' with 'user_list apple {', the parser\n\
+will complain!");
 }
 
 void PrintErrors() {
@@ -201,10 +197,15 @@ void PrintErrors() {
 }
 
 
-int main() {
-    String S = jb_readfile("Users.box", false);
+int main(int argc, const char* argv[]) {
+    const char* Path = argv[1];
+    if (!Path) {
+        Path = "Examples/Users.box";
+    }
+    Message M = Jeebox::parsefile(Path);
     if (Jeebox::ok()) {
-        UsersExample(S);
+        LoadUsers(M);
+        UsersExample();
     }
     PrintErrors();
     return jb_shutdown();

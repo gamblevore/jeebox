@@ -147,6 +147,7 @@ JB_Object* JB_Array_Value( Array* self, int Pos ) {
 }
     
 
+#ifndef AS_LIBRARY
 void JB_Array_Shuffle( Array* self ) {
     int n = JB_Array_Size(self);
     JB_Object** Array = self->ArrData;
@@ -160,6 +161,7 @@ void JB_Array_Shuffle( Array* self ) {
         Array[i] = t;
     }
 }
+#endif
 
 
 

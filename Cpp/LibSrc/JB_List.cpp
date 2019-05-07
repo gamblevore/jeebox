@@ -51,6 +51,7 @@ JB_LinkedList* JB_LinkedList_PrepareMoveTo_(JB_LinkedList* self, JB_LinkedList**
 	if (B) {
         *B = N;
     } else {
+        JB_DoAt(1); // why incr? We are removing????
 		JB_Incr(self);
 	}
     return N;
@@ -117,35 +118,6 @@ void JB_LinkedList_StoreAt(JB_LinkedList* self, JB_LinkedList** Place) {
     }
     *Place = self;
     self->_BackRef = Place; 
-    
-	JB_LinkedList_ListSanity(self);
-}
-
-void JB_LinkedList_StoreAtOld(JB_LinkedList* self, JB_LinkedList** Place) {
-    dbgexpect(self);
-    if (*Place == self) {
-        debugger;
-    }
-	JB_LinkedList_ListSanity(self);
-    
-	JB_LinkedList* OldNext = *Place;
-	*Place = self;
-	JB_LinkedList** B = self->_BackRef;
-	self->_BackRef = Place;
-	JB_LinkedList* N = self->_Next;
-	self->_Next = OldNext;
-	if (OldNext) {
-		OldNext->_BackRef = &self->_Next;
-	}
-    
-	if (N) {
-		N->_BackRef = B;
-	}
-	if (B) {
-        *B = N;
-    } else {
-		JB_Incr(self);
-	}
     
 	JB_LinkedList_ListSanity(self);
 }

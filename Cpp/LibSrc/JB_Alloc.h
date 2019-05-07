@@ -172,6 +172,7 @@ struct JB_Class {
     JBObject_Behaviour* FuncTable;
     JB_Class*           Parent;
     AllocationBlock*    DefaultBlock;
+    JB_Class*           NextClass;
     MemoryLayer         Memory;
     u16                 Size; // Move to MemoryLayer for refcountless allocs. Or put a "UsesRefCounts" bool in MemLayer
     u8*                 SaveInfo;

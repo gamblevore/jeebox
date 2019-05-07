@@ -35,7 +35,7 @@ inline bool RingIsRoot_( RingTree* rt ) {
 	return false;
 }
 
-//#define Sanity_(s)
+#define Sanity_(s)
 #ifndef Sanity_
 
 static void AncestorSanity_(RingTree* Curr) {
@@ -79,7 +79,6 @@ static void AmContainedSanity_(RingTree* Curr) {
 }
 
 static void Sanity_(RingTree* Curr) {
-    return; ///
     if (!Curr) {
         return;
     }
@@ -88,7 +87,6 @@ static void Sanity_(RingTree* Curr) {
     AncestorSanity_( Curr );
     AmContainedSanity_( Curr );
 }
-#endif
 
 
 static RingTree* LastSanity = 0;
@@ -109,6 +107,7 @@ void JB_Tree_TotalSanity(RingTree* Root) {
         Curr = JB_Tree_FlatNext0(Curr);
     }
 }
+#endif
 
 inline void RingOwnForDeref_( RingTree* Curr ) {
 //	if ( JB_RefCount(Curr) > 1 ) { // ownerify it

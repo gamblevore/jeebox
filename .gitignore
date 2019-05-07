@@ -38,4 +38,6 @@ Thumbs.db
 /Jeebox.input
 /Build
 *.note
+*.nogit
 *.xcodeproj
+Users_Altered.box

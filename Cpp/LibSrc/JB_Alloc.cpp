@@ -4,35 +4,6 @@
 
 
 
-/*
-    Idea for a new system...
-    
-    * First... simplify the spare-system. Just have prev/next, no SpareBlock.
-        * There will be a "spareblock" but that will just be the last on the list.
-        * The whole point of having a spareblock, before, was that we point to a block that's already freed.
-        * BUT... why not just keep it on the actual sparelist... in the first place?
-            * The problem comes that we try to get a block from the sparelist, and... it's already taken.
-            * So just handle that case and return nil.
-        * Maybe make the block allocator... try avoid "spareblocks".
-            * if it finds a "spare" try search 1 or 2 further
-        
-    * Non-spare blocks can’t point to normal blocks, so they just won't.
-        * We'll need some flag to say if this block is in use or not.
-            * OR the lack of ->Prev?
-
-    * Anyhow... So! We can make one list... for both the spare-list AND the mainlist... of allocated blocks, within a MemoryLayer.
-        * Right now... allocated blocks actually AREN'T on ANY list. I don't like this. They should be on the memory-layer's list.
-        * But then we'd have two lists. A spare-list and a normal list.
-        * So let's just put the sparelist on the end? Makes sense. Besides, spares are normal blocks... with objects in them...
-            * Except the last one, if it's already freed.
-        * This lets us list over all the blocks, and objects, in a MemoryLayer!! Via JB_ObjNext()
-        * ALSO "non-default" MemoryLayers like for JB_Message... need to NOT hold onto the last spareblock
-            * except "weakly". Or else it's refcount can never reach 0.
-*/
-
-// fireballs at da police's heads.
-
-
 #include "JB_Umbrella.h"
 #include <malloc/malloc.h>
 #include "JB_Log.h"
@@ -94,6 +65,11 @@ static bool IsDummy( const AllocationBlock* Block ) {
     AllocationBlock* OwnersDummy = (AllocationBlock*)(&Block->Owner->Dummy);
     return OwnersDummy == Block;
 }
+static fpDestructor GetDestructor_(AllocationBlock* B) {
+    return (fpDestructor)(B->FuncTable->__destructor__);
+}
+
+
 
 static inline AllocationBlock* OfficialStart_(SuperBlock* NewSuper, IntPtr BlockSize) {
     return (AllocationBlock*)(((IntPtr)NewSuper | (BlockSize-1)) &~ (sizeof(AllocationBlock)-1));
@@ -123,12 +99,18 @@ MemoryWorld MemoryManager = {
 
 
 
-static fpDestructor GetDestructor_(AllocationBlock* B) {
-    return (fpDestructor)(B->FuncTable->__destructor__);
+static JBObject_Behaviour DummyFuncTable = {0, 0};
+JB_Class* AllClasses;
+JB_Class* AddClassToList_(MemoryLayer* Mem) {
+    JB_Class* Class = Mem->Class;
+    if (!Class->NextClass and AllClasses!=Class) {
+        Class->NextClass = AllClasses;
+        AllClasses = Class;
+    }
+    return Class;
 }
 
 
-static JBObject_Behaviour DummyFuncTable = {0, 0};
 
 
 #if DEBUG
@@ -335,6 +317,9 @@ void JB_Mem_Use( MemoryLayer* self ) {
 
 
 void JB_Mem_Destructor( MemoryLayer* self ) {
+    if (self->SpareBlock) {
+        self->SpareBlock->Owner = 0;
+    }
     JB_ClearRef( self->Obj );
     JB_ClearRef( self->Obj2 );
 }
@@ -615,7 +600,7 @@ static FreeObject* BlockSetup_ ( MemoryLayer* Mem, AllocationBlock* NewBlock, Me
         return 0;
     }
     Sanity(NewBlock);
-    JB_Class* Class = Mem->Class;
+    JB_Class* Class = AddClassToList_(Mem);
     NewBlock->FuncTable = NeedRealTable_(Class->FuncTable); // helps avoid touching uncached RAM.
     int Size = Class->Size;
     NewBlock->Owner = Mem;
@@ -813,9 +798,17 @@ FreeObject* JB_NewBlock( AllocationBlock* CurrBlock, MemoryLayer* Mem ) {
 }
 
 
-static void ResetClass_( JB_Class* Cls ) {
-//    Cls->Memory.RefCount = 2; // i think that's the start number?
-    Cls->DefaultBlock = (AllocationBlock*)&(Cls->Memory.Dummy);
+static JB_Class* ResetClass_( JB_Class* Cls ) {
+    auto Mem = &Cls->Memory;
+    if (Mem->RefCount != 2) {
+//        debugger; /// It's cached somewhere :(
+        Mem->RefCount = 2;
+    }
+    Mem->CurrBlock = Cls->DefaultBlock = (AllocationBlock*)&(Cls->Memory.Dummy);
+    JB_Class* Result = Cls->NextClass;
+    Cls->NextClass = 0;
+    Mem->SpareBlock = 0; // why not?
+    return Result;
 }
 
 static void CleanSpares_( SuperBlock* Super ) {
@@ -827,30 +820,8 @@ static void CleanSpares_( SuperBlock* Super ) {
     while (Curr < End) { // not too sure this test is correct!
         MemoryLayer* Mem = Curr->Owner;
         if ( Mem ) { // Only exists if its a spare, seeing as the superblock's refcount is 0.
-            AllocationBlock* MemSpare = Mem->SpareBlock;
-            if (MemSpare >= Curr and MemSpare <= End) {
-                JB_DoAt(1); // inside!
-                Mem->SpareBlock = 0;
-            }
+            Mem->SpareBlock = 0;
         }
-        Curr = JBShift(Curr, N);
-    }
-}
-
-
-static void CleanSpores_( SuperBlock* Super ) {
-    MemoryWorld* World = Super->World;
-    int N = 1 << World->BlockSize;
-    AllocationBlock* Curr = StartBlock_(Super);
-    AllocationBlock* End = EndBlock_(Super);
-
-    while (Curr < End) { // not too sure this test is correct!
-        MemoryLayer* Mem = Curr->Owner;
-        if ( Mem ) { // Only exists if its a spare, seeing as the superblock's refcount is 0.
-            ResetClass_(Mem->Class);
-            Mem->SpareBlock = 0; // why not?
-        }
-        Curr->Owner = 0;
         Curr = JBShift(Curr, N);
     }
 }
@@ -1032,10 +1003,10 @@ MemoryWorld* JB_MemStandardWorld() {
 void JB_MemFree(MemoryWorld* World) {
     SuperBlock* First = World->CurrSuper;
     SuperBlock* Super = First;
-    do {
-        CleanSpores_(Super);
-        Super = Super->Next;
-    } while (Super != First);
+    JB_Class* Cls = AllClasses; AllClasses = 0;
+    while (Cls) {
+        Cls = ResetClass_(Cls);
+    }
 
     SuperBlock* Next = 0;
     while (Next != First and World->CurrSuper) {
@@ -1073,10 +1044,6 @@ MemStats JB_MemoryStats(bool CountObjs, bool ListAllClasses, MemoryWorld* World)
 
         Super = Super->Next;
     } while (Super != First);
-    
-#ifdef JB_ClassListing
-//    if (ListAllClasses) JB_ListAllClasses(); // deleted that function cos it annoyed me.
-#endif
     return Result;
 }
 
@@ -1101,3 +1068,5 @@ JBClassPlace3( MemoryLayer, JB_Mem_Destructor, JB_AsClass(JB_Object), 0 );
 
 
 // tasks and threads... add it when I need it...
+
+// fireballs at da police's heads.

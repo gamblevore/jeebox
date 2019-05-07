@@ -106,12 +106,16 @@ public:
     __nodebug int         length () const     {return jb_string_length(_self);}
     __nodebug String      copy () const       {return jb_string_copy(_self);}
     __nodebug String      escape () const     {return jb_string_escape(_self);}
+__nodebug void        fwrite (FILE* f) const  {std::fwrite(address(), length(), 1, f);}
+    
+
+//                
     __nodebug std::string std () const        {return std::string(address(), length());}
 __nodebug bool operator==(const char* s) const{return !strncmp(s, address(), length());}
 __nodebug bool operator!=(const char* s) const{return !(*this == s);}
-    __nodebug operator jbstring*() const           {if (length()) return _self; return 0;}
+    __nodebug operator jbstring*() const      {if (length()) return _self; return 0;}
     __nodebug operator std::string() const    {return std();}
-    char operator[] (int index) {return jb_string_address(_self)[index];} 
+    char operator[] (int index)  const        {return jb_string_address(_self)[index];} 
 };
 
 
