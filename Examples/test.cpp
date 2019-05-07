@@ -8,27 +8,30 @@
 using namespace Jeebox;
 
 
+void msg (const char* m) {
+    printf("\n      :: %s :: \n", m);
+}
 void ExampleOfGoodJeebox (String S) { 
     Message M = S.parse();
     M.render().print();
+    msg("You should see a parse-tree!");
     M.renderreadable().printline();
 }
 
 
 void ExampleOfBadJeebox (String S) {
-    printf("Trying to catch bad-input with: '%.*s'\n", S.length(), S.address());
-    
     if (S.parse()) {
-        puts("failed!!");
+        msg("failed to invalid input.");
     } else for (auto Err : Jeebox::errors()) {
-        auto Msg = Err.name();
-        printf("Successfully caught input error! (%.*s at byte: %i)\n", Msg.length(), Msg.address(), Err.position());
+        msg("Successfully caught invalid input!");
+        Err.name().printline();
     }
 }
 
 
 void ExampleOfModifyingJeebox (String S) { 
     Message M = S.parse();
+    M.render().printline();
     // two different ways to add to a tree.
     // 1) through parsing, 2) syntactically 
 
@@ -38,6 +41,8 @@ void ExampleOfModifyingJeebox (String S) {
                           // so the first (only) line (%close the~book) is the first (only) child.
 
 
+    msg("you know what? We parsed something, but...");
+    msg("I want to alter the parse-tree too! Heres the final result");
                 // Add "%open the~door", syntactically.
     auto Added = M.create($oat);
     Added.create($opp, "open");
@@ -52,10 +57,12 @@ void ExampleOfModifyingJeebox (String S) {
     if (F.type() == $tmp) {                   
         F.name("when");
         auto They = F.first().first();
-        They.name("fred");                           // Rename something in the tree!
+        They.name("jake");                           // Rename something in the tree!
         They.type($name);                          // but only if it's a "tmp" (above test (F.type()==$tmp))
     }
     M.render().print();
+
+    msg("Lets look at the tree of what we created");
     M.renderreadable().printline();
 }
 
@@ -70,13 +77,14 @@ void ExampleOfModifyingJeebox2 (String S) {
     auto Name = NameMsg.name();
     int N = Name.length();
     
+    msg("Lets parse some jeebox, then alter some names in the tree");
     // alteration incoming!
     char* Buff = (char*)malloc(N);
     for (int i = 0; i < N; i++) {
         Buff[i] = Name.address()[N-(i+1)]; // reverse string
     }
     auto NewName = Jeebox::string_owned(Buff,N); // Jeebox will call free() on NewName, when its no longer used.
-    M.render().printline();
+    M.first().render().printline();
     NameMsg.name(NewName); // Name is now reversed.
     M.render().printline();
 }
@@ -85,8 +93,12 @@ void ExampleOfModifyingJeebox2 (String S) {
 int main(int argc, const char * argv[]) {
     int Result = jb_init(0);
     if (Result) {return Result;}
+    msg("Let's parse some jeebox code and see the parse tree");
     ExampleOfGoodJeebox("|int| a = b + c");
+    msg("OK, now let's try parse some invalid Jeebox code, to see how Jeebox cactaches the errors");
     ExampleOfBadJeebox("|| (a,+a");
+    
+    msg("let's look at jeebox parsing something like English");
     ExampleOfModifyingJeebox("because @Fred snapped his~fingers");
     ExampleOfModifyingJeebox2("hello @SpongeBob");
     

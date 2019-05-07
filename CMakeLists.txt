@@ -55,8 +55,8 @@ target_link_libraries(example_xml JeeboxStatic) 		# test static
 add_executable(example_test ${Root}/Examples/test.cpp)
 target_link_libraries(example_test Jeebox)				# test dynamic
 
-#add_executable(example_userlist ${Root}/Examples/users.cpp)
-#target_link_libraries(example_userlist Jeebox)
+add_executable(example_userlist ${Root}/Examples/users.cpp)
+target_link_libraries(example_userlist Jeebox)
 
 add_executable(alloc_speed ${Root}/Examples/alloc_speed.cpp)
 target_link_libraries(alloc_speed JeeboxStatic)

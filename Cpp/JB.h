@@ -291,6 +291,7 @@ JBClass ( JB_Error , JB_LinkedList ,
 	int ErrorLevel;
 	JB_String* Path;
 	JB_String* Description;
+	JB_String* OriginalData;
 	Message* Node;
 );
 
@@ -1902,10 +1903,6 @@ int JB_Err_LineCount(JB_Error* self);
 void JB_Err_LineIdentifiers(JB_Error* self, FastString* fs, JB_String* Path);
 
 int JB_Err_LinePos(JB_Error* self, JB_String* data);
-
-JB_String* JB_Err_OriginalData(JB_Error* self);
-
-JB_String* JB_Err_OriginalPath(JB_Error* self);
 
 JB_String* JB_Err_Render(JB_Error* self, FastString* fs_in);
 

@@ -11,16 +11,7 @@ using namespace Jeebox;
 using namespace std;
 
 
-class UserDemo {
-public:;
-    int                 ID;
-    std::string         AccountName;
-    std::string         ScreenName;
-    vector<std::string> Inventory;
-    vector<std::string> Clothing;
-};
-vector <UserDemo*> UsrList;
-
+//// ERROR-HANDLING CODE (I'm gonna put this into Jeebox itself and make it work better)
 
 Message MessageError (Message self, Syntax S, const char* ErrorName, const char* ItemName) {
     if (self) {
@@ -34,7 +25,6 @@ Message MessageError (Message self, Syntax S, const char* ErrorName, const char*
     }
     return 0;
 }
-
 
 Message ExpectMatch (Message F, Syntax S, const char* NameMatch=0, Message self=nullptr) {
     if (!F) {
@@ -75,43 +65,22 @@ Message Any (Message self, Syntax S, const char* NameMatch=nullptr) {
 
 
 
-void LoadUserArg (UserDemo* User, Message Arg) {
-    auto Screen = Any(Arg, $tmp, "screen_name");
-    User->ScreenName = First(Screen, $str).name();
-    auto Inv = Any(Arg, $tmp, "inventory");
-    for (auto Name : FirstOK(Inv, $list)) {
-        ExpectMatch(Name, $thg);
-        User->Inventory.push_back(Name.name());
-    }
+//// APP-SPECIFIC (NON-JEEBOX) CODE HERE
+//// Basically, our app has a user's list
+//// And functions like AddUser() just add stuff to the user's list
+//// which is nothing to do with Jeebox but useful for a demo.
 
-    auto Clothing = Any(Arg, $tmp, "clothing");
-    for (auto Name : FirstOK(Clothing, $list)) {
-        ExpectMatch(Name, $thg);
-        User->Clothing.push_back(Name.name());
-    }
-}
+class UserDemo {
+public:;
+    int                 ID;
+    std::string         AccountName;
+    std::string         ScreenName;
+    vector<std::string> Inventory;
+    vector<std::string> Clothing;
+};
 
-
-void LoadUsers (Message Root) {
-    Message user_list = Next( First(First(Root, $tmp, "user_list"), $list), $arg);
-    for (auto U : user_list) {
-        if (!Jeebox::ok()) return;
-
-        if (ExpectMatch(U, $tmp, "user")) {
-            auto User = new UserDemo();
-            UsrList.push_back(User);
-
-            auto NameMsg = First(U, $thg);
-            User->AccountName = NameMsg.name();
-            auto IDMsg = Next(NameMsg,   $bra);
-            auto Arg = Next(IDMsg, $arg);
-            IDMsg = First(IDMsg,   $num);
-            User->ID = (int)IDMsg.nameint();
-
-            LoadUserArg(User, Arg);
-        }
-    }
-}
+vector <UserDemo*> UsrList;
+void SaveUsers();
 
 
 UserDemo* GetUser(int ID) {
@@ -137,6 +106,36 @@ void AddUser() {
 }
 
 
+void SaveUsers() {
+    // Doesn't directly deal with Jeebox, just outputs in jeebox-format
+    // straight from the app's users data to a string.
+    // only one line is jeebox-relevant, the line with "String(U->ScreenName).escape()"
+    printf("user_list (count:%i) {\n", (int)UsrList.size());
+    for (auto U : UsrList) {
+        printf("\tuser %s (%i) {\n", U->AccountName.c_str(), U->ID);
+        
+        printf("\t\tscreen_name \"" );
+        String(U->ScreenName).escape().print(); // escaping strings is important
+        printf("\"\n");                         // you can write strings with `` instead of ""
+                                                // which doesn't need escaping, but I wanted to show escaping.
+        printf("\t\tinventory (");
+        for (auto I : U->Inventory) {
+            printf("%s, ", I.c_str());
+        }
+        printf(")\n");
+
+        printf("\t\tclothing (");
+        for (auto I : U->Clothing) {
+            printf("%s, ", I.c_str());
+        }
+        printf(")\n");
+        printf("\t}\n\n");
+    }
+    
+    printf("}\n");
+}
+
+
 void UsersExample () {
     if (!Jeebox::ok()) return;
 
@@ -150,64 +149,76 @@ void UsersExample () {
         ToAdd->ScreenName = "Zach${}attack";
     }
     
-// save the user-list to a file...
-    FILE* f = fopen("Users_Altered.box", "w+");
-    if (!f) {return;}
-
-    fprintf(f, "user_list (count:%i) {\n", (int)UsrList.size());
-    for (auto U : UsrList) {
-        fprintf(f, "\tuser %s (%i) {\n", U->AccountName.c_str(), U->ID);
-        
-        fprintf(f, "\t\tscreen_name \"" );
-        String(U->ScreenName).escape().fwrite(f); // escaping strings is important
-        fprintf(f,"\"\n");                        // you can write strings with `` instead of ""
-                                                  // which doesn't need escaping, but I wanted to show escaping.
-        fprintf(f, "\t\tinventory (");
-        for (auto I : U->Inventory) {
-            fprintf(f, "%s, ", I.c_str());
-        }
-        fprintf(f, ")\n");
-
-        fprintf(f, "\t\tclothing (");
-        for (auto I : U->Clothing) {
-            fprintf(f, "%s, ", I.c_str());
-        }
-        fprintf(f, ")\n");
-        fprintf(f, "\t}\n");
-    }
-    
-    fprintf(f, "}\n");
-    fclose(f);
-    
-    puts("File 'Users_Altered.box' created from 'Users.box'\n\n\
+    puts("\n     :: Altered version of 'Users.box'\n\n\
 Here we created a little demo, to show you reading a users account file in Jeebox\n\
-for a fictional game, altering the users data a little, and writing it back to disk.\n\
+for a fictional game, altering the users data a little for saving. \n\
+(we don't save, just show you the data as if we would)\n\
 The code is just a demo, showing how to parse a Jeebox file and use it for something!\n\
 Also how to handle errors in input, and do it cleanly, which is very important\n\
 when using Jeebox.\n\n\
-For example, if in Users.box, you replaced 'user_list (count:4) {' with 'user_list apple {', the parser\n\
-will complain!");
+For example, if in Users.box, you replaced 'user_list (count:4) {' with 'user_list apple {', the parser will complain!\n     :: \n\n");
+
+    SaveUsers();
 }
 
-void PrintErrors() {
-    for (auto Err : Jeebox::errors()) {
-        printf("Error: ");
-        Err.name().printline();
+
+
+
+///// START ACTUAL JEEBOX CODE
+void LoadUserArg (UserDemo* User, Message Arg) {
+    auto Screen = Any(Arg, $tmp, "screen_name");
+    User->ScreenName = First(Screen, $str).name();
+    auto Inv = Any(Arg, $tmp, "inventory");
+    for (auto Name : FirstOK(Inv, $list)) {
+        ExpectMatch(Name, $thg);
+        User->Inventory.push_back(Name.name());
+    }
+
+    auto Clothing = Any(Arg, $tmp, "clothing");
+    for (auto Name : FirstOK(Clothing, $list)) {
+        ExpectMatch(Name, $thg);
+        User->Clothing.push_back(Name.name());
     }
 }
+
+void LoadUsers (Message Root) {
+    Message user_list = Next( First(First(Root, $tmp, "user_list"), $list), $arg);
+    for (auto U : user_list) {
+        if (!Jeebox::ok()) return;
+
+        if (ExpectMatch(U, $tmp, "user")) {
+            auto User = new UserDemo();
+            UsrList.push_back(User);
+
+            auto NameMsg = First(U, $thg);
+            User->AccountName = NameMsg.name();
+            auto IDMsg = Next(NameMsg,   $bra);
+            auto Arg = Next(IDMsg, $arg);
+            IDMsg = First(IDMsg,   $num);
+            User->ID = (int)IDMsg.nameint();
+
+            LoadUserArg(User, Arg);
+        }
+    }
+}
+///// END ACTUAL JEEBOX CODE (not that much code to load+validate a jeebox file!)
 
 
 int main(int argc, const char* argv[]) {
     const char* Path = argv[1];
-    if (!Path) {
-        Path = "Examples/Users.box";
-    }
-    Message M = Jeebox::parsefile(Path);
+    if (!Path) { Path = "Examples/Users.box"; }
+    jb_init(1);
+    String S = Jeebox::readfile(Path);
+    Message M = S.parse(Path);
     if (Jeebox::ok()) {
+        S.printline();
         LoadUsers(M);
         UsersExample();
     }
-    PrintErrors();
+    
+    for (auto Err : Jeebox::errors()) {
+        printf("Error: "); Err.name().printline();
+    }
     return jb_shutdown();
 }
 
