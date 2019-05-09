@@ -13,16 +13,17 @@
 extern "C" {
 
 #define kArrayLengthMax (1024*1024) // 4MB, 1 million length!
+#define PtrSize (sizeof(void*))
 inline MArray mrealloc(Array* self, u32 N) {
     MArray M = self->ArrData;
     if (N > kArrayLengthMax) {
         JB_TooLargeAlloc("arrays", N, kArrayLengthMax);
         return 0;
     }
-    MArray Result = (MArray)JB_realloc(M, N*4);
+    MArray Result = (MArray)JB_realloc(M, N*PtrSize);
     if (!Result and N) {return 0;} // we tried to allocate something but couldnt, so return 0.
     self->ArrData = Result;
-    self->UsableSize = (u32)JB_msize(Result) / 4;
+    self->UsableSize = (u32)JB_msize(Result) / PtrSize;
     return Result;
 }
 

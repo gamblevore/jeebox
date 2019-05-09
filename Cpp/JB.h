@@ -1119,6 +1119,8 @@ extern bool JB__FAP_Tested;
 
 
 // App
+bool JB_App__Is64Bit();
+
 
 
 // Compression

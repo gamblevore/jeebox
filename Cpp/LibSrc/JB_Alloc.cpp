@@ -8,8 +8,12 @@
 #include <malloc/malloc.h>
 #include "JB_Log.h"
 
-#define kBlockSize          12  // 4K
 
+#ifdef ENV64BIT
+#define kBlockSize          13  // 8K!
+#else
+#define kBlockSize          12  // 4K
+#endif
 
 extern "C" {
 
@@ -92,7 +96,7 @@ static inline AllocationBlock* EndBlock_(SuperBlock* Block) {return (AllocationB
 MemoryWorld MemoryManager = {
     .Name           = (u8*)"JB Standard Memory",
     .SuperSize      = 20,
-    .BlockSize      = 12,
+    .BlockSize      = kBlockSize,
     .Alignment      = 4,
     .SpareTrigger   = 0.75f,
 };
@@ -272,7 +276,8 @@ void JB_Class_Init(JB_Class* Cls, MemoryWorld* World, int Size) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
+#ifndef ALLOCATOR_ONLY
+JBClassPlace3( MemoryLayer, JB_Mem_Destructor, JB_AsClass(JB_Object), 0 );
 
 void JB_Mem_Constructor( MemoryLayer* self, JB_Class* Cls ) {
     JB_Zero(self);
@@ -280,7 +285,6 @@ void JB_Mem_Constructor( MemoryLayer* self, JB_Class* Cls ) {
     self->CurrBlock = (AllocationBlock*)&(self->Dummy);
     self->Dummy.Owner = self;
     self->World = JB_MemStandardWorld();
-//    self->HiddenRefCount = JB_HiddenRef(Cls->Size);
 }
 
 
@@ -296,6 +300,7 @@ MemoryLayer* JB_Mem_UseNewLayer(JB_Class* Cls, JB_Object* Obj) {
     JB_Mem_Use(Mem);
     return Mem;
 }
+
 
 void JB_Mem_Use( MemoryLayer* self ) {
     // shouldn't we incr the layer? or not?
@@ -314,6 +319,7 @@ void JB_Mem_Use( MemoryLayer* self ) {
         JB_Decr(ClsBlock->Owner);
     }
 }
+#endif
 
 
 void JB_Mem_Destructor( MemoryLayer* self ) {
@@ -604,7 +610,6 @@ static FreeObject* BlockSetup_ ( MemoryLayer* Mem, AllocationBlock* NewBlock, Me
     NewBlock->FuncTable = NeedRealTable_(Class->FuncTable); // helps avoid touching uncached RAM.
     int Size = Class->Size;
     NewBlock->Owner = Mem;
-//    NewBlock->Owned = Mem->Owned;
 
     if (NewBlock->ObjSize != Size) {
         InitObjectsInBlock_( NewBlock, World, Size );
@@ -1055,14 +1060,21 @@ u32 JB_MemCount() {
 
 
 bool JB_IsDebug() {
-    #if DEBUG
+#if DEBUG
     return true;
-    #else
+#else
     return false;
-    #endif
+#endif
 }
 
-JBClassPlace3( MemoryLayer, JB_Mem_Destructor, JB_AsClass(JB_Object), 0 );
+int JB_PointerSize() {
+#ifdef ENV64BIT
+    return 64;
+#else
+    return 32;
+#endif
+}
+
 
 }
 

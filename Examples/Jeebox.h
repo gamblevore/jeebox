@@ -51,9 +51,9 @@ class Syntax;
 class MessageIterator;
 
 
-#if __x86_64__ || __ppc64__ || _WIN64 
-    #error 64-bit Jeebox not supported yet.
-#endif
+//#if __x86_64__ || __ppc64__ || _WIN64 
+//    #error 64-bit Jeebox not supported yet.
+//#endif
 
 
 class Syntax {

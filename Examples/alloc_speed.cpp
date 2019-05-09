@@ -3,21 +3,29 @@
 #include "JB_String.h"
 #include <chrono>
 
-
 #define Time(a,b) (std::chrono::duration_cast<std::chrono::duration<double>>(a - b).count())
+
+struct OurClass {
+    int A;
+    int B;
+    int C;
+    int D;
+};
+JBClassPlace3( OurClass, 0, 0, 0 );
+
 void AllocSpeedTest() {
     const int ArraySize = 100000;
     
-    JB_StringC* Array[ArraySize];
+    OurClass* Array[ArraySize];
 
     for (int i = 0; i < 50; i++) { // warmup jb
-        JB_StringC* S = JB_New( JB_StringC );
+        OurClass* S = JB_New( OurClass );
         JB_Delete((FreeObject*)S);
     }
     
     auto JBStart = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < ArraySize; i++) {
-        JB_StringC* S = JB_New( JB_StringC ); 
+        OurClass* S = JB_New( OurClass ); 
         Array[i] = S;
     }
     for (int i = 0; i < ArraySize; i++) {
@@ -27,12 +35,12 @@ void AllocSpeedTest() {
     
     
     for (int i = 0; i < 50; i++) { // warmup new/delete
-        JB_StringC* S = new(JB_StringC); 
+        OurClass* S = new(OurClass); 
         delete(S);
     }
     auto MallocStart = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < ArraySize; i++) {
-        Array[i] = new(JB_StringC);
+        Array[i] = new(OurClass);
     }
     for (int i = 0; i < ArraySize; i++) {
         delete(Array[i]);

@@ -21,12 +21,18 @@
 
 #define __visible __attribute__((__visibility__("default")))
 
+#if _WIN64 || __x86_64__ || __ppc64__
+    #define ENV64BIT
+#else
+    #define ENV32BIT
+#endif
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 extern "C" {
 
-//#define JB_DEBUG_ON
 #ifdef JB_DEBUG_ON
     #define JBSanity( a ) // nothing for now
     #define JB_DEBUG(x) x
@@ -260,6 +266,7 @@ int JB_LeakTrace(u16 Flag);
 typedef void (*fpListAllClasses)(JB_Class* M);
 u32 JB_MemCount();
 bool JB_IsDebug();
+int JB_PointerSize();
 void JB_MemList();
 u32 JB_ObjCount();
 
