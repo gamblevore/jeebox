@@ -3,14 +3,12 @@
 # cmake -BBuild; cd Build; sudo make install
 
 cmake_minimum_required(VERSION 3.4)
-project(Jeebox VERSION 1.2.3 DESCRIPTION "Extensible language to describe anything. The ultimate life-form of parsers.")
+project(Jeebox VERSION 1.2.3 DESCRIPTION "Extensible language that can describe anything. The ultimate life-form of parsers.")
 
 set(Root ${CMAKE_SOURCE_DIR})
 set(JbCpp ${Root}/Cpp)
 set(Exmp ${Root}/Examples/)
 
-#set(ARCH -m32)
-#set(ARCH -arch i386 -arch x86_64)
 file(GLOB MainSrc ${JbCpp}/LibSrc/*.cpp)
 set(MainSrc ${MainSrc} ${JbCpp}/JB.cpp)
 set(AllocSrc ${JbCpp}/LibSrc/JB_Alloc.cpp)
@@ -21,9 +19,6 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS YES CACHE BOOL "Export all symbols")
 add_compile_definitions(TARGET_UNIX=1 AS_LIBRARY=1)
 add_compile_options(${ARCH} -Wno-return-type-c-linkage -Wno-invalid-source-encoding -std=gnu++1y -stdlib=libc++ -fno-strict-aliasing -fvisibility=hidden -march=core2 -mfpmath=sse -mmmx -msse -msse2 -msse4.1 -msse4.2 -mtune=native -Os)
 add_link_options(${ARCH} -flto)
-
-#message( "${MainSrc}" )
-#message( "${JbCpp}/LibSrc" )
 
 
 function (BuildLibrary Name Type Arch)
@@ -78,8 +73,7 @@ install(
 
 
 add_executable(alloc_speed ${Root}/Examples/alloc_speed.cpp ${AllocSrc})
-target_compile_definitions(alloc_speed PUBLIC ALLOCATOR_ONLY=1) # seems to break everything?
+target_compile_definitions(alloc_speed PUBLIC ALLOCATOR_ONLY=1) 	#seems to break everything?
 target_include_directories(alloc_speed 	PRIVATE ${JbCpp}/LibSrc)
-
 
 #lipo bin.darwin100x86/p4 bin.darwin100x86_64/p4 -create -output /tmp/p4

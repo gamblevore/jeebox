@@ -769,10 +769,10 @@ u16 HiddenRef_(float R, int ObjSize) {
 }
 
 
-FreeObject* JB_NewBlock( AllocationBlock* CurrBlock, MemoryLayer* Mem ) {
-// Needs both params... We basically can’t correctly figure out one from the other in every situation...
+FreeObject* JB_NewBlock( AllocationBlock* CurrBlock ) {
     Sanity(CurrBlock);
 
+    MemoryLayer* Mem = CurrBlock->Owner;
     MemoryWorld* World = Mem->World;
     if (!IsDummy(CurrBlock)) {
         u16 Hidden = Mem->HiddenRefCount;       // trigger re-use of this block before it hits empty.
@@ -975,12 +975,11 @@ static inline JB_Object* Trap_(FreeObject* Obj) {
 __hot JB_Object* JB_Alloc2( AllocationBlock* CurrBlock ) {
     FreeObject* Obj = CurrBlock->FirstFree;
     if_usual (Obj) {
-        //Trap_(Obj);
         CurrBlock->ObjCount++;
         CurrBlock->FirstFree = Obj->Next;
         return Trap_(Obj);
     }
-    return Trap_(JB_NewBlock( CurrBlock, CurrBlock->Owner ));
+    return Trap_(JB_NewBlock( CurrBlock ));
 }
 
 
@@ -989,12 +988,11 @@ __hot JB_Object* JB_Alloc( MemoryLayer* Mem ) {
     AllocationBlock* CurrBlock = Mem->CurrBlock;
     FreeObject* Obj = CurrBlock->FirstFree;
     if_usual (Obj) {
-        //Trap_(Obj);
         CurrBlock->ObjCount++;
         CurrBlock->FirstFree = Obj->Next;
         return Trap_(Obj);
     }
-    return Trap_(JB_NewBlock( CurrBlock, Mem ));
+    return Trap_(JB_NewBlock( CurrBlock ));
 }
 
 

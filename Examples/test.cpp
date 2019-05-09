@@ -8,8 +8,14 @@
 using namespace Jeebox;
 
 
-void msg (const char* m) {
-    printf("\n      :: %s :: \n", m);
+void msg (const char* m, int before=1, int after=1) {
+    while (before-- > 0) {
+        printf("\n");
+    }
+    printf("      :: %s :: ", m);
+    while (after-- > 0) {
+        printf("\n");
+    }
 }
 void ExampleOfGoodJeebox (String S) { 
     Message M = S.parse();
@@ -41,8 +47,8 @@ void ExampleOfModifyingJeebox (String S) {
                           // so the first (only) line (%close the~book) is the first (only) child.
 
 
-    msg("you know what? We parsed something, but...");
-    msg("I want to alter the parse-tree too! Heres the final result");
+    msg("you know what? We parsed something, but...", 0, 0);
+    msg("I want to alter the parse-tree too! Heres the final result", 1, 2);
                 // Add "%open the~door", syntactically.
     auto Added = M.create($oat);
     Added.create($opp, "open");
@@ -62,7 +68,7 @@ void ExampleOfModifyingJeebox (String S) {
     }
     M.render().print();
 
-    msg("Lets look at the tree of what we created");
+    msg("Lets look at the tree of what we created", 0, 2);
     M.renderreadable().printline();
 }
 
@@ -77,7 +83,7 @@ void ExampleOfModifyingJeebox2 (String S) {
     auto Name = NameMsg.name();
     int N = Name.length();
     
-    msg("Lets parse some jeebox, then alter some names in the tree");
+    msg("Lets parse some jeebox, then alter some names in the tree", 0, 2);
     // alteration incoming!
     char* Buff = (char*)malloc(N);
     for (int i = 0; i < N; i++) {
@@ -93,12 +99,12 @@ void ExampleOfModifyingJeebox2 (String S) {
 int main(int argc, const char * argv[]) {
     int Result = jb_init(0);
     if (Result) {return Result;}
-    msg("Let's parse some jeebox code and see the parse tree");
+    msg("Let's parse some jeebox code and see the parse tree", 0, 2);
     ExampleOfGoodJeebox("|int| a = b + c");
-    msg("OK, now let's try parse some invalid Jeebox code, to see how Jeebox cactaches the errors");
+    msg("OK, now let's try parse some invalid Jeebox code, to see how Jeebox catches the errors", 0, 0);
     ExampleOfBadJeebox("|| (a,+a");
     
-    msg("let's look at jeebox parsing something like English");
+    msg("let's look at jeebox parsing something like English", 0, 2);
     ExampleOfModifyingJeebox("because @Fred snapped his~fingers");
     ExampleOfModifyingJeebox2("hello @SpongeBob");
     

@@ -85,7 +85,7 @@ public:
         jb_incr(_self = jb_str(s,n,0,0));
     }
     __nodebug String (const std::string& s) {
-        jb_incr(_self = jb_str(s.data(),s.size(),0,0));
+        jb_incr(_self = jb_str(s.data(),(int)s.size(),0,0));
     }
     
     __nodebug String (const String &s) {
