@@ -1114,8 +1114,8 @@ extern "C" void* jbrealloc(JBAllocTable* Table, int N, JB_Object* Obj) {
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-JBClassPlace0( JB_Object,       0,                  0,                          0 );
-JBClassPlace0( JB_MemoryLayer,     JB_Mem_Destructor,  JB_AsClass(JB_Object),      0 );
+JBClassPlace( JB_Object,       0,                  0,                          0 );
+JBClassPlace( JB_MemoryLayer,     JB_Mem_Destructor,  JB_AsClass(JB_Object),      0 );
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }

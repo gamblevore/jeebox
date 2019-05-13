@@ -103,6 +103,10 @@ JB_Class JBClassInit(JB_Class& Cls, const char* Name, int Size, JB_Class* Parent
 JBObject_Behaviour a ## _FuncTable = {(void*)b,(void*)d};                   \
 JB_Class a ## Data = JBClassInit(a##Data, (#a), sizeof(a), c, (JBObject_Behaviour*)&(a##_FuncTable));
 
+#define JBClassPlace(a, b, c, d)                                           \
+JBObject_Behaviour a ## _FuncTable = {(void*)b,(void*)d};                   \
+JB_Class a ## Data = JBClassInit(a##Data, (#a), sizeof(a), c, (JBObject_Behaviour*)&(a##_FuncTable));
+
 #define JBClassPlace4(a, b, c)                                           \
 JB_Class a ## Data = JBClassInit(a##Data, (#a), sizeof(a), b, (JBObject_Behaviour*)&(c));
 

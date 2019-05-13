@@ -36,13 +36,6 @@ int JB_PointerSize() {
 static bool TooLargeHappenedAlready;
 bool JB_ErrorsPrinted;
 
-//u64 JB_TotalMemoryCount() {
-//    malloc_statistics_t stats;
-//    malloc_zone_statistics(0, &stats);
-//    // DebuggerAt(1);
-//    return stats.size_in_use;
-//}
-
 
 
 void JB_TooLargeAlloc(const char* S, int N, int R) {
