@@ -57,11 +57,9 @@ Being open-sourced on github means that if you were worried about me not adding 
 
 Jeebox can also describe human language. I think Jeebox could really do with a real-world translation app to test it, just like I tested Jeebox with my compiler `speedie`. I actually barely modified jeebox during the making of `speedie`, but minor tweaks can be important. I think it will be the same for translation too?
 
-The thing is, I've done far too much alone. Translation is something I'd need to be paid to do, and I'm not a business person (at all). Don't ask me to come up with a business plan. Just because I know it could transform the world of translation, doesn't mean I can even think about how to make money from it.
+The thing is, I've done far too much alone. Translation is something that needs a team, and I'm not a business person (at all). Don't ask me to come up with a business plan. Just because I know it could transform the world of translation, doesn't mean I can even think about how to make money from it.
 
 I mean the way my mind works is like "Hey, this could make everything better for everyone, surely we should be supported for that? Considering the value of our translation stuff could probably saving people billions of dollars time-worth". Unfortunately that's not how the world works, but it is how **my mind** works, and I'm not gonna change how I work or feel, because I just get frazzled and ruined if I have to think about how to be accepted "just for money".
-
-However if someone else already has the structure in place... I could come in and help within that.
 
 Jeebox has a lot of potential. By capturing the grammatical structure of a sentence, Jeebox can improve translation accuracy by 10x-100x. And the Syntax is light. It could be very useful for medical documents, or technical documents (electronics/engineering/etc) which need precise translation.
 
