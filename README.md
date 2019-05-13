@@ -71,4 +71,4 @@ Jeebox has a C-API and a C++ API. The C++ version is better, because you can "ju
 
 Jeebox is single-threaded right now.
 
-Jeebox is being used for one large real-world project right now, my unreleased compiler `Speedie`. In fact, the source code for Jeebox, is written in Jeebox! Imagine trying to write a JSON parser in JSON, impossible ;) I'll release `Speedie` at some point in the future anyhow. Releasing Jeebox was a big enough job!
+Jeebox is being used for one large real-world project right now, my unreleased compiler `Speedie`. In fact, the source code for Jeebox, is written in Jeebox! Imagine trying to write a JSON parser in JSON, impossible ;) because JSON can't describe code. But Jeebox can describe code, data and meaning, so with Jeebox it is possible. I'll release `Speedie` at some point in the future anyhow. Releasing Jeebox was a big enough job!
