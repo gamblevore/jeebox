@@ -75,6 +75,9 @@ jbmessage* jb_msg_copy(jbmessage* self); /* Copies the node's entire tree struct
 jbmessage* jb_msg_create(jbmessage* self, jbsyntax* Type, jbstring* Name); /* Creates a new node with the type and name provided.
     
 The node is created as the last child of 'self'. If 'self' is nil... the node is created with no parent (this is fine). */
+void jb_msg_error(jbmessage* self, jbstring* ErrorMsg); /* Lets you add your own error messages to the tree. */
+jbmessage* jb_msg_expect(jbmessage* self, jbsyntax* Type, jbstring* name, jbmessage* ErrPlace); /* Test the name and type, (or existance) of a message node. */
+jbmessage* jb_msg_find(jbmessage* self, jbsyntax* Type, jbstring* name, bool IsError);
 
 
 		// Syntax functions
@@ -148,7 +151,6 @@ extern jbsyntax* JB_SyxSheb;
 extern jbsyntax* JB_SyxStr;
 extern jbsyntax* JB_SyxSThg;
 extern jbsyntax* JB_SyxThg;
-extern jbsyntax* JB_SyxChn;
 extern jbsyntax* JB_SyxTmp;
 extern jbsyntax* JB_SyxAna;
 extern jbsyntax* JB_SyxSCnj;
@@ -188,7 +190,6 @@ extern jbsyntax* JB_SyxBin;
 #define $str JB_SyxStr        // String
 #define $sthg JB_SyxSThg      // Syntactic_Thing
 #define $thg JB_SyxThg        // Thing
-#define $chn JB_SyxChn        // Temporal_Chain
 #define $tmp JB_SyxTmp        // Temporal_Statement
 #define $ana JB_SyxAna        // Temporal_Reference
 #define $scnj JB_SyxSCnj      // Syntactic_Conjugate

@@ -11,60 +11,6 @@ using namespace Jeebox;
 using namespace std;
 
 
-//// ERROR-HANDLING CODE (I'm gonna put this into Jeebox itself and make it work better)
-
-Message MessageError (Message self, Syntax S, const char* ErrorName, const char* ItemName) {
-    if (self) {
-// Replace this with your own error reporting code. In case printf isn't good enough.
-        printf("Error (%s): Needed a '%s'", ErrorName, S.name().address());
-        if (ItemName) {
-            printf(" of name '%s'\n", ItemName);
-        } else {
-            printf("\n");
-        }
-    }
-    return 0;
-}
-
-Message ExpectMatch (Message F, Syntax S, const char* NameMatch=0, Message self=nullptr) {
-    if (!F) {
-        return MessageError(self, S, "missing item", NameMatch);
-    } else if (F.type() != S) {
-        return MessageError(F, S, "wrong type", NameMatch);
-    } else if (NameMatch and F.name() != NameMatch) {
-        return MessageError(F, S, "wrong name", NameMatch);
-    }
-    return F;
-}
-
-Message First (Message self, Syntax S, const char* NameMatch=nullptr) {
-    return ExpectMatch(self.first(), S, NameMatch, self); 
-}
-Message FirstOK (Message self, Syntax S, const char* NameMatch=nullptr) {
-    return ExpectMatch(self.first(), S, NameMatch, 0); 
-}
-
-Message Next (Message self, Syntax S, const char* NameMatch=nullptr) {
-    return ExpectMatch(self.next(), S, NameMatch, self); 
-}
-
-Message NextOK (Message self, Syntax S, const char* NameMatch=nullptr) {
-    return ExpectMatch(self.next(), S, NameMatch, 0); 
-}
-
-Message Any (Message self, Syntax S, const char* NameMatch=nullptr) {
-    auto Curr = self.first();
-    while (Curr) {
-        if (Curr.type() == S and (!NameMatch or Curr.name() == NameMatch)) {
-            return Curr;
-        }
-        Curr = Curr.next();
-    }
-    return ExpectMatch(self, S, NameMatch, nullptr); 
-}
-
-
-
 //// APP-SPECIFIC (NON-JEEBOX) CODE HERE
 //// Basically, our app has a user's list
 //// And functions like AddUser() just add stuff to the user's list
@@ -166,35 +112,35 @@ For example, if in Users.box, you replaced 'user_list (count:4) {' with 'user_li
 
 ///// START ACTUAL JEEBOX CODE
 void LoadUserArg (UserDemo* User, Message Arg) {
-    auto Screen = Any(Arg, $tmp, "screen_name");
-    User->ScreenName = First(Screen, $str).name();
-    auto Inv = Any(Arg, $tmp, "inventory");
-    for (auto Name : FirstOK(Inv, $list)) {
-        ExpectMatch(Name, $thg);
+    auto Screen = Arg.find($tmp, "screen_name");
+    User->ScreenName = Screen.first($str).name();
+    auto Inv = Arg.find($tmp, "inventory", true);
+    for (auto Name : Inv.first_($list)) {
+        Name.match($thg);
         User->Inventory.push_back(Name.name());
     }
 
-    auto Clothing = Any(Arg, $tmp, "clothing");
-    for (auto Name : FirstOK(Clothing, $list)) {
-        ExpectMatch(Name, $thg);
+    auto Clothing = Arg.find($tmp, "clothing", true);
+    for (auto Name : Clothing.first_($list)) {
+        Name.match($thg);
         User->Clothing.push_back(Name.name());
     }
 }
 
 void LoadUsers (Message Root) {
-    Message user_list = Next( First(First(Root, $tmp, "user_list"), $list), $arg);
+    Message user_list = Root.first($tmp, "user_list").first($list).next($arg);
     for (auto U : user_list) {
         if (!Jeebox::ok()) return;
 
-        if (ExpectMatch(U, $tmp, "user")) {
+        if (U.match($tmp, "user")) {
             auto User = new UserDemo();
             UsrList.push_back(User);
 
-            auto NameMsg = First(U, $thg);
+            auto NameMsg = U.first($thg);
             User->AccountName = NameMsg.name();
-            auto IDMsg = Next(NameMsg,   $bra);
-            auto Arg = Next(IDMsg, $arg);
-            IDMsg = First(IDMsg,   $num);
+            auto IDMsg = NameMsg.next($bra);
+            auto Arg = IDMsg.next($arg);
+            IDMsg = IDMsg.first($num);
             User->ID = (int)IDMsg.nameint();
 
             LoadUserArg(User, Arg);

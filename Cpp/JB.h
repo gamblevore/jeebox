@@ -339,12 +339,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_166)
-#define kJB__ErrorColors_error (JB_str_167)
-#define kJB__ErrorColors_good (JB_str_168)
-#define kJB__ErrorColors_normal (JB_str_165)
-#define kJB__ErrorColors_underline (JB_str_168)
-#define kJB__ErrorColors_warn (JB_str_169)
+#define kJB__ErrorColors_bold (JB_str_168)
+#define kJB__ErrorColors_error (JB_str_169)
+#define kJB__ErrorColors_good (JB_str_170)
+#define kJB__ErrorColors_normal (JB_str_167)
+#define kJB__ErrorColors_underline (JB_str_170)
+#define kJB__ErrorColors_warn (JB_str_171)
 //
 
 
@@ -437,7 +437,7 @@ extern int JB__Tk_StopBars;
 // module: JB
 extern Array* JB_FuncArray;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_164)
+#define kJB_SaverStart1 (JB_str_166)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -620,6 +620,7 @@ extern JB_String* JB_str_258;
 extern JB_String* JB_str_259;
 extern JB_String* JB_str_26;
 extern JB_String* JB_str_260;
+extern JB_String* JB_str_261;
 extern JB_String* JB_str_27;
 extern JB_String* JB_str_28;
 extern JB_String* JB_str_29;
@@ -711,7 +712,6 @@ extern Syntax* JB_SyxBin;
 extern Syntax* JB_SyxBra;
 extern Syntax* JB_SyxBRel;
 extern Syntax* JB_SyxChar;
-extern Syntax* JB_SyxChn;
 extern Syntax* JB_SyxCnj;
 extern Syntax* JB_SyxDecl;
 extern Dictionary* JB_SyxDict;
@@ -1628,6 +1628,8 @@ void JB_FS_AppendObjectID(FastString* self, Saveable* o);
 
 void JB_FS_AppendObjectOrNil(FastString* self, JB_Object* o);
 
+void JB_FS_MsgErrorName(FastString* self, JB_String* name);
+
 JB_String* JB_FS_Render(FastString* self, FastString* fs_in);
 
 void JB_FS_AppendInt32AsText(FastString* self, int data);
@@ -1904,9 +1906,7 @@ bool JB_Err_HasPosition(JB_Error* self);
 
 bool JB_Err_IsWarning(JB_Error* self);
 
-int JB_Err_LineCount(JB_Error* self);
-
-void JB_Err_LineIdentifiers(JB_Error* self, FastString* fs, JB_String* Path);
+bool JB_Err_LineIdentifiers(JB_Error* self, FastString* fs);
 
 int JB_Err_LinePos(JB_Error* self, JB_String* data);
 
@@ -1965,6 +1965,8 @@ FastAppenderChunk* JB_FAC__New();
 // JB_Message
 void JB_Msg_Acc__(Message* self, FastString* fs);
 
+void JB_Msg_AccessErr(Message* self, Syntax* s, JB_String* name);
+
 void JB_Msg_Adj__(Message* self, FastString* fs);
 
 void JB_Msg_Ana__(Message* self, FastString* fs);
@@ -1984,8 +1986,6 @@ void JB_Msg_Bra__(Message* self, FastString* fs);
 void JB_Msg_BRel__(Message* self, FastString* fs);
 
 void JB_Msg_Char__(Message* self, FastString* fs);
-
-void JB_Msg_Chn__(Message* self, FastString* fs);
 
 void JB_Msg_Cnj__(Message* self, FastString* fs);
 
@@ -2010,6 +2010,8 @@ void JB_Msg_Dummy(Message* self, FastString* fs);
 void JB_Msg_Emb__(Message* self, FastString* fs);
 
 void JB_Msg_ERel__(Message* self, FastString* fs);
+
+Message* JB_Msg_Find(Message* self, Syntax* f, JB_String* name, bool Err);
 
 Message* JB_Msg_FixTRels(Message* self, Message* Last);
 
@@ -2084,6 +2086,8 @@ void JB_Msg_SStr__(Message* self, FastString* fs);
 void JB_Msg_SThg__(Message* self, FastString* fs);
 
 void JB_Msg_Str__(Message* self, FastString* fs);
+
+bool JB_Msg_SyntaxEquals(Message* self, JB_String* name, bool Aware);
 
 bool JB_Msg_SyxOppEquals(Message* self, Syntax* X, bool Aware);
 
@@ -2173,6 +2177,12 @@ Message* jb_msg_copy(Message* self);
 
 Message* jb_msg_create(Message* self, Syntax* Type, JB_String* Name);
 
+void jb_msg_error(Message* self, JB_String* ErrorMsg);
+
+Message* jb_msg_expect(Message* self, Syntax* Type, JB_String* name, Message* ErrPlace);
+
+Message* jb_msg_find(Message* self, Syntax* Type, JB_String* name, bool IsError);
+
 JB_String* jb_syx_name(Syntax* self);
 
 JB_String* jb_syx_longname(Syntax* self);
@@ -2246,14 +2256,13 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
 #define kSyxStr 28
 #define kSyxSThg 29
 #define kSyxThg 30
-#define kSyxChn 31
-#define kSyxTmp 32
-#define kSyxAna 33
-#define kSyxSCnj 34
-#define kSyxCnj 35
-#define kSyxType 36
-#define kSyxUnit 37
-#define kSyxBin 38
+#define kSyxTmp 31
+#define kSyxAna 32
+#define kSyxSCnj 33
+#define kSyxCnj 34
+#define kSyxType 35
+#define kSyxUnit 36
+#define kSyxBin 37
 
 
 
@@ -2288,14 +2297,13 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
  "Str = 28" ,\
  "SThg = 29" ,\
  "Thg = 30" ,\
- "Chn = 31" ,\
- "Tmp = 32" ,\
- "Ana = 33" ,\
- "SCnj = 34" ,\
- "Cnj = 35" ,\
- "Type = 36" ,\
- "Unit = 37" ,\
- "Bin = 38" ,\
+ "Tmp = 31" ,\
+ "Ana = 32" ,\
+ "SCnj = 33" ,\
+ "Cnj = 34" ,\
+ "Type = 35" ,\
+ "Unit = 36" ,\
+ "Bin = 37" ,\
 
 
 
