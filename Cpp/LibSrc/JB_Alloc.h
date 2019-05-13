@@ -6,6 +6,8 @@
 
 
 #include <string.h>
+#include "JB_BasicTypes.h"
+#include "JB_MemUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -33,6 +35,7 @@
 
 extern "C" {
 
+
 #ifdef JB_DEBUG_ON
     #define JBSanity( a ) // nothing for now
     #define JB_DEBUG(x) x
@@ -46,10 +49,9 @@ extern "C" {
 
 
 #ifdef DEBUG
-    #define JB_TEST_REFCOUNTING
     #define debugger __asm__("int3") // int3 works in xcode but not in releasebuilds!
     #define dbgexpect(test)  if  (!(test)) {__asm__("int3"); return;} // int3 works in xcode but not in releasebuilds!
-    #define dbgexpect2(test) if  (!(test)) {__asm__("int3"); return 0;} // int3 works in xcode but not in releasebuilds!
+    #define dbgexpect2(test) if  (!(test)) {__asm__("int3"); return 0;}
     #define JB_DoAt(count) static int DB = 0; DB++; int lDB = DB; if (lDB == count) {debugger;}
     #define DEBUGONLY(x) x
 #else
@@ -62,20 +64,28 @@ extern "C" {
 
 
 //#define IsKnown(x) (((x) & ((x) - 1)) == 0)
-#define AlwaysInline inline __attribute__((__always_inline__))
+//#define AlwaysInline inline __attribute__((__always_inline__))
 #define require(test)  if  (!(test)) {return 0;}
 #define require0(test)  if  (!(test)) {return;}
 
 //#define JB_Alloca(count) ((u8*)alloca(count)) // BAD! "while (N){alloca(10);}" // might as well exit(-1)
-#include "JB_BasicTypes.h"
-#include "JB_MemUtils.h"
 
 
-    
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+struct JB_MemoryLayer;
+struct JB_Class;
+struct FreeObject;
+struct AllocationBlock;
+struct JB_Object;
+struct DummyBlock;
+struct JB_MemoryWorld;
+struct SuperBlock;
+struct JBObject_Behaviour;
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #define kObjMinSize 8 // for now. In theory I can make it 4 but it would make refcounts slower.
-//JB_Alloc2((name)->DefaultBlock)
 #define JB_MArray(type, num)    ((type*)(JB_MArray_(sizeof(type),num)))
 #define JB_NewClass(name)       (JB_Object*)(JB_Alloc2(name->DefaultBlock))
 #define JB_New(name)            (name*)(JB_Alloc2((name ## Data).DefaultBlock))
@@ -86,66 +96,24 @@ extern "C" {
 #define JBClass(a, b, c)        struct a : b {c}; JBStructData(a);
 #define JB_AsClass(Name)        (&(Name ## Data))
 
-//    .Destructor = b,                                       
-//    .Renderer = d,                                           
-#define JBClassPlace3(a, b, c, d)  \
-                                                                            \
+
+JB_Class JBClassInit(JB_Class& Cls, const char* Name, int Size, JB_Class* Parent, JBObject_Behaviour* b);
+
+#define JBClassPlace0(a, b, c, d)                                           \
 JBObject_Behaviour a ## _FuncTable = {(void*)b,(void*)d};                   \
-JB_Class a ## Data = {                                                      \
-    .Name = (u8*)(#a),                                                      \
-    .Parent = c,                                                            \
-    .FuncTable = (JBObject_Behaviour*)&(a##_FuncTable),                     \
-    .DefaultBlock = (AllocationBlock*)(&((a ## Data).Memory.Dummy)),        \
-    .Memory.RefCount = 2,                                                   \
-    .Memory.Class = &(a ## Data),                                           \
-    .Memory.Dummy.Owner = &((a ## Data).Memory),                            \
-    .Memory.CurrBlock = (AllocationBlock*)(&((a ## Data).Memory.Dummy)),    \
-    .Memory.IsActive = true,                                                \
-    .Memory.World = JB_MemStandardWorld(),                                  \
-    .Size = Max(sizeof(a), kObjMinSize),                                    \
-};
+JB_Class a ## Data = JBClassInit(a##Data, (#a), sizeof(a), c, (JBObject_Behaviour*)&(a##_FuncTable));
 
-//    .Destructor = (fpDestructor)(c.__destructor__),                         
-//    .Renderer = (fpRenderer)(c.render),                                     
-#define JBClassPlace4(a, b, c)  JB_Class a ## Data = {                      \
-    .Name = (u8*)(#a),                                                      \
-    .Parent = b,                                                            \
-    .DefaultBlock = (AllocationBlock*)(&((a ## Data).Memory.Dummy)),        \
-    .FuncTable = (JBObject_Behaviour*)(&c),                                 \
-    .Memory.RefCount = 2,                                                   \
-    .Memory.Class = &(a ## Data),                                           \
-    .Memory.Dummy.Owner = &((a ## Data).Memory),                            \
-    .Memory.CurrBlock = (AllocationBlock*)(&((a ## Data).Memory.Dummy)),    \
-    .Memory.IsActive = true,                                                \
-    .Memory.World = JB_MemStandardWorld(),                                  \
-    .Size = Max(sizeof(a), kObjMinSize),                                    \
-};
+#define JBClassPlace4(a, b, c)                                           \
+JB_Class a ## Data = JBClassInit(a##Data, (#a), sizeof(a), b, (JBObject_Behaviour*)&(c));
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-struct MemoryLayer;
-struct JB_Class;
-struct FreeObject;
-struct AllocationBlock;
-struct JB_Object;
-struct DummyBlock;
-struct MemoryWorld;
-struct SuperBlock;
-struct GameFlyingMem;
-struct FastString;
-struct JB_String;
-struct JBObject_Behaviour;
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-typedef JB_String* (*fpRenderer)(JB_Object* self, FastString* FS);
 typedef void (*fpDestructor)(JB_Object* self);
 typedef void (*fpAllocator)(AllocationBlock* self);
-//typedef void (*fpDestructor)(FreeObject* Obj);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 struct DummyBlock {
-    MemoryLayer*            Owner;
+    JB_MemoryLayer*            Owner;
     FreeObject*             FirstFree;
 };
 
@@ -154,37 +122,37 @@ struct JB_Object {
     u32 RefCount;
 };
 
-struct MemoryLayer  { // is actually a JBObject... but a clang bug won't let me use "JBClass(MemoryLayer..."
+struct JB_MemoryLayer  { // is actually a JBObject... but a clang bug won't let me use "JBClass(JB_MemoryLayer..."
     u32                 RefCount;
+    u16                 HiddenRefCount;
+    bool                IsActive;
+    bool                DontAlloc;
     AllocationBlock*    CurrBlock;
     JB_Class*           Class;
     AllocationBlock*    SpareBlock;
-    MemoryWorld*        World;
+    JB_MemoryWorld*        World;
     
     JB_Object*          Obj;
     JB_Object*          Obj2;
-    bool                Owned;
-    bool                IsActive;
-    u16                 HiddenRefCount;
-
     DummyBlock          Dummy;
 }; 
-JBStructData (MemoryLayer);
+JBStructData (JB_MemoryLayer);
 
 
 
 struct JB_Class {
-    u8*                 Name;
-    JBObject_Behaviour* FuncTable;
     JB_Class*           Parent;
     AllocationBlock*    DefaultBlock;
     JB_Class*           NextClass;
-    MemoryLayer         Memory;
-    u16                 Size; // Move to MemoryLayer for refcountless allocs. Or put a "UsesRefCounts" bool in MemLayer
+    JB_MemoryLayer         Memory;
+    u16                 Size; // Move to JB_MemoryLayer for refcountless allocs. Or put a "UsesRefCounts" bool in MemLayer
+    u8*                 Name;
+    JBObject_Behaviour* FuncTable;
     u8*                 SaveInfo;
 };
 
-struct MemoryWorld {
+
+struct JB_MemoryWorld {
     int                 RefCount;
     SuperBlock*         CurrSuper;
     SuperBlock*         SpareSuper;
@@ -216,43 +184,43 @@ JBStructData(JB_Object);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-MemoryWorld* JB_MemStandardWorld();
-MemoryLayer* JB_Mem__New( JB_Class* Cls );
-MemoryLayer* JB_Mem__NewObj(JB_Class* Cls, JB_Object* Obj);
-void JB_Mem_Use( MemoryLayer* self );
-void JB_Mem_OwnedSet(MemoryLayer* Mem, bool b);
+JB_MemoryWorld* JB_MemStandardWorld();
+JB_MemoryLayer* JB_Mem__New( JB_Class* Cls );
+JB_MemoryLayer* JB_Mem__NewObj(JB_Class* Cls, JB_Object* Obj);
+void JB_Mem_Use( JB_MemoryLayer* self );
+void JB_Mem_OwnedSet(JB_MemoryLayer* Mem, bool b);
 bool JB_ObjIsOwned(JB_Object* Obj);
 JB_Class* JB_ObjClass(JB_Object* Obj);
 int JB_ObjRefCount(JB_Object* Obj);
 u8* JB_ObjClassBehaviours(JB_Object* Obj);
-JB_Object* JB_Mem_First( MemoryLayer* Mem );
+JB_Object* JB_Mem_First( JB_MemoryLayer* Mem );
 JB_Object* JB_ObjNext(JB_Object* Obj);
-MemoryLayer* JB_ObjLayer( JB_Object* Obj );
+JB_MemoryLayer* JB_ObjLayer( JB_Object* Obj );
 int JB_ObjID( JB_Object* Obj );
 void JB_ObjDestroy( JB_Object* Obj );
-MemoryLayer* JB_Class_DefaultLayer( JB_Class* Cls );
-MemoryLayer* JB_Class_CurrLayer( JB_Class* Cls );
+JB_MemoryLayer* JB_Class_DefaultLayer( JB_Class* Cls );
+JB_MemoryLayer* JB_Class_CurrLayer( JB_Class* Cls );
 JB_Object* JB_Class_AllocZeroed( JB_Class* Cls );
 void JB_Class_Add( JB_Class* Cls, const char* s );
 JB_Class* JB_Class__First();
-MemoryLayer* JB_Mem_UseNewLayer(JB_Class* Cls, JB_Object* Obj);
-MemoryLayer* JB_Mem_CreateLayer(JB_Class* Cls, JB_Object* Obj);
-void JB_Mem_InitAndUse(MemoryLayer* Mem, JB_Class* Cls);
-void JB_Mem_Constructor( MemoryLayer* self, JB_Class* Cls );
-void JB_Class_Init(JB_Class* Cls, MemoryWorld* World, int Size);
+JB_MemoryLayer* JB_Mem_UseNewLayer(JB_Class* Cls, JB_Object* Obj);
+JB_MemoryLayer* JB_Mem_CreateLayer(JB_Class* Cls, JB_Object* Obj);
+void JB_Mem_InitAndUse(JB_MemoryLayer* Mem, JB_Class* Cls);
+void JB_Mem_Constructor( JB_MemoryLayer* self, JB_Class* Cls );
+void JB_Class_Init(JB_Class* Cls, JB_MemoryWorld* World, int Size);
 void JB_Class_SetIndex(JB_Class* cls, int i);
 int JB_Class_Index(JB_Class* cls);
 void JB_AllocSpeedTest();
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-__hot JB_Object* JB_Alloc( MemoryLayer* Mem );
-void JB_MemoryReset(MemoryWorld* World, int Max);
+__hot JB_Object* JB_Alloc( JB_MemoryLayer* Mem );
+void JB_MemoryReset(JB_MemoryWorld* World, int Max);
 __hot JB_Object* JB_Alloc2( AllocationBlock* CurrBlock );
 u8* JB_NewStruct_( AllocationBlock* CurrBlock );
 void JB_Delete( FreeObject* Obj );
 __hot void JB_ClusterDelete( FreeObject* Obj );
-void JB_MemFree(MemoryWorld* World);
+void JB_MemFree(JB_MemoryWorld* World);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #ifdef JB_DEBUG_ON

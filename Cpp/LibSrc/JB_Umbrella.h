@@ -36,12 +36,10 @@
 #include "JB_Linkage.h"
 
 // game stuff...
-//#include "JB_MemMapper.h"
 #ifndef AS_LIBRARY
 #include "JB_GameSmall.h"
 #include "JB_GameAll.h"
 #endif
-//#include "/Users/theodore/Speedie/Game.scproj/input/Game3DCpp/Game.h"
 
 
 #include <math.h>

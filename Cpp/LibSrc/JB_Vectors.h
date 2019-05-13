@@ -11,12 +11,10 @@ extern "C" {
 
 bool SimdDetectAVX();
 bool SimdDetectSSE42();
-inline float  __attribute__((__always_inline__, __nodebug__)) 
-JB_IntAsFloat (int I) {
+inline float  __attribute__((__always_inline__))  JB_IntAsFloat (int I) {
     return *((float*)(&I));
 }
-inline int  __attribute__((__always_inline__, __nodebug__))
-JB_FloatAsInt (float F) {
+inline int  __attribute__((__always_inline__)) JB_FloatAsInt (float F) {
     return *((int*)(&F));
 }
 

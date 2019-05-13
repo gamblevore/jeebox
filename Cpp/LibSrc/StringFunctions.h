@@ -10,6 +10,10 @@
 
 extern "C" {
 
+struct JB_String;
+struct FastString;
+typedef JB_String* (*fpRenderer)(JB_Object* self, FastString* FS);
+
 // obj?
 JB_String* JB_ObjRender(JB_Object* self, FastString* fs_in);
 JB_String* JB_Obj_GenericRender(JB_Object* self, FastString* fs_in);

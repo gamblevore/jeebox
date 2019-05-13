@@ -570,7 +570,6 @@ JB_Object** JB_Dict_MakePlace(Dictionary* self, JB_String* key) {
 }
 
 
-static MemoryLayer OwnedIntWrapper = {.RefCount = 2};
 static JB_Object* IntStore_(u64 V) {
     JB_Object* Stored = (JB_Object*)WasInt_(V);
     if (((u64)Stored >> 2)==V) {
@@ -578,16 +577,7 @@ static JB_Object* IntStore_(u64 V) {
     }
     
     // need to wrap...
-    bool MakeOwned = false;
-    if (MakeOwned) {
-        if (!OwnedIntWrapper.Class) {
-            JB_Mem_Constructor( &OwnedIntWrapper, JB_AsClass(IntWrapper) );
-            JB_Mem_OwnedSet( &OwnedIntWrapper, true );
-        }
-        Stored = JB_LayerNew(&OwnedIntWrapper, IntWrapper);
-    } else {
-        Stored = JB_New(IntWrapper);
-    }
+    Stored = JB_New(IntWrapper);
     if (Stored) {
         Stored->RefCount = 1;
         ((IntWrapper*)Stored)->Value = V;

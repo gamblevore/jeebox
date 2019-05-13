@@ -4,16 +4,17 @@
 
 
 
-#include "JB_Umbrella.h"
-#include <malloc/malloc.h>
+#include "JB_Alloc.h"
 #include "JB_Log.h"
 
 
 #ifdef ENV64BIT
-#define kBlockSize          13  // 8K!
+    #define kBlockSize          13  // 8K!
 #else
-#define kBlockSize          12  // 4K
+    #define kBlockSize          12  // 4K
 #endif
+
+
 
 extern "C" {
 
@@ -29,7 +30,7 @@ struct LinkHelper {
 };
 
 struct SuperBlock {
-    MemoryWorld*            World;
+    JB_MemoryWorld*            World;
     AllocationBlock*        FirstBlock;
     SuperBlock*             Next;
     SuperBlock*             Prev;
@@ -42,7 +43,7 @@ struct SuperBlock {
 
 
 struct AllocationBlock {
-    MemoryLayer*            Owner;      // these two...
+    JB_MemoryLayer*         Owner;      // these two...
     FreeObject*             FirstFree;  // have to be first...
     AllocationBlock*        Next;
     AllocationBlock*        Prev;
@@ -56,10 +57,24 @@ struct AllocationBlock {
 };
 
 
+struct JBAllocTable {       // for pretending to be realloc. (we aren't)
+    // Actually this is VERY inefficient, you lose about 3x of the speed compared to calling
+    // JB_Alloc directly, however... many codebases can't simply be altered! That's why this exists.
+    u8          Bins[128];  // 63bytes wasted. actually need 65, not 64!
+    JB_Class    Classes[20];
+};
+
+
+enum {
+    kFineBins = 3,
+    kCoarseBins = 2,
+};
+
+
 int JB_AllocationBlockSize() {
     return sizeof(AllocationBlock);
 }
-void JB_Mem_Destructor( MemoryLayer* self );
+void JB_Mem_Destructor( JB_MemoryLayer* self );
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,27 +108,36 @@ static inline AllocationBlock* EndBlock_(SuperBlock* Block) {return (AllocationB
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-MemoryWorld MemoryManager = {
-    .Name           = (u8*)"JB Standard Memory",
-    .SuperSize      = 20,
-    .BlockSize      = kBlockSize,
-    .Alignment      = 4,
-    .SpareTrigger   = 0.75f,
-};
-
+JB_MemoryWorld MemoryManager;
 
 
 static JBObject_Behaviour DummyFuncTable = {0, 0};
 JB_Class* AllClasses;
-JB_Class* AddClassToList_(MemoryLayer* Mem) {
-    JB_Class* Class = Mem->Class;
-    if (!Class->NextClass and AllClasses!=Class) {
-        Class->NextClass = AllClasses;
-        AllClasses = Class;
-    }
-    return Class;
-}
 
+JB_Class JBClassInit(JB_Class& Cls, const char* Name, int Size, JB_Class* Parent, JBObject_Behaviour* b) {
+    if (!MemoryManager.Name) {
+        MemoryManager.Name           = (u8*)"JB Standard Memory";
+        MemoryManager.SuperSize      = 20;
+        MemoryManager.BlockSize      = kBlockSize;
+        MemoryManager.Alignment      = 4;
+        MemoryManager.SpareTrigger   = 0.75f;
+    }
+    Cls.Name = (u8*)Name;
+    Cls.Parent = Parent;
+    Cls.FuncTable = b;
+    Cls.DefaultBlock = (AllocationBlock*)(&Cls.Memory.Dummy);
+    Cls.Memory.RefCount = 2;
+    Cls.Memory.Class = &Cls;
+    Cls.Memory.Dummy.Owner = &Cls.Memory;
+    Cls.Memory.CurrBlock = (AllocationBlock*)(&Cls.Memory.Dummy);
+    Cls.Memory.IsActive = true;
+    Cls.Memory.World = &MemoryManager;
+    Cls.Size = Max(Size, kObjMinSize);
+
+    Cls.NextClass = AllClasses;
+    AllClasses = &Cls;
+    return Cls;
+}
 
 
 
@@ -214,7 +238,7 @@ static bool IsBadInUse_(AllocationBlock* Curr) {
 }
 
 
-static void SanityOfInUse(SuperBlock* Sup, MemoryWorld* World) {
+static void SanityOfInUse(SuperBlock* Sup, JB_MemoryWorld* World) {
     AllocationBlock* Curr = StartBlock_(Sup);
     AllocationBlock* Finish = EndBlock_(Sup);
     while (Curr < Finish) {
@@ -262,7 +286,7 @@ static void Sanity(AllocationBlock* B) {
 #endif
 
 
-void JB_Class_Init(JB_Class* Cls, MemoryWorld* World, int Size) {
+void JB_Class_Init(JB_Class* Cls, JB_MemoryWorld* World, int Size) {
     memzero(Cls, sizeof(JB_Class)); // can’t use JB_Zero.
     Cls->DefaultBlock = (AllocationBlock*)(&Cls->Memory.Dummy);
     Cls->Size = Size;
@@ -276,10 +300,7 @@ void JB_Class_Init(JB_Class* Cls, MemoryWorld* World, int Size) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef ALLOCATOR_ONLY
-JBClassPlace3( MemoryLayer, JB_Mem_Destructor, JB_AsClass(JB_Object), 0 );
-
-void JB_Mem_Constructor( MemoryLayer* self, JB_Class* Cls ) {
+void JB_Mem_Constructor( JB_MemoryLayer* self, JB_Class* Cls ) {
     JB_Zero(self);
     self->Class = Cls;
     self->CurrBlock = (AllocationBlock*)&(self->Dummy);
@@ -288,21 +309,21 @@ void JB_Mem_Constructor( MemoryLayer* self, JB_Class* Cls ) {
 }
 
 
-MemoryLayer* JB_Mem_CreateLayer(JB_Class* Cls, JB_Object* Obj) {
-    MemoryLayer* Mem = JB_New(MemoryLayer);
+JB_MemoryLayer* JB_Mem_CreateLayer(JB_Class* Cls, JB_Object* Obj) {
+    JB_MemoryLayer* Mem = JB_New(JB_MemoryLayer);
     JB_Mem_Constructor(Mem, Cls);
     JB_SetRef(Mem->Obj, Obj);
     return Mem;
 }
 
-MemoryLayer* JB_Mem_UseNewLayer(JB_Class* Cls, JB_Object* Obj) {
-    MemoryLayer* Mem = JB_Mem_CreateLayer(Cls,Obj);
+JB_MemoryLayer* JB_Mem_UseNewLayer(JB_Class* Cls, JB_Object* Obj) {
+    JB_MemoryLayer* Mem = JB_Mem_CreateLayer(Cls,Obj);
     JB_Mem_Use(Mem);
     return Mem;
 }
 
 
-void JB_Mem_Use( MemoryLayer* self ) {
+void JB_Mem_Use( JB_MemoryLayer* self ) {
     // shouldn't we incr the layer? or not?
     if (self->IsActive) { // save time...
         return;
@@ -319,10 +340,9 @@ void JB_Mem_Use( MemoryLayer* self ) {
         JB_Decr(ClsBlock->Owner);
     }
 }
-#endif
 
 
-void JB_Mem_Destructor( MemoryLayer* self ) {
+void JB_Mem_Destructor( JB_MemoryLayer* self ) {
     if (self->SpareBlock) {
         self->SpareBlock->Owner = 0;
     }
@@ -375,7 +395,7 @@ static void Unlink_(LinkHelper* Curr) {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////
 
-MemoryLayer* JB_Class_CurrLayer( JB_Class* Cls ) {
+JB_MemoryLayer* JB_Class_CurrLayer( JB_Class* Cls ) {
     return Cls->DefaultBlock->Owner;
 }
 
@@ -387,11 +407,11 @@ JB_Object* JB_Class_AllocZeroed( JB_Class* Cls ) {
     return Result;
 }
 
-MemoryLayer* JB_Class_DefaultLayer( JB_Class* Cls ) {
+JB_MemoryLayer* JB_Class_DefaultLayer( JB_Class* Cls ) {
     return &Cls->Memory;
 }
 
-MemoryLayer* JB_ObjLayer( JB_Object* Obj ) {
+JB_MemoryLayer* JB_ObjLayer( JB_Object* Obj ) {
     AllocationBlock* Block = ObjBlock_(Obj);
     return Block->Owner;
 }
@@ -405,16 +425,6 @@ int JB_ObjID( JB_Object* Obj ) {
                                             // SuperID is also different. Need to increase it so it won't collide.
 }
 
-
-void JB_Mem_OwnedSet(MemoryLayer* Mem, bool b) {
-    Mem->Owned = b;
-}
-
-/*
-bool JB_ObjIsOwned(JB_Object* Obj) {
-    return ObjBlock_(Obj)->Owned;
-}
-*/
 
 JB_Class* JB_ObjClass(JB_Object* Obj) {
     return JB_ObjLayer(Obj)->Class;
@@ -432,30 +442,6 @@ u8* JB_ObjClassBehaviours(JB_Object* Obj) {
 }
 
 
-/*JB_Object* JB_ObjNext(JB_Object* Obj) {
-    require(Obj);
-    AllocationBlock* Block = ObjBlock_(Obj);
-    int Size = Block->ObjSize;
-    do {
-        do {
-            Obj = JBShift(Obj, Size);
-            if ((void*)Obj >= (void*)Block) {
-                break;
-            }
-            if (Obj->RefCount > 0) {
-                return Obj;
-            }
-        } while(true);
-        // OK... so we are at the end of one block. We need to visit the next!
-        Block = Block->Next;
-        // NOPE!! Can’t do that! It's just the spare-list... Maybe in a future version we can use the prev-list somehow.
-        // even then, how to remove a block? We need to know what block points TO IT.
-        // unless we had TWO lists? A sparelist and a... normal list? Seems fair. But later.
-        Obj = (JB_Object*)(((int)Block) &~ ((1<<kBlockSize)-1));
-    } while (Block);
-    return 0;
-}*/
-
 void JB_ObjDestroy( JB_Object* Obj ) {
     AllocationBlock* Block = ObjBlock_(Obj);
     fpDestructor Destructor = GetDestructor_(Block);
@@ -470,18 +456,18 @@ void JB_ObjDestroy( JB_Object* Obj ) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static void SetCurrBlock_( MemoryLayer* Mem, AllocationBlock* NewBlock ) {
+static void SetCurrBlock_( JB_MemoryLayer* Mem, AllocationBlock* NewBlock ) {
 Sanity(NewBlock);
     JB_Class* Cls = Mem->Class;
     if (Cls and (Cls->DefaultBlock == Mem->CurrBlock)) {
-        // class is using this MemoryLayer...
+        // class is using this JB_MemoryLayer...
         Cls->DefaultBlock = NewBlock;
     }
     
     Mem->CurrBlock = NewBlock;
 }
 
-static FreeObject* LinkIn_(MemoryLayer* Mem, AllocationBlock* NewBlock) {
+static FreeObject* LinkIn_(JB_MemoryLayer* Mem, AllocationBlock* NewBlock) {
 Sanity(NewBlock);
 // Call this when returning the first item from a newly allocated block.
     SetCurrBlock_( Mem, NewBlock );
@@ -493,7 +479,7 @@ Sanity(NewBlock);
     return First;
 }
 
-static AllocationBlock* LinkInSuper_(MemoryWorld* World, SuperBlock* Super) {
+static AllocationBlock* LinkInSuper_(JB_MemoryWorld* World, SuperBlock* Super) {
     if (Super->World!=World) {
         Super->World = World;
         Super->BlocksActive++;
@@ -511,7 +497,7 @@ Sanity(First->Next);
 
 
 // write the AllocationBlocks... at the end.
-static inline void SetupSuper_(SuperBlock* Super, MemoryWorld* W) {
+static inline void SetupSuper_(SuperBlock* Super, JB_MemoryWorld* W) {
     AllocationBlock* Curr = StartBlock_( Super );
     AllocationBlock* End =  EndBlock_( Super ); // end is too far, somehow. it's 4100K but we only allocated 4096K?
     int Size = 1 << W->BlockSize;
@@ -534,25 +520,8 @@ static inline void SetupSuper_(SuperBlock* Super, MemoryWorld* W) {
 
 
 
-#ifdef DEBUG
-MiniStr BlockShadowRange (AllocationBlock* B) {
-    MemoryWorld* W = B->Super->World;
-    MiniStr Result = {};
-    if (W) {
-        // int Size = B->ObjSize;
-        FreeObject* End =  (FreeObject*)B;
-//        End = JBShift(End, -(Size-1)); // There for alignment... Only changes things for unaligned-sizes... (32bytes?)
-        int Shadow = (1 << W->ShadowSize) &~ 0x0F;
-        End = JBShift(End, -Shadow);
-        Result.Addr = (u8*)End;
-        Result.Length = Shadow;
-    }
-    return Result;
-}
-#endif
 
-
-static void InitObjectsInBlock_(AllocationBlock* NewBlock, MemoryWorld* W, int Size) {
+static void InitObjectsInBlock_(AllocationBlock* NewBlock, JB_MemoryWorld* W, int Size) {
     // I'm pretty sure this loop is perfect. So if we get any errors... it can’t be from here.
     NewBlock->ObjSize = Size;
     int BS = W->BlockSize;
@@ -586,7 +555,7 @@ static void InitObjectsInBlock_(AllocationBlock* NewBlock, MemoryWorld* W, int S
 
 
 
-static AllocationBlock* SuperBlockSetup_( SuperBlock* Super, MemoryWorld* World ) {
+static AllocationBlock* SuperBlockSetup_( SuperBlock* Super, JB_MemoryWorld* World ) {
     AddLink_((LinkHelper*)(World->CurrSuper), (LinkHelper*)Super);
     SetupSuper_( Super, World );
     return LinkInSuper_(World, Super);
@@ -601,12 +570,12 @@ JBObject_Behaviour* NeedRealTable_(JBObject_Behaviour* T) {
 }
 
 
-static FreeObject* BlockSetup_ ( MemoryLayer* Mem, AllocationBlock* NewBlock, MemoryWorld* World ) {
+static FreeObject* BlockSetup_ ( JB_MemoryLayer* Mem, AllocationBlock* NewBlock, JB_MemoryWorld* World ) {
     if (!NewBlock) {
         return 0;
     }
     Sanity(NewBlock);
-    JB_Class* Class = AddClassToList_(Mem);
+    JB_Class* Class = Mem->Class;
     NewBlock->FuncTable = NeedRealTable_(Class->FuncTable); // helps avoid touching uncached RAM.
     int Size = Class->Size;
     NewBlock->Owner = Mem;
@@ -624,7 +593,7 @@ static FreeObject* BlockSetup_ ( MemoryLayer* Mem, AllocationBlock* NewBlock, Me
 
 
 // SuperBlocks
-// MemoryLayer
+// JB_MemoryLayer
 // AllocationBlocks
 // Objects
 
@@ -633,7 +602,7 @@ static bool OutOfMemoryHappenedAlready;
 void JB_OutOfMemory(int N) {
     if (!OutOfMemoryHappenedAlready) {
         OutOfMemoryHappenedAlready = true;
-        printf("Failed to allocate RAM (%i bytes) : (JB_Utils.cpp)\n", N);
+        printf("Failed to allocate RAM (%i bytes) : (JB_Alloc.cpp)\n", N);
     }
 }
 
@@ -644,12 +613,16 @@ bool JB_OutOfMemoryOccurred () {
 
 
 
-static SuperBlock* Super_calloc(MemoryWorld* World) {
+static SuperBlock* Super_calloc(JB_MemoryWorld* World) {
     int N = (1 << World->SuperSize);
     int Align = (1 << World->BlockSize);
 
     while (N >= Align*4) {
+        #if __linux__
+        SuperBlock* bla = (SuperBlock*)aligned_alloc(Align, N);
+        #else 
         SuperBlock* bla = (SuperBlock*)malloc_zone_memalign(malloc_default_zone(), Align, N);
+        #endif
         if (bla) {
 //            printf("allocating %i (%s): %X\n", N, World->Name, (void*)bla);
             memset(bla, 0, N);
@@ -664,14 +637,18 @@ static SuperBlock* Super_calloc(MemoryWorld* World) {
 }
 
 
-static void Super_free(SuperBlock* Super) {
-    Super->World->RefCount--;
+static void SuperFree_(SuperBlock* Super) {
 //    printf("freeing super %X\n", (void*)Super);
+    Super->World->RefCount--;
+    #if __linux__
+    free(Super);
+    #else 
     malloc_zone_free(malloc_default_zone(), Super);
+    #endif
 }
 
 
-static SuperBlock* AllocSuper(MemoryWorld* World) {
+static SuperBlock* AllocSuper(JB_MemoryWorld* World) {
     SuperBlock* NewSuper = Super_calloc(World);
     require(NewSuper);
     
@@ -694,14 +671,14 @@ static SuperBlock* AllocSuper(MemoryWorld* World) {
 }
 
 
-static AllocationBlock* NewSuperBlock_(MemoryLayer* Mem, MemoryWorld* World) {
+static AllocationBlock* NewSuperBlock_(JB_MemoryLayer* Mem, JB_MemoryWorld* World) {
     SuperBlock* Super = AllocSuper(World);
     require(Super);
     return SuperBlockSetup_( Super, World );
 }
 
 
-static AllocationBlock* FindAllocBlock_(MemoryWorld* World) {
+static AllocationBlock* FindAllocBlock_(JB_MemoryWorld* World) {
     SuperBlock* First = World->CurrSuper;
     if (!First) {
         return 0;
@@ -741,7 +718,7 @@ static AllocationBlock* ReturnSpareHidden_(AllocationBlock* CurrBlock) {
 }
 
 
-static AllocationBlock* ReturnSpare_(MemoryLayer* Mem) {
+static AllocationBlock* ReturnSpare_(JB_MemoryLayer* Mem) {
 // Allocate a "NewBlock" by just re-using the spareblock as the currentblock...
     AllocationBlock* NewBlock = ReturnSpareHidden_( Mem->CurrBlock );
     if (NewBlock) {
@@ -772,8 +749,11 @@ u16 HiddenRef_(float R, int ObjSize) {
 FreeObject* JB_NewBlock( AllocationBlock* CurrBlock ) {
     Sanity(CurrBlock);
 
-    MemoryLayer* Mem = CurrBlock->Owner;
-    MemoryWorld* World = Mem->World;
+    JB_MemoryLayer* Mem = CurrBlock->Owner;
+    if (Mem->DontAlloc) {
+        return 0;
+    }
+    JB_MemoryWorld* World = Mem->World;
     if (!IsDummy(CurrBlock)) {
         u16 Hidden = Mem->HiddenRefCount;       // trigger re-use of this block before it hits empty.
         if (!Hidden) {
@@ -816,14 +796,15 @@ static JB_Class* ResetClass_( JB_Class* Cls ) {
     return Result;
 }
 
+
 static void CleanSpares_( SuperBlock* Super ) {
-    MemoryWorld* World = Super->World;
+    JB_MemoryWorld* World = Super->World;
     int N = 1 << World->BlockSize;
     AllocationBlock* Curr = StartBlock_(Super);
     AllocationBlock* End = EndBlock_(Super);
 
     while (Curr < End) { // not too sure this test is correct!
-        MemoryLayer* Mem = Curr->Owner;
+        JB_MemoryLayer* Mem = Curr->Owner;
         if ( Mem ) { // Only exists if its a spare, seeing as the superblock's refcount is 0.
             Mem->SpareBlock = 0;
         }
@@ -835,7 +816,7 @@ static void CleanSpares_( SuperBlock* Super ) {
 
 static void PossiblyLast_(SuperBlock* Super) {
     GoodBlock(Super);
-    MemoryWorld* World = Super->World;
+    JB_MemoryWorld* World = Super->World;
     if (World->CurrSuper == Super) {  // issue?
         SuperBlock* Next = Super->Next;
         if (Next == Super) {
@@ -854,7 +835,7 @@ static void JustGetRidOfIt_(SuperBlock* Super, bool ResettingApp) {
     if (!ResettingApp) {
         CleanSpares_( Super );
     }
-    Super_free(Super);
+    SuperFree_(Super);
 }
 
 
@@ -864,7 +845,7 @@ static bool IsAlone_(SuperBlock* Super) {
 
 
 static void SuperBlockFree_(SuperBlock* Super) {
-    MemoryWorld* World = Super->World;
+    JB_MemoryWorld* World = Super->World;
     if ( World->SpareSuper ) {
         JustGetRidOfIt_(Super, false);
 
@@ -876,7 +857,7 @@ static void SuperBlockFree_(SuperBlock* Super) {
 
 static void BlockFree_( AllocationBlock* FreeBlock ) {
     Sanity(FreeBlock);
-    MemoryLayer* Mem = FreeBlock->Owner;
+    JB_MemoryLayer* Mem = FreeBlock->Owner;
     SuperBlock* Super = FreeBlock->Super;
     if (Mem->RefCount == 2) {
         if (!Mem->World->SpareSuper and IsAlone_( Super ) ) { // avoid freeing last super, avoid thrashing.
@@ -911,22 +892,17 @@ static void BlockFree_( AllocationBlock* FreeBlock ) {
     JB_Decr(Mem); // i hope this works...
     
     int N = --(Super->BlocksActive);
-//    if (Super->World!=&MemoryManager) {
-//        printf("Super: %s down to %i blocks\n", Super->World->Name, N);
-//    }
     if (!N) {
         SuperBlockFree_(Super);
     }
 }
 
 
-//  OK so we got an issue where we decr an object, it's deleted, then we incr it
-//  how to stop? delete could "mark as deleted"? And Incr could test for shit?
 static void JB_DeleteSub_( FreeObject* Obj, AllocationBlock* Block ) {
     Obj->Next = Block->FirstFree;
     Block->FirstFree = Obj;
     
-    #ifdef JB_TEST_REFCOUNTING
+    #ifdef __SPEEDIE__
         Obj->RefCount = 0xBABEFACE; // OK so it's normally expecting it to be 0...
         // will it affect alloc or anything else? I think just alloc?
     #endif
@@ -965,7 +941,7 @@ __hot void JB_Delete( FreeObject* Obj ) {
 
 
 static inline JB_Object* Trap_(FreeObject* Obj) {
-    #ifdef JB_TEST_REFCOUNTING
+    #ifdef __SPEEDIE__
         Obj->RefCount = 0; // cos it's checked for elsewhere...
     #endif
     return (JB_Object*)Obj;
@@ -984,7 +960,7 @@ __hot JB_Object* JB_Alloc2( AllocationBlock* CurrBlock ) {
 
 
 
-__hot JB_Object* JB_Alloc( MemoryLayer* Mem ) {
+__hot JB_Object* JB_Alloc( JB_MemoryLayer* Mem ) {
     AllocationBlock* CurrBlock = Mem->CurrBlock;
     FreeObject* Obj = CurrBlock->FirstFree;
     if_usual (Obj) {
@@ -997,13 +973,12 @@ __hot JB_Object* JB_Alloc( MemoryLayer* Mem ) {
 
 
 
-MemoryWorld* JB_MemStandardWorld() {
+JB_MemoryWorld* JB_MemStandardWorld() {
     return &MemoryManager;
 }
 
 
-
-void JB_MemFree(MemoryWorld* World) {
+void JB_MemFree(JB_MemoryWorld* World) {
     SuperBlock* First = World->CurrSuper;
     SuperBlock* Super = First;
     JB_Class* Cls = AllClasses; AllClasses = 0;
@@ -1025,7 +1000,7 @@ struct MemStats {
     int Blocks;
 };
 
-MemStats JB_MemoryStats(bool CountObjs, bool ListAllClasses, MemoryWorld* World) {
+MemStats JB_MemoryStats(bool CountObjs, bool ListAllClasses, JB_MemoryWorld* World) {
     SuperBlock* First = World->CurrSuper; // issue?
     SuperBlock* Super = First; // issue?
     MemStats Result = {0, 0};
@@ -1052,31 +1027,99 @@ MemStats JB_MemoryStats(bool CountObjs, bool ListAllClasses, MemoryWorld* World)
 
 
 u32 JB_MemCount() {
-    MemoryWorld* World = JB_MemStandardWorld();
+    JB_MemoryWorld* World = JB_MemStandardWorld();
     return ( JB_MemoryStats(false, 0, World).Blocks ) << World->BlockSize;
 }
 
 
-bool JB_IsDebug() {
-#if DEBUG
-    return true;
-#else
-    return false;
-#endif
+
+
+
+//// CODE FOR PRETENDING TO BE REALLOC
+//// USEFUL FOR LUA.
+
+void BuildAllocSub_(JB_Class& C, JB_MemoryWorld* World, int Size) {
+    JB_MemoryLayer& M = C.Memory;
+    M.World = World;
+    JBClassInit(C, "", Size, nil, nil);
 }
 
-int JB_PointerSize() {
+void* JB_BuildAllocatorTable(JB_MemoryWorld* World) {
+    if (!World) {World = JB_MemStandardWorld();}
 #ifdef ENV64BIT
-    return 64;
-#else
-    return 32;
+    dbgexpect2(sizeof(JB_Class)==128); // faster
 #endif
+    
+    int N = sizeof(JBAllocTable);
+    JBAllocTable* Table = (JBAllocTable*)calloc(N, 1);
+    u32 CurrSize = 4;
+    u32 CurrStep = 4;
+    
+    BuildAllocSub_(Table->Classes[0], World, 0);
+    Table->Classes[0].Memory.DontAlloc = true; // sometimes we ask for a 0 ptr? Why?
+    u32 j = 1;
+    
+    while (true) {
+        if (j >= 32) { debugger; }
+        CurrSize += CurrStep;
+        if (CurrSize > 256) {break;}
+        JB_Class& C = Table->Classes[j++];
+        C.Size = CurrSize; // or whatever
+        int Granularity = kFineBins;
+        if ((CurrSize>>Granularity) >= CurrStep) {
+            CurrStep*=2;
+        }
+        BuildAllocSub_(C, World, CurrSize);
+    }
+    
+    
+    j = 1;
+    for (CurrSize = 1; CurrSize <= 256; CurrSize++) {
+        int ActualNeeded = (CurrSize + 3) &~ 3;
+        if (ActualNeeded > Table->Classes[j].Size) {
+            j++;
+        }
+        Table->Bins[ActualNeeded>>2] = j;
+    }
+    
+
+    return Table;
 }
 
+
+// nice.
+JB_Object* jballocn(JBAllocTable* Table, u32 N) {
+    N = Table->Bins[(N+3)>>2];
+    return JB_Alloc2(Table->Classes[N].DefaultBlock);
+}
+
+extern "C" void* jbrealloc(JBAllocTable* Table, int N, JB_Object* Obj) {
+    AllocationBlock* B = ObjBlock_(Obj);        // need the old-size first.
+    u32 MaxSize = B->ObjSize;                   // nice
+    
+    // Now compare to see if they are close enough... 
+    if (N <= MaxSize and N >= MaxSize/2) {
+        return Obj; // nice!
+    }
+
+    // I guess we need a new object.
+    JB_Object* Result = jballocn(Table, N);
+    require(Result);
+    memcpy(Result, Obj, Min(N, MaxSize));
+    
+    return Result;
+}
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+JBClassPlace0( JB_Object,       0,                  0,                          0 );
+JBClassPlace0( JB_MemoryLayer,     JB_Mem_Destructor,  JB_AsClass(JB_Object),      0 );
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }
 
 
 // tasks and threads... add it when I need it...
-
 // fireballs at da police's heads.

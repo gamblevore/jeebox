@@ -11,10 +11,11 @@ struct OurClass {
     int C;
     int D;
 };
-JBClassPlace3( OurClass, 0, 0, 0 );
+JBClassPlace0( OurClass, 0, 0, 0 );
 
 void AllocSpeedTest() {
     const int ArraySize = 100000;
+    const int TestReps = 50;
     
     OurClass* Array[ArraySize];
 
@@ -24,12 +25,14 @@ void AllocSpeedTest() {
     }
     
     auto JBStart = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < ArraySize; i++) {
-        OurClass* S = JB_New( OurClass ); 
-        Array[i] = S;
-    }
-    for (int i = 0; i < ArraySize; i++) {
-        JB_Delete((FreeObject*)Array[i]);
+    for (int SlowCount = 0; SlowCount < TestReps; SlowCount++) {
+        for (int i = 0; i < ArraySize; i++) {
+            OurClass* S = JB_New( OurClass ); 
+            Array[i] = S;
+        }
+        for (int i = 0; i < ArraySize; i++) {
+            JB_Delete((FreeObject*)Array[i]);
+        }
     }
     auto JBEnd = std::chrono::high_resolution_clock::now();
     
@@ -38,21 +41,42 @@ void AllocSpeedTest() {
         OurClass* S = new(OurClass); 
         delete(S);
     }
-    auto MallocStart = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < ArraySize; i++) {
-        Array[i] = new(OurClass);
+    auto NewStart = std::chrono::high_resolution_clock::now();
+    for (int SlowCount = 0; SlowCount < TestReps; SlowCount++) {
+        for (int i = 0; i < ArraySize; i++) {
+            Array[i] = new(OurClass);
+        }
+        for (int i = 0; i < ArraySize; i++) {
+            delete(Array[i]);
+        }
     }
-    for (int i = 0; i < ArraySize; i++) {
-        delete(Array[i]);
+    auto NewEnd = std::chrono::high_resolution_clock::now();
+    
+//
+    for (int i = 0; i < 50; i++) { // warmup malloc/free
+        OurClass* S = (OurClass*)malloc(sizeof(OurClass)); 
+        free(S);
+    }
+    auto MallocStart = std::chrono::high_resolution_clock::now();
+    for (int SlowCount = 0; SlowCount < TestReps; SlowCount++) {
+        for (int i = 0; i < ArraySize; i++) {
+            Array[i] = (OurClass*)malloc(sizeof(OurClass));
+        }
+        for (int i = 0; i < ArraySize; i++) {
+            free(Array[i]);
+        }
     }
     auto MallocEnd = std::chrono::high_resolution_clock::now();
     
-    double MTime = Time(MallocEnd,MallocStart);
-    double JTime = Time(JBEnd,JBStart);
+//
+    double MTime = Time(MallocEnd, MallocStart);
+    double NTime = Time(NewEnd, NewStart);
+    double JTime = Time(JBEnd, JBStart);
     
-    printf("new/delete: %f time for %i reps\n", MTime, ArraySize);
-    printf("jballoc: %f time for %i reps\n", JTime, ArraySize);
-    printf("jb is %f times faster\n", MTime/JTime);
+    printf("new/delete:  %fs\n", NTime);
+    printf("malloc/free: %fs\n", MTime);
+    printf("jballoc:     %fs\n", JTime);
+    printf("jballoc vs new/delete = %fx (%i allocs)\n\n", NTime/JTime, ArraySize*TestReps);
 }
 
 

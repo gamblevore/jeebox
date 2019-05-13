@@ -27,7 +27,7 @@
 
 extern "C" {
 
-JBClassPlace3( JB_LinkedList,     JB_LinkedList_Destructor,     JB_AsClass(Saveable), 0 );
+JBClassPlace0( JB_LinkedList,     JB_LinkedList_Destructor,     JB_AsClass(Saveable), 0 );
 
 
 void JB_LinkedList_Constructor(JB_LinkedList* self) {

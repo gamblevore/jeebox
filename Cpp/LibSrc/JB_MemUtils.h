@@ -2,6 +2,12 @@
 
 
 #include <string.h>
+#if defined(__linux__)
+    #include <stdlib.h>
+    #include <malloc.h>
+#else
+    #include <malloc/malloc.h>
+#endif
 
 extern "C" {
 #define CopyBytes(s0, d, Length) memcpy((void*)(d), (void*)(s0), (unsigned int)(Length));

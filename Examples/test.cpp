@@ -17,6 +17,7 @@ void msg (const char* m, int before=1, int after=1) {
         printf("\n");
     }
 }
+
 void ExampleOfGoodJeebox (String S) { 
     Message M = S.parse();
     M.render().print();
@@ -29,7 +30,7 @@ void ExampleOfBadJeebox (String S) {
     if (S.parse()) {
         msg("failed to invalid input.");
     } else for (auto Err : Jeebox::errors()) {
-        msg("Successfully caught invalid input!");
+        msg("Successfully caught invalid input!", 1, 2);
         Err.name().printline();
     }
 }
@@ -68,7 +69,7 @@ void ExampleOfModifyingJeebox (String S) {
     }
     M.render().print();
 
-    msg("Lets look at the tree of what we created", 0, 2);
+    msg("Lets look at the tree of what we created", 1, 1);
     M.renderreadable().printline();
 }
 

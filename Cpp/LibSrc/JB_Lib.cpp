@@ -23,20 +23,10 @@ Hidden Caches:
 extern "C" {
 
 #define JBClassPlaceSaver(a, b, c, d, e, f, g)  \
-                                                                            \
 JBSaver_Behaviour a ## _FuncTable = {(void*)b,(void*)d,(void*)e,(void*)f,(void*)g};  \
-JB_Class a ## Data = {                                                      \
-    .Name = (u8*)(#a),                                                      \
-    .Parent = c,                                                            \
-    .FuncTable = (JBObject_Behaviour*)&(a##_FuncTable),                      \
-    .DefaultBlock = (AllocationBlock*)(&((a ## Data).Memory.Dummy)),        \
-    .Memory.RefCount = 2,                                                   \
-    .Memory.Class = &(a ## Data),                                           \
-    .Memory.Dummy.Owner = &((a ## Data).Memory),                            \
-    .Memory.CurrBlock = (AllocationBlock*)(&((a ## Data).Memory.Dummy)),    \
-    .Memory.World = JB_MemStandardWorld(),                                  \
-    .Size = Max(sizeof(a), kObjMinSize),                                    \
-};
+JB_Class a ## Data = JBClassInit(a##Data, (#a), sizeof(a), c, (JBObject_Behaviour*)&(a##_FuncTable));
+
+
 void JB_Array_SaveWrite(Array* self, void* Other);
 void JB_Dict_SaveWrite(Dictionary* self, void* Other);
 void JB_Array_SaveCollect(Array* self, void* Other);
@@ -49,37 +39,34 @@ void JB_Sav_SaveWrite(Saveable* self, void* Saver);
 void JB_Sav_LoadProperties(Saveable* self, void* Other);
 
 
-//JBClassPlace3( JB_MemMapper,     JB_Mmp_Destructor,     JB_AsClass(JB_Object),      0 );
 #ifndef AS_LIBRARY
-JBClassPlace3( JB_File,          JB_File_Destructor,    JB_AsClass(JB_Object),      JB_File_Render );
-JBClassPlace3( JB_Pipe,          JB_Pipe_Destructor,    JB_AsClass(JB_Object),      0 );
+JBClassPlace0( JB_File,          JB_File_Destructor,    JB_AsClass(JB_Object),      JB_File_Render );
+JBClassPlace0( JB_Pipe,          JB_Pipe_Destructor,    JB_AsClass(JB_Object),      0 );
 #endif
 
-JBClassPlace3( JB_String,        JB_BA_Destructor,      JB_AsClass(JB_Object),      JB_Str_Render );
-JBClassPlace3( JB_StringC,       0,                     JB_AsClass(JB_String),      JB_Str_Render );
-JBClassPlace3( JB_StringShared,  JB_Str_Destructor,     JB_AsClass(JB_String),      JB_Str_Render );
-JBClassPlace3( JB_StringExternal,JB_XStr_Destructor,    JB_AsClass(JB_String),      JB_Str_Render );
-JBClassPlace3( JB_String4,       0,                     JB_AsClass(JB_String),      JB_Str_Render );
-JBClassPlace3( JB_String20,      0,                     JB_AsClass(JB_String),      JB_Str_Render );
+JBClassPlace0( JB_String,        JB_BA_Destructor,      JB_AsClass(JB_Object),      JB_Str_Render );
+JBClassPlace0( JB_StringC,       0,                     JB_AsClass(JB_String),      JB_Str_Render );
+JBClassPlace0( JB_StringShared,  JB_Str_Destructor,     JB_AsClass(JB_String),      JB_Str_Render );
+JBClassPlace0( JB_StringExternal,JB_XStr_Destructor,    JB_AsClass(JB_String),      JB_Str_Render );
+JBClassPlace0( JB_String4,       0,                     JB_AsClass(JB_String),      JB_Str_Render );
+JBClassPlace0( JB_String20,      0,                     JB_AsClass(JB_String),      JB_Str_Render );
 
-JBClassPlace3( IntWrapper,       0,                     JB_AsClass(JB_Object),      0 );
-JBClassPlace3( Dictionary1,      JB_Dict_Destructor,    JB_AsClass(JB_Object),      0 );
-JBClassPlace3( Dictionary2,      JB_Dict_Destructor,    JB_AsClass(JB_Object),      0 );
-JBClassPlace3( Dictionary3,      JB_Dict_Destructor,    JB_AsClass(JB_Object),      0 );
-JBClassPlace3( Dictionary4,      JB_Dict_Destructor,    JB_AsClass(JB_Object),      0 );
-JBClassPlace3( DictionaryLeaf,   JB_Leaf_Destructor,    JB_AsClass(JB_Object),      0 );
-JBClassPlace3( DictionaryReader, JB_Nav_Destructor,     JB_AsClass(JB_Object),      0 );
+JBClassPlace0( IntWrapper,       0,                     JB_AsClass(JB_Object),      0 );
+JBClassPlace0( Dictionary1,      JB_Dict_Destructor,    JB_AsClass(JB_Object),      0 );
+JBClassPlace0( Dictionary2,      JB_Dict_Destructor,    JB_AsClass(JB_Object),      0 );
+JBClassPlace0( Dictionary3,      JB_Dict_Destructor,    JB_AsClass(JB_Object),      0 );
+JBClassPlace0( Dictionary4,      JB_Dict_Destructor,    JB_AsClass(JB_Object),      0 );
+JBClassPlace0( DictionaryLeaf,   JB_Leaf_Destructor,    JB_AsClass(JB_Object),      0 );
+JBClassPlace0( DictionaryReader, JB_Nav_Destructor,     JB_AsClass(JB_Object),      0 );
 
 JBClassPlaceSaver( Dictionary,   JB_Dict_Destructor,    JB_AsClass(Saveable),       JB_Dict_Render,  JB_Dict_LoadProperties,  JB_Dict_SaveCollect, JB_Dict_SaveWrite );
 JBClassPlaceSaver( Array,        JB_Array_Destructor,   JB_AsClass(Saveable),       JB_Array_Render, JB_Array_LoadProperties, JB_Array_SaveCollect, JB_Array_SaveWrite );
 JBClassPlaceSaver( Saveable,     0,                     0,                          0,               JB_Sav_LoadProperties,                       JB_Sav_SaveCollect, JB_Sav_SaveWrite );
 
-JBClassPlace3( FastString,       JB_FS_Destructor,      JB_AsClass(JB_Object),      JB_Str_Render );
-JBClassPlace3( ByteMap,          0,                     JB_AsClass(JB_Object),      JB_BM_Render );
-JBClassPlace3( RingTree,         JB_Tree_Destructor,    JB_AsClass(Saveable),       0 );
-JBClassPlace3( TokHan,           0,                     JB_AsClass(JB_Object),      0 );
-JBClassPlace3( JB_Object,        0,                     0,                          0 );
-
+JBClassPlace0( FastString,       JB_FS_Destructor,      JB_AsClass(JB_Object),      JB_Str_Render );
+JBClassPlace0( ByteMap,          0,                     JB_AsClass(JB_Object),      JB_BM_Render );
+JBClassPlace0( RingTree,         JB_Tree_Destructor,    JB_AsClass(Saveable),       0 );
+JBClassPlace0( TokHan,           0,                     JB_AsClass(JB_Object),      0 );
 
 ByteMap*            WhiteSpace_;
 JB_StringC*         EmptyString_;

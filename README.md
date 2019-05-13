@@ -7,7 +7,7 @@ Join the reddit group [http://reddit.com/r/jeebox](http://reddit.com/r/Jeebox)
 Compile:
 
     cd </path/to/jeebox-master>
-    cmake -BBuild; cd Build; sudo make install
+    cmake -BBuild .; cd Build; sudo make install
 
 # About
 
@@ -67,7 +67,7 @@ Jeebox has a lot of potential. By capturing the grammatical structure of a sente
 
 # Notes
 
-Jeebox has a C-API and a C++ API. The C++ version is better, because you can "just use it". The C-API requires you to do memory-management, which is verbose and error-prone. But useful if you are writing a Jeebox binding for another language (python/ruby/etc). Jeebox can compile for 64-bit or 32-bit environments.
+Jeebox has a C-API and a C++ API. The C++ version is better, because you can "just use it". The C-API requires you to do memory-management, which is verbose and error-prone. But useful if you are writing a Jeebox binding for another language (python/ruby/etc). Jeebox can compile for 64-bit or 32-bit environments. Tested on OS X, and Ubuntu Linux.
 
 Jeebox is single-threaded right now.
 

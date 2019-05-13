@@ -201,7 +201,11 @@ extern jbsyntax* JB_SyxBin;
 #ifdef __nodebug
     #undef __nodebug
 #endif
+#if defined(__linux__)
+#define __nodebug inline __attribute__((__always_inline__)) // __nodebug__ doesn't exist on linux?
+#else
 #define __nodebug inline __attribute__((__always_inline__, __nodebug__))
+#endif
 __nodebug void jb_incr(jbobject* s) {
     if (s) {s->RefCount++;}
 }

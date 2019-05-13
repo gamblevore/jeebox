@@ -5,7 +5,6 @@
 
 
 #include "JB_Umbrella.h"
-#include "malloc/malloc.h"
 #include "JB_Log.h"
 
 
@@ -14,20 +13,35 @@ extern "C" {
 
 /*
     maybe change the API so we have to "Breakdown" the allocation into separate things?
-    strings/arrays/memoryworlds?
+    strings/arrays/JB_MemoryWorlds?
 */
+
+bool JB_IsDebug() {
+#if DEBUG
+    return true;
+#else
+    return false;
+#endif
+}
+
+int JB_PointerSize() {
+#ifdef ENV64BIT
+    return 64;
+#else
+    return 32;
+#endif
+}
+
 
 static bool TooLargeHappenedAlready;
 bool JB_ErrorsPrinted;
 
-
-u64 JB_TotalMemoryCount() {
-    malloc_statistics_t stats;
-    malloc_zone_statistics(0, &stats);
-    // DebuggerAt(1);
-    return stats.size_in_use;
-}
-
+//u64 JB_TotalMemoryCount() {
+//    malloc_statistics_t stats;
+//    malloc_zone_statistics(0, &stats);
+//    // DebuggerAt(1);
+//    return stats.size_in_use;
+//}
 
 
 
@@ -78,7 +92,11 @@ void* JB_realloc (const void* Arr, int N) {
 
 
 u64 JB_msize(const void* M) {
+#ifdef __linux__
+    return malloc_usable_size((void*)M);
+#else
     return malloc_size(M);
+#endif
 }
 
 

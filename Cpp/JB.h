@@ -114,7 +114,7 @@ struct JB_File;
 
 struct LeakTester;
 
-struct MemoryLayer;
+struct JB_MemoryLayer;
 
 struct Saveable;
 
@@ -339,12 +339,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_162)
-#define kJB__ErrorColors_error (JB_str_163)
-#define kJB__ErrorColors_good (JB_str_164)
-#define kJB__ErrorColors_normal (JB_str_161)
-#define kJB__ErrorColors_underline (JB_str_164)
-#define kJB__ErrorColors_warn (JB_str_165)
+#define kJB__ErrorColors_bold (JB_str_166)
+#define kJB__ErrorColors_error (JB_str_167)
+#define kJB__ErrorColors_good (JB_str_168)
+#define kJB__ErrorColors_normal (JB_str_165)
+#define kJB__ErrorColors_underline (JB_str_168)
+#define kJB__ErrorColors_warn (JB_str_169)
 //
 
 
@@ -437,7 +437,7 @@ extern int JB__Tk_StopBars;
 // module: JB
 extern Array* JB_FuncArray;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_160)
+#define kJB_SaverStart1 (JB_str_164)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -615,7 +615,11 @@ extern JB_String* JB_str_253;
 extern JB_String* JB_str_254;
 extern JB_String* JB_str_255;
 extern JB_String* JB_str_256;
+extern JB_String* JB_str_257;
+extern JB_String* JB_str_258;
+extern JB_String* JB_str_259;
 extern JB_String* JB_str_26;
+extern JB_String* JB_str_260;
 extern JB_String* JB_str_27;
 extern JB_String* JB_str_28;
 extern JB_String* JB_str_29;
@@ -1119,8 +1123,6 @@ extern bool JB__FAP_Tested;
 
 
 // App
-bool JB_App__Is64Bit();
-
 
 
 // Compression
@@ -1319,6 +1321,8 @@ int JB_Tk__WordAfter(int Start);
 
 
 // Platform
+bool JB_Platform__linux();
+
 
 
 // main
@@ -2019,7 +2023,7 @@ JB_String* JB_Msg_FuncName(Message* self);
 
 void JB_Msg_Item__(Message* self, FastString* fs);
 
-Message* JB_Msg_LayerCopy(Message* self, MemoryLayer* L);
+Message* JB_Msg_LayerCopy(Message* self, JB_MemoryLayer* L);
 
 void JB_Msg_List__(Message* self, FastString* fs);
 
@@ -2043,7 +2047,7 @@ void JB_Msg_Opp__(Message* self, FastString* fs);
 
 JB_String* JB_Msg_OriginalParseData(Message* self);
 
-MemoryLayer* JB_Msg_OriginalParseLayer(Message* self);
+JB_MemoryLayer* JB_Msg_OriginalParseLayer(Message* self);
 
 JB_String* JB_Msg_OriginalParsePath(Message* self);
 
@@ -2107,7 +2111,7 @@ Message* JB_Msg__Alloc();
 
 Syntax* JB_Msg__GetSyx(Message* msg);
 
-Message* JB_Msg__LayerAlloc(MemoryLayer* _L);
+Message* JB_Msg__LayerAlloc(JB_MemoryLayer* _L);
 
 Message* JB_Msg__NewFuncName(Syntax* Func, JB_String* Name);
 
@@ -2115,7 +2119,7 @@ Message* JB_Msg__NewParentPos(Message* Parent, int Position);
 
 Message* JB_Msg__NewParser(Message* Parent, Syntax* Func, int BytePos, JB_String* Name);
 
-Message* JB_Msg__NewWithLayerCopy(MemoryLayer* _L, Message* other);
+Message* JB_Msg__NewWithLayerCopy(JB_MemoryLayer* _L, Message* other);
 
 JB_String* jb_msg_name(Message* self);
 
