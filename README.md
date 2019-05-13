@@ -61,7 +61,7 @@ The thing is, I've done far too much alone. Translation is something that needs 
 
 I mean the way my mind works is like "Hey, this could make everything better for everyone, surely we should be supported for that? Considering the value of our translation stuff could probably saving people billions of dollars time-worth". Unfortunately that's not how the world works, but it is how **my mind** works, and I'm not gonna change how I work or feel, because I just get frazzled and ruined if I have to think about how to be accepted "just for money".
 
-Jeebox has a lot of potential. By capturing the grammatical structure of a sentence, Jeebox can improve translation accuracy by 10x-100x. And the Syntax is light. It could be very useful for medical documents, or technical documents (electronics/engineering/etc) which need precise translation.
+Jeebox has a lot of potential. By capturing the grammatical structure of a sentence, Jeebox can improve translation accuracy by 10x-100x, and the syntax is light. Jeebox could be very useful for medical documents, or technical documents (electronics/engineering/etc) which need precise translation.
 
 # Notes
 
