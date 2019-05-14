@@ -160,11 +160,10 @@ int main(int argc, const char* argv[]) {
         LoadUsers(M);
         UsersExample();
     }
-    
+
     for (auto Err : Jeebox::errors()) {
         Err.name().printline();
     }
-    return jb_shutdown();
 }
 
 

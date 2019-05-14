@@ -39,7 +39,7 @@ JB_String* JB_cPath_ReadAll (const char* path, bool AllowMissingFile, int MaxFil
     } else {
         Result = JB_Str_New(N+1);
         if (!Result) {
-            jb_lib_file_err(path, "allocate memory");
+            jb_lib_file_err(path, "allocate memory for");
         } else {
             int Size = fread(JB_Str_Address(Result), 1, N, fp);
             if (ferror(fp)) {

@@ -872,7 +872,7 @@ void JB_Tk__ErrorEvent2(int Start, int ExpectedBits, int RealBits) {
 	FastString* Err = JB_FS__New();
 	JB_Incr(Err);
 	if ((!(((bool)(RealBits & kJB__Tk_IllegalChar))))) {
-		if ((!ExpectedBits) or (!RealBits)) {
+		if ((!ExpectedBits) or ((!RealBits) or (!JB_Tk__FindError(ExpectedBits)))) {
 			JB_FS_AppendString(Err, JB_str_133);
 		} else {
 			{
@@ -1137,7 +1137,7 @@ Message* JB_Tk__fDecl(int Start) {
 		return nil;
 	}
 	while ((!JB_Tk__WillEnd())) {
-		Message* Curr = JB_Tk__ProcessThing(kJB__Tk_OppSyx, 0);
+		Message* Curr = JB_Tk__ProcessThing(kJB__Tk_OppSyx | kJB__Tk_OppTemporal, 0);
 		JB_Incr(Curr);
 		if ((!Curr)) {
 			JB_Tk__Expect(kJB__Tk_End);
@@ -1478,7 +1478,7 @@ void JB_Tk__Init() {
 	JB_Incr(op_math);
 	JB_String* PFix = JB_str_96;
 	JB_Incr(PFix);
-	TokHan* _tmp285 = JB_TH_Link(JB_Tk__Handler(kJB__Tk_ThingWord | kJB__Tk_FreeWords, ((TokenHandler_fp)JB_Tk__fThingWord)), kJB__Tk_TemporalWord, ((TokenHandler_fp)JB_Tk__fTemporalStatement));
+	TokHan* _tmp285 = JB_TH_Link(JB_Tk__Handler(kJB__Tk_ThingWord, ((TokenHandler_fp)JB_Tk__fThingWord)), kJB__Tk_TemporalWord, ((TokenHandler_fp)JB_Tk__fTemporalStatement));
 	JB_Incr(_tmp285);
 	TokHan* H = JB_TH_Link(_tmp285, kJB__Tk_OppWord, ((TokenHandler_fp)JB_Tk__fOppWord));
 	JB_Incr(H);
@@ -1598,7 +1598,7 @@ Message* JB_Tk__MakeRel(Message* first, int Bits) {
 	int Mode = kJB__Tk_Allow;
 	if (JB_Msg_SyxOppEquals(opp, JB_SyxSOpp, false)) {
 		Mode = kJB__Tk_Expect;
-		Bits = (Bits | (kJB__Tk_OppWord | kJB__Tk_OppTemporal));
+		Bits = (Bits | kJB__Tk_OppWord);
 		opp->Type = JB_SyxOpp;
 	}
 	JB_Decr(opp);
@@ -5368,7 +5368,6 @@ __lib__ Message* jb_string_parse(JB_String* self, JB_String* path) {
 	if ((!(JB_Str_Exists(self)))) {
 		return nil;
 	}
-	JB_LibInit();
 	return JB_API__Parse(self, path);
 	return nil;
 }
@@ -5444,7 +5443,7 @@ __lib__ int jb_shutdown() {
 }
 
 __lib__ int jb_version() {
-	return 2019051411;
+	return 2019051415;
 }
 
 __lib__ JB_String* jb_readfile(_cstring path, bool AllowMissingFile) {

@@ -397,12 +397,12 @@ extern Dictionary* JB__Tk_ErrorNames;
 #define kJB__Tk_EndContainer (16)
 #define kJB__Tk_EndOfLine (8)
 #define kJB__Tk_Expect (1)
-#define kJB__Tk_FreeWords (0)
 #define kJB__Tk_FuncAfterAny ((64 | 128) | 256)
 #define kJB__Tk_FuncAfterBar (64)
 #define kJB__Tk_FuncAfterNormal (128)
 #define kJB__Tk_FuncAfterNoSpace (256)
 #define kJB__Tk_IllegalChar (0x80000000)
+#define kJB__Tk_notfirstsyxopp (262144)
 #define kJB__Tk_Opp (((512 | 1024) | 2048) | 4096)
 #define kJB__Tk_OppBra (512)
 #define kJB__Tk_OppChain (4096 | 512)
@@ -418,7 +418,7 @@ extern Dictionary* JB__Tk_ErrorNames;
 #define kJB__Tk_ThingWord (65536)
 #define kJB__Tk_TmpOpp (2048 | 8192)
 #define kJB__Tk_words_line (131072)
-#define kJB__Tk_LargestFlag (18)
+#define kJB__Tk_LargestFlag (19)
 extern int JB__Tk_StopBars;
 //
 

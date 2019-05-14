@@ -101,6 +101,7 @@ void ExampleOfModifyingJeebox2 (String S) {
 int main(int argc, const char * argv[]) {
     int Result = jb_init(0);
     if (Result) {return Result;}
+
     msg("Let's parse some jeebox code and see the parse tree", 0, 2);
     ExampleOfGoodJeebox("|int| a = b + c");
     msg("OK, now let's try parse some invalid Jeebox code, to see how Jeebox catches the errors", 0, 0);

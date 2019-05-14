@@ -136,7 +136,7 @@ void HandleSwitch(const char* s) {
 int main(int argc, const char* argv[]) {
     int Errs = jb_init(1);
     if (Errs) {return Errs;}
-
+    
     for (auto c = argv+1; *c; c++) {
         HandleSwitch(*c);
     }
