@@ -1906,7 +1906,7 @@ bool JB_Err_HasPosition(JB_Error* self);
 
 bool JB_Err_IsWarning(JB_Error* self);
 
-bool JB_Err_LineIdentifiers(JB_Error* self, FastString* fs);
+bool JB_Err_LineIdentifiers(JB_Error* self, FastString* fs, JB_String* path);
 
 int JB_Err_LinePos(JB_Error* self, JB_String* data);
 
@@ -2011,8 +2011,6 @@ void JB_Msg_Emb__(Message* self, FastString* fs);
 
 void JB_Msg_ERel__(Message* self, FastString* fs);
 
-Message* JB_Msg_Find(Message* self, Syntax* f, JB_String* name, bool Err);
-
 Message* JB_Msg_FixTRels(Message* self, Message* Last);
 
 void JB_Msg_FSListArg(Message* self, FastString* fs);
@@ -2086,6 +2084,8 @@ void JB_Msg_SStr__(Message* self, FastString* fs);
 void JB_Msg_SThg__(Message* self, FastString* fs);
 
 void JB_Msg_Str__(Message* self, FastString* fs);
+
+Message* JB_Msg_AccessSyxName(Message* self, Syntax* s, JB_String* name, bool Err);
 
 bool JB_Msg_SyntaxEquals(Message* self, JB_String* name, bool Aware);
 
@@ -2181,7 +2181,7 @@ void jb_msg_error(Message* self, JB_String* ErrorMsg);
 
 Message* jb_msg_expect(Message* self, Syntax* Type, JB_String* name, Message* ErrPlace);
 
-Message* jb_msg_find(Message* self, Syntax* Type, JB_String* name, bool IsError);
+Message* jb_msg_access(Message* self, Syntax* Type, JB_String* name, bool IsError);
 
 JB_String* jb_syx_name(Syntax* self);
 

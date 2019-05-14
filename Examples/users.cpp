@@ -112,15 +112,15 @@ For example, if in Users.box, you replaced 'user_list (count:4) {' with 'user_li
 
 ///// START ACTUAL JEEBOX CODE
 void LoadUserArg (UserDemo* User, Message Arg) {
-    auto Screen = Arg.find($tmp, "screen_name");
+    auto Screen = Arg.item($tmp, "screen_name");
     User->ScreenName = Screen.first($str).name();
-    auto Inv = Arg.find($tmp, "inventory", true);
+    auto Inv = Arg.item($tmp, "inventory");
     for (auto Name : Inv.first_($list)) {
         Name.match($thg);
         User->Inventory.push_back(Name.name());
     }
 
-    auto Clothing = Arg.find($tmp, "clothing", true);
+    auto Clothing = Arg.item($tmp, "clothing");
     for (auto Name : Clothing.first_($list)) {
         Name.match($thg);
         User->Clothing.push_back(Name.name());
@@ -153,7 +153,6 @@ void LoadUsers (Message Root) {
 int main(int argc, const char* argv[]) {
     const char* Path = argv[1];
     if (!Path) { Path = "Examples/Users.box"; }
-    jb_init(1);
     String S = Jeebox::readfile(Path);
     Message M = S.parse(Path);
     if (Jeebox::ok()) {
@@ -163,7 +162,7 @@ int main(int argc, const char* argv[]) {
     }
     
     for (auto Err : Jeebox::errors()) {
-        printf("Error: "); Err.name().printline();
+        Err.name().printline();
     }
     return jb_shutdown();
 }

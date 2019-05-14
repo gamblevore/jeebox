@@ -136,7 +136,8 @@ __nodebug Message first(const Syntax& Type, const String& Name=(const char*)0) c
 __nodebug Message next(const Syntax& Type, const String& Name=(const char*)0) const    {return jb_msg_expect(jb_msg_next(_self), Type, Name, _self);}
 __nodebug Message first_(const Syntax& Type, const String& Name=(const char*)0) const    {return jb_msg_expect(jb_msg_first(_self), Type, Name, nullptr);}
 __nodebug Message next_(const Syntax& Type, const String& Name=(const char*)0) const    {return jb_msg_expect(jb_msg_next(_self), Type, Name, nullptr);}
-__nodebug Message find(const Syntax& Type, const String& Name=(const char*)0, bool IsError=false) const    {return jb_msg_find(_self, Type, Name, IsError);}
+__nodebug Message item(const Syntax& Type, const String& Name=(const char*)0) const    {return jb_msg_access(_self, Type, Name, true);}
+__nodebug Message item_(const Syntax& Type, const String& Name=(const char*)0) const    {return jb_msg_access(_self, Type, Name, false);}
 
 __nodebug Message match(const Syntax& Type, const String& Name=(const char*)0) const    {return jb_msg_expect(_self, Type, Name, nullptr);}
 	__nodebug void error(const String& Msg) const {return jb_msg_error(_self, Msg);}

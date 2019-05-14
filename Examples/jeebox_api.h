@@ -77,7 +77,7 @@ jbmessage* jb_msg_create(jbmessage* self, jbsyntax* Type, jbstring* Name); /* Cr
 The node is created as the last child of 'self'. If 'self' is nil... the node is created with no parent (this is fine). */
 void jb_msg_error(jbmessage* self, jbstring* ErrorMsg); /* Lets you add your own error messages to the tree. */
 jbmessage* jb_msg_expect(jbmessage* self, jbsyntax* Type, jbstring* name, jbmessage* ErrPlace); /* Test the name and type, (or existance) of a message node. */
-jbmessage* jb_msg_find(jbmessage* self, jbsyntax* Type, jbstring* name, bool IsError);
+jbmessage* jb_msg_access(jbmessage* self, jbsyntax* Type, jbstring* name, bool IsError);
 
 
 		// Syntax functions
