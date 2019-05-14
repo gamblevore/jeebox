@@ -10,7 +10,7 @@
 
 extern "C" {
 void JB_ErrorHandleFileC(u8* Path, int err, const char* Operation);
-static JB_String* errr(const char* path, const char* op) {
+static JB_String* jb_lib_file_err(const char* path, const char* op) {
     JB_ErrorHandleFileC((u8*)path, errno, op);
     return 0;
 }
@@ -29,21 +29,21 @@ JB_String* JB_cPath_ReadAll (const char* path, bool AllowMissingFile, int MaxFil
         if (AllowMissingFile and errno == ENOENT) {
             return JB_Str_Empty();
         }
-        return errr(path, "open");
+        return jb_lib_file_err(path, "open");
     }
 
     JB_String* Result = 0;
     int N = GetFileSize(path);
     if (N < 0) {
-        errr(path, "open");
+        jb_lib_file_err(path, "open");
     } else {
         Result = JB_Str_New(N+1);
         if (!Result) {
-            errr(path, "allocate memory");
+            jb_lib_file_err(path, "allocate memory");
         } else {
             int Size = fread(JB_Str_Address(Result), 1, N, fp);
             if (ferror(fp)) {
-                errr(path, "read");
+                jb_lib_file_err(path, "read");
                 JB_Delete((FreeObject*)Result); Result = 0;
             } else {
                 Result = JB_Str_Realloc(&Result, Size+1);
