@@ -104,8 +104,9 @@ s64 jb_string_int(jbstring* self, jbmessage* m); /* Parses this string into an i
 
 jbsyntax* jb_syntax(jbstring* name); /* Looks up the syntax of that name from the syntax-table. The name must be lower-case and in short-form, like "arg" not "Arg" or "argument". (The list of short-form names is in api.h, you will see $arg, $acc... its those minus the $.) */
 jbstring* jb_str(_cstring Str, int Length, _voidptr Release, _voidptr Tag); /* Creates a JBString from a c-string. Expects the c-string to remain unchanged until the JBString is freed. Length is optional. Can optionally pass a call-back to release your c-string, during freeing the JBString. */
+jbstring* jb_cstr(_cstring Str); /* Creates a JBString from a c-string. Expects the c-string to remain unchanged until the JBString is freed. */
 void jb_delete_(jbobject* obj); /* Deletes the object from memory. Don't call directly, use jb_incr jb_decr. */
-jbmessage* jb_errors(); /* Returns the first parse-error (if any), and removes it from error-list. The node's name is the error-description and the node's position is the error-position. */
+jbmessage* jb_errors(); /* Returns a list of errors as children of the returned node. Also clears the error-list. Each child's name is the error-description and each child's position is the error-position. */
 bool jb_ok(); /* Returns if any errors were detected. Doesn't change anything. Call jb_errors to actually get the error-list and remove them. */
 void jb_debug(jbobject* o); /* Prints a description of this object, useful for debugging. */
 int jb_init(int Flags); /* Inits Jeebox. Call this before any other Jeebox functions. Pass 1 to succeed silently, or else a message is printed. Returns zero for success.

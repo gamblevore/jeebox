@@ -50,7 +50,7 @@ public:
         jb_incr(_self = s);
     }
     __nodebug String (const char* s) {
-        jb_incr(_self = jb_str(s,0,0,0));
+        jb_incr(_self = jb_cstr(s));
     }
     __nodebug String (const char* s, int n) {
         jb_incr(_self = jb_str(s,n,0,0));

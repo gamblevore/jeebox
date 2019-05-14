@@ -5397,9 +5397,6 @@ __lib__ Syntax* jb_syntax(JB_String* name) {
 }
 
 __lib__ JB_String* jb_str(_cstring Str, int Length, _voidptr Release, _voidptr Tag) {
-	if (JB_StdErr == nil) {
-		JB_API__Init(0);
-	}
 	if ((!Str) or (Length < 0)) {
 		return JB_str_0;
 	}
@@ -5407,6 +5404,13 @@ __lib__ JB_String* jb_str(_cstring Str, int Length, _voidptr Release, _voidptr T
 		Length = strlen(Str);
 	}
 	return JB_StrFromPtr(Str, Length, Release, Tag);
+	return JB_str_0;
+}
+
+__lib__ JB_String* jb_cstr(_cstring Str) {
+	if (Str) {
+		return JB_StrFromPtr(Str, strlen(Str), nil, nil);
+	}
 	return JB_str_0;
 }
 
@@ -5440,7 +5444,7 @@ __lib__ int jb_shutdown() {
 }
 
 __lib__ int jb_version() {
-	return 2019051410;
+	return 2019051411;
 }
 
 __lib__ JB_String* jb_readfile(_cstring path, bool AllowMissingFile) {

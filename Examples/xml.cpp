@@ -34,6 +34,7 @@ void ExampleOfJeeboxToXML (Message M, int Depth=0) {
 
 
 int main(int argc, const char * argv[]) {
+    jb_init(1);
     String S = String("@Mary laughed (at:the~adorable~birbs)");
     S.printline();
     ExampleOfJeeboxToXML(S.parse());

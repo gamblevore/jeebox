@@ -2207,6 +2207,8 @@ Syntax* jb_syntax(JB_String* name);
 
 JB_String* jb_str(_cstring Str, int Length, _voidptr Release, _voidptr Tag);
 
+JB_String* jb_cstr(_cstring Str);
+
 void jb_delete_(JB_Object* obj);
 
 Message* jb_errors();
