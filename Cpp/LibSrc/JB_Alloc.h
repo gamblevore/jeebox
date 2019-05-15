@@ -97,7 +97,6 @@ struct JBObject_Behaviour;
 #define JB_AsClass(Name)        (&(Name ## Data))
 
 
-JB_Class JBClassInit(JB_Class& Cls, const char* Name, int Size, JB_Class* Parent, JBObject_Behaviour* b);
 
 #define JBClassPlace0(a, b, c, d)                                           \
 JBObject_Behaviour a ## _FuncTable = {(void*)b,(void*)d};                   \
@@ -134,7 +133,7 @@ struct JB_MemoryLayer  { // is actually a JBObject... but a clang bug won't let 
     AllocationBlock*    CurrBlock;
     JB_Class*           Class;
     AllocationBlock*    SpareBlock;
-    JB_MemoryWorld*        World;
+    JB_MemoryWorld*     World;
     
     JB_Object*          Obj;
     JB_Object*          Obj2;
@@ -148,7 +147,7 @@ struct JB_Class {
     JB_Class*           Parent;
     AllocationBlock*    DefaultBlock;
     JB_Class*           NextClass;
-    JB_MemoryLayer         Memory;
+    JB_MemoryLayer      Memory;
     u16                 Size; // Move to JB_MemoryLayer for refcountless allocs. Or put a "UsesRefCounts" bool in MemLayer
     u8*                 Name;
     JBObject_Behaviour* FuncTable;
@@ -183,6 +182,8 @@ struct JBSaver_Behaviour {
 	const void* SaveWrite;
 };
 
+
+JB_Class JBClassInit(JB_Class& Cls, const char* Name, int Size, JB_Class* Parent, JBObject_Behaviour* b);
 
 JBStructData(JB_Object);
 

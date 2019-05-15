@@ -13,6 +13,7 @@
 #else
     #define kBlockSize          12  // 4K
 #endif
+// #define CheckSanity
 
 
 
@@ -97,12 +98,7 @@ static inline AllocationBlock* StartBlock_(SuperBlock* Block) {
     return Block->StartBlock;
 }
 static inline AllocationBlock* EndBlock_(SuperBlock* Block) {return (AllocationBlock*)Block->BlockEnd;}
-#ifdef DEBUG
-    #define GoodBlock(x)
-    // expect ( ((int)(x->FirstFree) != -1)  and  ((int)x->Destructor != -1)  and  ((int)x->Owner != -1)  and  ((int)x->Super != -1)  );
-    
-#else
-    #define GoodBlock(x)
+#ifndef DEBUG
     #define Sanity(x)
 #endif
 
@@ -141,7 +137,7 @@ JB_Class JBClassInit(JB_Class& Cls, const char* Name, int Size, JB_Class* Parent
 
 
 
-#if DEBUG
+#if CheckSanity
 static void Sanity(AllocationBlock* B);
 int DB = 0;
 JBObject_Behaviour SuperSanityTable = {(void*)Sanity, 0};
@@ -283,6 +279,8 @@ static void Sanity(AllocationBlock* B) {
     } while (Curr and Curr != Sup0);
 
 }
+#else
+#define Sanity(x)
 #endif
 
 
@@ -507,7 +505,7 @@ static inline void SetupSuper_(SuperBlock* Super, JB_MemoryWorld* W) {
     while (Curr < End) {
         AllocationBlock* Next = JBShift(Curr, Size);
         Curr->Super = Super;
-        #ifdef DEBUG
+        #ifdef CheckSanity
         Curr->FuncTable = &SuperSanityTable;
         #endif
         Curr->Owner = 0; // for clearing
@@ -686,7 +684,6 @@ static AllocationBlock* FindAllocBlock_(JB_MemoryWorld* World) {
     SuperBlock* Curr = First;
     
     do {
-        GoodBlock(Curr);
         AllocationBlock* Item = Curr->FirstBlock;
         if (Item) {
             Sanity(Item);
@@ -815,7 +812,6 @@ static void CleanSpares_( SuperBlock* Super ) {
 
 
 static void PossiblyLast_(SuperBlock* Super) {
-    GoodBlock(Super);
     JB_MemoryWorld* World = Super->World;
     if (World->CurrSuper == Super) {  // issue?
         SuperBlock* Next = Super->Next;
@@ -828,8 +824,6 @@ static void PossiblyLast_(SuperBlock* Super) {
 
 
 static void JustGetRidOfIt_(SuperBlock* Super, bool ResettingApp) {
-    GoodBlock(Super);
-    GoodBlock(Super->Next);
     PossiblyLast_(Super);
     Unlink_( (LinkHelper*)Super );
     if (!ResettingApp) {
@@ -881,7 +875,7 @@ static void BlockFree_( AllocationBlock* FreeBlock ) {
         // return block to superblock
 
         FreeBlock->Prev = 0;
-        #ifdef DEBUG
+        #ifdef CheckSanity
         FreeBlock->FuncTable = &SuperSanityTable;
         #endif
         FreeBlock->Next = Super->FirstBlock;
@@ -1033,15 +1027,26 @@ u32 JB_MemCount() {
 
 
 
-
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //// CODE FOR PRETENDING TO BE REALLOC
 //// USEFUL FOR LUA.
+//// SLOWER IN GENERAL!!!!!!!!!!!!!!!!!!!
+//// YES, SLOWER. (than "the right way").
+//// The-right-way to use jb_alloc is the class-based way, for allocating objects.
+//// Maximum speed with minimum overhead.
+//// Right-way:                         type* x = JB_New(type);
+//// But we can still improve some code-bases by pretending that sizes are classes.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void BuildAllocSub_(JB_Class& C, JB_MemoryWorld* World, int Size) {
     JB_MemoryLayer& M = C.Memory;
     M.World = World;
     JBClassInit(C, "", Size, nil, nil);
+}
+
+void JB_DestroyAllocatorTable(JBAllocTable* Table) {
+    JB_MemFree(JB_MemStandardWorld());
+    free(Table);
 }
 
 void* JB_BuildAllocatorTable(JB_MemoryWorld* World) {
@@ -1107,6 +1112,47 @@ extern "C" void* jbrealloc(JBAllocTable* Table, int N, JB_Object* Obj) {
     require(Result);
     memcpy(Result, Obj, Min(N, MaxSize));
     
+    return Result;
+}
+
+
+void* JB_LuaAllocator (JBAllocTable* ud, void* ptr, size_t osize, size_t nsize) {
+    if (!ptr) {                                 // alloc
+        if (nsize <= 256) { // common path
+            return jballocn(ud, (int)nsize);
+        } else {
+            return malloc(nsize);
+        }
+    } else if (!nsize) {                        // free
+        if (osize <= 256) {
+            JB_Delete((FreeObject*)ptr);
+        } else {
+            free(ptr);
+        }
+        return NULL;
+    }
+                                                // resize
+    if (nsize > 256 and osize > 256) {
+        return realloc(ptr, nsize);
+    } else if (nsize <= 256 and osize <= 256) {
+        return jbrealloc(ud, (int)nsize, (JB_Object*)ptr);
+    }
+    
+    // kinda Awkward copies
+    size_t CopySize = nsize;
+    if (CopySize > osize) {CopySize = osize;}
+    if (nsize <= 256) {
+        void* Result = jballocn(ud, (int)nsize);
+        if (!Result) return 0;
+        memcpy(Result, ptr, CopySize);
+        free(ptr);
+        return Result;
+    }
+    
+    void* Result = malloc(nsize);
+    if (!Result) return 0;
+    memcpy(Result, ptr, CopySize);
+    JB_Delete((FreeObject*)ptr);
     return Result;
 }
 

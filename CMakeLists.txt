@@ -20,7 +20,7 @@ set(AllocSrc ${JbCpp}/LibSrc/JB_Alloc.cpp)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS YES CACHE BOOL "Export all symbols")
 
 add_compile_definitions(TARGET_UNIX=1 AS_LIBRARY=1)
-add_compile_options(${ARCH} -Wno-return-type-c-linkage -Wno-invalid-source-encoding -std=gnu++14  -fno-strict-aliasing -fvisibility=hidden -march=core2 -mfpmath=sse -mmmx -msse -msse2 -msse4.1 -msse4.2 -mtune=native -Os)
+add_compile_options(${ARCH} ${DEBUG} -Wno-return-type-c-linkage -Wno-invalid-source-encoding -std=gnu++14  -fno-strict-aliasing -fvisibility=hidden -march=core2 -mfpmath=sse -mmmx -msse -msse2 -msse4.1 -msse4.2 -mtune=native -Os)
 add_link_options(${ARCH} -flto)
 
 
@@ -39,10 +39,10 @@ function (BuildLibrary Name Type Arch)
 	)
 endfunction()
 
-BuildLibrary(JeeboxStatic STATIC "")        		    #64-bit is the default
+BuildLibrary(JeeboxStatic STATIC "")        		    # 64-bit is the default
 BuildLibrary(Jeebox SHARED "")
 if (NOT LINUX) 
-BuildLibrary(JeeboxStatic_32 STATIC "-m32")
+	BuildLibrary(JeeboxStatic_32 STATIC "-m32")			# just test that it works at all.
 endif()
 
 

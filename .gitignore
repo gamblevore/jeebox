@@ -37,6 +37,9 @@ Thumbs.db
 ########################
 /Jeebox.input
 /Build
+/Cpp/.vscode/
+/Examples/.vscode/
+/Examples/jb_vscode.code-workspace
 *.note
 *.nogit
 *.xcodeproj

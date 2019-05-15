@@ -7,7 +7,7 @@ Join the reddit group [http://reddit.com/r/jeebox](http://reddit.com/r/Jeebox)
 Compile:
 
     cd </path/to/jeebox-master>
-    cmake -BBuild .; cd Build; sudo make install
+    cmake -B Build .; cd Build; sudo make install
 
 # About
 
