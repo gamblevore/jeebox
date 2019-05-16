@@ -40,7 +40,7 @@ I guess I'm moving towards unity/simplicity, while most people move towards frag
 
 And I notice that all big popular stuff (XML/JSON) never had to "get accepted from the outside". They were created by powerful groups in the first place. So, maybe a new approach is needed?
 
-Maybe the best way forward is for me to help particular people integrate Jeebox into their app as a paid work for them? If that sounds good email me at theo@jeebox.org. I'm just throwing out ideas. It could help make Jeebox easier to use for others anyhow, because then "I'm eating my own dogfood". I'm using Jeebox from within `Speedie`, but what about the C++ library version? If I do integration for people, then I will use it!
+Maybe the best way forward is for me to help particular people integrate Jeebox into their app as a paid work for them? If that sounds good email me at theo@jeebox.org. I'm just throwing out ideas. It could help make Jeebox easier to use for others anyhow, because then "I'm eating my own dogfood". I'm using Jeebox from within `Speedie`, but what about the C++ library version? If I do integration for people, then I will be using that too!
 
 
 # Jeebox Is Still Great

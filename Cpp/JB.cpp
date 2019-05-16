@@ -1895,12 +1895,12 @@ bool JB_Tk__WillEnd() {
 
 int JB_Tk__WordAfter(int Start) {
 	int After = JB_Str_OutCharSet(JB_Tk__Data(), Start, kJB__int_max, JB__Constants_CSWordMiddle);
-	if (After == Start) {
-		JB_FreeIfDead(JB_Tk__ErrorAdd(JB_str_131, Start, false));
-	} else {
+	if ((After == -1) and (Start >= JB_Str_Length(JB_Tk__Data()))) {
+	} else if (After != Start) {
 		(JB_Tk__NextStartSet(After));
 		return After;
 	}
+	JB_FreeIfDead(JB_Tk__ErrorAdd(JB_str_131, Start, false));
 	return 0;
 }
 
@@ -5443,7 +5443,7 @@ __lib__ int jb_shutdown() {
 }
 
 __lib__ int jb_version() {
-	return 2019051514;
+	return 2019051613;
 }
 
 __lib__ JB_String* jb_readfile(_cstring path, bool AllowMissingFile) {
