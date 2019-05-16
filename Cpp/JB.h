@@ -1177,6 +1177,8 @@ Message* JB_Tk__ErrorAdd(JB_String* s, int Start, bool WasEnder);
 
 void JB_Tk__ErrorEvent2(int Start, int ExpectedBits, int RealBits);
 
+void JB_Tk__ErrorLetter(int Start);
+
 bool JB_Tk__ExpectEndChar(byte s, bool Expect);
 
 Message* JB_Tk__fAccess(int Start);

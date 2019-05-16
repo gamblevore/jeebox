@@ -791,18 +791,20 @@ bool JB_Tk__ConsumeLines(Message* output, Message* msg) {
 }
 
 Message* JB_Tk__DotSub(Syntax* fn, int Start) {
-	int After = JB_Tk__WordAfter((++Start));
+	if ((!JB_BM_HasChar(JB__Constants_CSWordStart, JB_Str_SyntaxAccess(JB_Tk__Data(), (++Start))))) {
+		JB_Tk__ErrorLetter(Start);
+		return nil;
+	}
+	int After = JB_Tk__WordAfter(Start);
 	if ((!After)) {
 		return nil;
 	}
 	Message* Result = JB_Tk__NewParent(nil, fn, Start, After);
-	JB_Incr(Result);
 	if (JB_Tk__GetNextByte('(')) {
 		JB_Tk__Params(Result, After);
 	} else {
 		JB_FreeIfDead(JB_Tk__NewParent0(Result, JB_SyxEmb, After));
 	}
-	JB_SafeDecr(Result);
 	return Result;
 }
 
@@ -930,6 +932,10 @@ void JB_Tk__ErrorEvent2(int Start, int ExpectedBits, int RealBits) {
 	JB_Decr(Err);
 	JB_FreeIfDead(JB_Tk__ErrorAdd(_tmp327, Start, false));
 	JB_Decr(_tmp327);
+}
+
+void JB_Tk__ErrorLetter(int Start) {
+	JB_FreeIfDead(JB_Tk__ErrorAdd(JB_str_131, Start, false));
 }
 
 bool JB_Tk__ExpectEndChar(byte s, bool Expect) {
@@ -1900,7 +1906,7 @@ int JB_Tk__WordAfter(int Start) {
 		(JB_Tk__NextStartSet(After));
 		return After;
 	}
-	JB_FreeIfDead(JB_Tk__ErrorAdd(JB_str_131, Start, false));
+	JB_Tk__ErrorLetter(Start);
 	return 0;
 }
 
@@ -5443,7 +5449,7 @@ __lib__ int jb_shutdown() {
 }
 
 __lib__ int jb_version() {
-	return 2019051613;
+	return 2019051615;
 }
 
 __lib__ JB_String* jb_readfile(_cstring path, bool AllowMissingFile) {
