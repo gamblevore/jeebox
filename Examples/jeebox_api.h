@@ -98,6 +98,7 @@ jbstring* jb_string_escape(jbstring* self); /* Turns a string like "${}" into a 
 void jb_string_print(jbstring* self); /* Prints this string to console. Useful for debugging. */
 void jb_string_printline(jbstring* self); /* Same as jb_string_print except it ends with a \n. */
 s64 jb_string_int(jbstring* self, jbmessage* m); /* Parses this string into an integer. Allows hex also, like '0xffff'. If you pass a 'message' into this, then non-numeric strings will get reported into jb_errors()  */
+double jb_string_float(jbstring* self, jbmessage* m); /* Parses this string into an integer. Allows hex also, like '0xffff'. If you pass a 'message' into this, then non-numeric strings will get reported into jb_errors()  */
 
 
 		// Global functions
@@ -138,7 +139,6 @@ extern jbsyntax* JB_SyxERel;
 extern jbsyntax* JB_SyxFunc;
 extern jbsyntax* JB_SyxItem;
 extern jbsyntax* JB_SyxList;
-extern jbsyntax* JB_SyxPrm;
 extern jbsyntax* JB_SyxName;
 extern jbsyntax* JB_SyxNum;
 extern jbsyntax* JB_SyxOat;
@@ -177,7 +177,6 @@ extern jbsyntax* JB_SyxBin;
 #define $func JB_SyxFunc      // Function
 #define $item JB_SyxItem      // item
 #define $list JB_SyxList      // list
-#define $prm JB_SyxPrm        // Parameters
 #define $name JB_SyxName      // name
 #define $num JB_SyxNum        // Number
 #define $oat JB_SyxOat        // Operator_As_Thing

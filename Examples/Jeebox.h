@@ -164,6 +164,7 @@ __nodebug Message convertreadable()const{return jb_msg_convertreadable(_self);}
     __nodebug void    append(const Message& s)   {last(s);}
     
     __nodebug s64    nameint()                 {return jb_string_int(jb_msg_name(_self),_self);}
+    __nodebug double namefloat()               {return jb_string_float(jb_msg_name(_self),_self);}
 
 //   __declspec(property(get = position, put = position)) int poss;
 };

@@ -339,12 +339,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_165)
-#define kJB__ErrorColors_error (JB_str_166)
-#define kJB__ErrorColors_good (JB_str_167)
-#define kJB__ErrorColors_normal (JB_str_164)
-#define kJB__ErrorColors_underline (JB_str_167)
-#define kJB__ErrorColors_warn (JB_str_168)
+#define kJB__ErrorColors_bold (JB_str_167)
+#define kJB__ErrorColors_error (JB_str_168)
+#define kJB__ErrorColors_good (JB_str_169)
+#define kJB__ErrorColors_normal (JB_str_166)
+#define kJB__ErrorColors_underline (JB_str_169)
+#define kJB__ErrorColors_warn (JB_str_170)
 //
 
 
@@ -438,7 +438,7 @@ extern int JB__Tk_StopBars;
 extern Array* JB__FuncArray_;
 extern Dictionary* JB__SyxDict_;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_163)
+#define kJB_SaverStart1 (JB_str_165)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -722,7 +722,6 @@ extern Syntax* JB_SyxName;
 extern Syntax* JB_SyxNum;
 extern Syntax* JB_SyxOat;
 extern Syntax* JB_SyxOpp;
-extern Syntax* JB_SyxPrm;
 extern Syntax* JB_SyxRel;
 extern Syntax* JB_SyxSCnj;
 extern Syntax* JB_SyxSCom;
@@ -2056,8 +2055,6 @@ Message* JB_Msg_ParseReadable(Message* self);
 
 Message* JB_Msg_PoorAnt(Message* self);
 
-void JB_Msg_Prm__(Message* self, FastString* fs);
-
 void JB_Msg_ReadableParse_(Message* self, Message* Src);
 
 void JB_Msg_Rel__(Message* self, FastString* fs);
@@ -2202,6 +2199,8 @@ void jb_string_printline(JB_String* self);
 
 s64 jb_string_int(JB_String* self, Message* m);
 
+double jb_string_float(JB_String* self, Message* m);
+
 Syntax* jb_syntax(JB_String* name);
 
 JB_String* jb_str(_cstring Str, int Length, _voidptr Release, _voidptr Tag);
@@ -2243,27 +2242,26 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
 #define kSyxFunc 14
 #define kSyxItem 15
 #define kSyxList 16
-#define kSyxPrm 17
-#define kSyxName 18
-#define kSyxNum 19
-#define kSyxOat 20
-#define kSyxOpp 21
-#define kSyxSOpp 22
-#define kSyxRel 23
-#define kSyxTRel 24
-#define kSyxSDot 25
-#define kSyxSCom 26
-#define kSyxSheb 27
-#define kSyxStr 28
-#define kSyxSThg 29
-#define kSyxThg 30
-#define kSyxTmp 31
-#define kSyxAna 32
-#define kSyxSCnj 33
-#define kSyxCnj 34
-#define kSyxType 35
-#define kSyxUnit 36
-#define kSyxBin 37
+#define kSyxName 17
+#define kSyxNum 18
+#define kSyxOat 19
+#define kSyxOpp 20
+#define kSyxSOpp 21
+#define kSyxRel 22
+#define kSyxTRel 23
+#define kSyxSDot 24
+#define kSyxSCom 25
+#define kSyxSheb 26
+#define kSyxStr 27
+#define kSyxSThg 28
+#define kSyxThg 29
+#define kSyxTmp 30
+#define kSyxAna 31
+#define kSyxSCnj 32
+#define kSyxCnj 33
+#define kSyxType 34
+#define kSyxUnit 35
+#define kSyxBin 36
 
 
 
@@ -2284,27 +2282,26 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
  "Func = 14" ,\
  "Item = 15" ,\
  "List = 16" ,\
- "Prm = 17" ,\
- "Name = 18" ,\
- "Num = 19" ,\
- "Oat = 20" ,\
- "Opp = 21" ,\
- "SOpp = 22" ,\
- "Rel = 23" ,\
- "TRel = 24" ,\
- "SDot = 25" ,\
- "SCom = 26" ,\
- "Sheb = 27" ,\
- "Str = 28" ,\
- "SThg = 29" ,\
- "Thg = 30" ,\
- "Tmp = 31" ,\
- "Ana = 32" ,\
- "SCnj = 33" ,\
- "Cnj = 34" ,\
- "Type = 35" ,\
- "Unit = 36" ,\
- "Bin = 37" ,\
+ "Name = 17" ,\
+ "Num = 18" ,\
+ "Oat = 19" ,\
+ "Opp = 20" ,\
+ "SOpp = 21" ,\
+ "Rel = 22" ,\
+ "TRel = 23" ,\
+ "SDot = 24" ,\
+ "SCom = 25" ,\
+ "Sheb = 26" ,\
+ "Str = 27" ,\
+ "SThg = 28" ,\
+ "Thg = 29" ,\
+ "Tmp = 30" ,\
+ "Ana = 31" ,\
+ "SCnj = 32" ,\
+ "Cnj = 33" ,\
+ "Type = 34" ,\
+ "Unit = 35" ,\
+ "Bin = 36" ,\
 
 
 
