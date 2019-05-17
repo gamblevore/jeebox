@@ -97,8 +97,8 @@ The optional path is not used for anything except generating better error messag
 jbstring* jb_string_escape(jbstring* self); /* Turns a string like "${}" into a string like "\${}". To make it safe to be parsed b Jeebox. */
 void jb_string_print(jbstring* self); /* Prints this string to console. Useful for debugging. */
 void jb_string_printline(jbstring* self); /* Same as jb_string_print except it ends with a \n. */
-s64 jb_string_int(jbstring* self, jbmessage* m); /* Parses this string into an integer. Allows hex also, like '0xffff'. If you pass a 'message' into this, then non-numeric strings will get reported into jb_errors()  */
-double jb_string_float(jbstring* self, jbmessage* m); /* Parses this string into an integer. Allows hex also, like '0xffff'. If you pass a 'message' into this, then non-numeric strings will get reported into jb_errors()  */
+s64 jb_string_int(jbstring* self, jbmessage* m); /* Parses this string into an integer. Allows hex also, like '0xffff'. If you pass a 'message' into this, then invalid strings will get reported into jb_errors()  */
+double jb_string_float(jbstring* self, jbmessage* m); /* Parses this string into a double-precision float. If you pass a 'message' into this, then invalid strings will get reported into jb_errors()  */
 
 
 		// Global functions
