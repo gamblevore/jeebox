@@ -50,7 +50,7 @@ I guess I'm moving towards unity/simplicity, while most people move towards frag
 
 And I notice that all big popular stuff (XML/JSON) never had to "get accepted from the outside". They were created by powerful groups in the first place. So, maybe a new approach is needed?
 
-All I can say is that Jeebox is great, it's better than any other format I've seen, because it's multi-purpose you can replace multiple formats with Jeebox. It won't let you down. Really all I can say is that I hope Jeebox has a great future... and gains acceptance.
+All I can say is that Jeebox is great, it's better than any other format I've seen. And it is multi-purpose so you can replace multiple formats with Jeebox. If everything is in Jeebox, then there's actually less formats you need to learn. It won't let you down. Really all I can say is that I hope Jeebox has a great future...
 
 
 # Jeebox Is Still Great
