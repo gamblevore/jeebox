@@ -11,9 +11,9 @@ Compile:
 
 # About
 
-    You can %describe (anything, in: Jeebox)
+Jeebox tries to fulfil the goal of describing everything.
 
-Jeebox tries to fulfil the goal of describing everything. Especially:
+    You can %describe (anything, in: Jeebox)
 
 * Code : Build a programming language using Jeebox, or anything with code-like syntax (databases).
 * Save-files : For just about anything.
