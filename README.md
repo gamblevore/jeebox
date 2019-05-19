@@ -21,8 +21,6 @@ Jeebox tries to fulfil the goal of describing everything. Especially:
 * Other things : Like maths! Or freely mix any combination of the above.
 
 (The original goal was to describe the meaning-of-code, as a step towards artificial-intelligence. But Jeebox doesn't have any AI in it, it's just a good data-format!)
-
-See some examples:
 	
                         /*** English examples ***/
     You can %describe (anything, in: Jeebox)
