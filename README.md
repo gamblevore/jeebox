@@ -11,9 +11,18 @@ Compile:
 
 # About
 
-Jeebox tries to fulfil the goal of describing everything. Here's an example of Jeebox syntax.
-
+Jeebox tries to fulfil the goal of describing everything. Here's some examples:
+	
+    // english examples
     You can %describe (anything, in: Jeebox)
+    how::can (someone fall so~far) #without %realising it
+    this~window plays music #until the~user presses the~cancel~key
+    // code examples
+    print "Hello ${username}! You have ${Mail.Inbox.Count} mail for you!"
+    arr[n] = obj.func(var)
+    function average ( |int| a, |int| b ) { print (a + b)/2 }
+	// data example
+	user_list { user fred (id:85719) (inventory:(spoon)), user mlg_haxx_420 (id:97653) (inventory:rifle, boots) }
 
 [See real syntax examples here](http://jeebox.org/stuff/introduction).
 
