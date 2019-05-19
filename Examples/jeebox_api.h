@@ -141,6 +141,7 @@ extern jbsyntax* JB_SyxItem;
 extern jbsyntax* JB_SyxList;
 extern jbsyntax* JB_SyxName;
 extern jbsyntax* JB_SyxNum;
+extern jbsyntax* JB_SyxUnit;
 extern jbsyntax* JB_SyxOat;
 extern jbsyntax* JB_SyxOpp;
 extern jbsyntax* JB_SyxSOpp;
@@ -157,7 +158,6 @@ extern jbsyntax* JB_SyxAna;
 extern jbsyntax* JB_SyxSCnj;
 extern jbsyntax* JB_SyxCnj;
 extern jbsyntax* JB_SyxType;
-extern jbsyntax* JB_SyxUnit;
 extern jbsyntax* JB_SyxBin;
 
 #define $arg JB_SyxArg        // Argument
@@ -179,6 +179,7 @@ extern jbsyntax* JB_SyxBin;
 #define $list JB_SyxList      // list
 #define $name JB_SyxName      // name
 #define $num JB_SyxNum        // Number
+#define $unit JB_SyxUnit      // unit
 #define $oat JB_SyxOat        // Operator_As_Thing
 #define $opp JB_SyxOpp        // Operator
 #define $sopp JB_SyxSOpp      // Syntactic_Operator
@@ -195,7 +196,6 @@ extern jbsyntax* JB_SyxBin;
 #define $scnj JB_SyxSCnj      // Syntactic_Conjugate
 #define $cnj JB_SyxCnj        // Conjugate
 #define $type JB_SyxType      // Typecast
-#define $unit JB_SyxUnit      // unit
 #define $bin JB_SyxBin        // Binary
 
 

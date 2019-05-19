@@ -2246,23 +2246,23 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
 #define kSyxList 16
 #define kSyxName 17
 #define kSyxNum 18
-#define kSyxOat 19
-#define kSyxOpp 20
-#define kSyxSOpp 21
-#define kSyxRel 22
-#define kSyxTRel 23
-#define kSyxSDot 24
-#define kSyxSCom 25
-#define kSyxSheb 26
-#define kSyxStr 27
-#define kSyxSThg 28
-#define kSyxThg 29
-#define kSyxTmp 30
-#define kSyxAna 31
-#define kSyxSCnj 32
-#define kSyxCnj 33
-#define kSyxType 34
-#define kSyxUnit 35
+#define kSyxUnit 19
+#define kSyxOat 20
+#define kSyxOpp 21
+#define kSyxSOpp 22
+#define kSyxRel 23
+#define kSyxTRel 24
+#define kSyxSDot 25
+#define kSyxSCom 26
+#define kSyxSheb 27
+#define kSyxStr 28
+#define kSyxSThg 29
+#define kSyxThg 30
+#define kSyxTmp 31
+#define kSyxAna 32
+#define kSyxSCnj 33
+#define kSyxCnj 34
+#define kSyxType 35
 #define kSyxBin 36
 
 
@@ -2286,23 +2286,23 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
  "List = 16" ,\
  "Name = 17" ,\
  "Num = 18" ,\
- "Oat = 19" ,\
- "Opp = 20" ,\
- "SOpp = 21" ,\
- "Rel = 22" ,\
- "TRel = 23" ,\
- "SDot = 24" ,\
- "SCom = 25" ,\
- "Sheb = 26" ,\
- "Str = 27" ,\
- "SThg = 28" ,\
- "Thg = 29" ,\
- "Tmp = 30" ,\
- "Ana = 31" ,\
- "SCnj = 32" ,\
- "Cnj = 33" ,\
- "Type = 34" ,\
- "Unit = 35" ,\
+ "Unit = 19" ,\
+ "Oat = 20" ,\
+ "Opp = 21" ,\
+ "SOpp = 22" ,\
+ "Rel = 23" ,\
+ "TRel = 24" ,\
+ "SDot = 25" ,\
+ "SCom = 26" ,\
+ "Sheb = 27" ,\
+ "Str = 28" ,\
+ "SThg = 29" ,\
+ "Thg = 30" ,\
+ "Tmp = 31" ,\
+ "Ana = 32" ,\
+ "SCnj = 33" ,\
+ "Cnj = 34" ,\
+ "Type = 35" ,\
  "Bin = 36" ,\
 
 
