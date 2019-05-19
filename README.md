@@ -26,7 +26,7 @@ Jeebox tries to fulfil the goal of describing everything. Here's some examples:
                         /*** Data example     ***/
 	user_list { user fred (id:85719) (inventory:(spoon)), user mlg_haxx_420 (id:97653) (inventory:rifle, boots) }
 
-[See real syntax examples here](http://jeebox.org/stuff/introduction).
+[Learn Jeebox syntax here](http://jeebox.org/stuff/introduction).
 
 Jeebox is useful for describing:
 
