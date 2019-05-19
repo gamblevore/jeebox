@@ -11,7 +11,16 @@ Compile:
 
 # About
 
-Jeebox tries to fulfil the goal of describing everything. Here's some examples:
+Jeebox tries to fulfil the goal of describing everything. Especially:
+
+* Code : Build a programming language using Jeebox, or anything with code-like syntax (databases).
+* Save-files : For just about anything.
+* Natural-language : English/Spanish/Russian/etc.
+* Other things : Like maths! Or freely mix any combination of the above.
+
+(The original goal was to describe the meaning-of-code, as a step towards artificial-intelligence. But Jeebox doesn't have any AI in it, it's just a good data-format!)
+
+See some examples:
 	
                         /*** English examples ***/
     You can %describe (anything, in: Jeebox)
@@ -28,14 +37,6 @@ Jeebox tries to fulfil the goal of describing everything. Here's some examples:
 
 [Learn Jeebox syntax here](http://jeebox.org/stuff/introduction).
 
-Jeebox is useful for describing:
-
-* Code : Build a programming language using Jeebox, or anything with code-like syntax (databases).
-* Save-files : For just about anything.
-* Natural-language : English/Spanish/Russian/etc.
-* Other things : Like maths! Or freely mix any combination of the above.
-
-(The original goal was to describe the meaning-of-code, as a step towards artificial-intelligence. But Jeebox doesn't have any AI in it, it's just a good data-format!)
 
 Jeebox parses a UTF-8 string into a tree of 'nodes'. Jeebox is simple because each node only needs the `name` and the `type` (both strings) to describe it. Jeebox is extensible (no keywords), meaning you can describe **anything** unambiguously. Being simple also makes Jeebox memory-tight.
 
