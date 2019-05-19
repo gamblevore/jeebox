@@ -26,7 +26,7 @@ Jeebox tries to fulfil the goal of describing everything.     `You can %describe
     this~window plays music #until the~user presses the~cancel~key
     
                         /*** Code examples    ***/
-    print "Hello ${username}! You have ${Mail.Inbox.Count} mail for you!"
+    print "Hello ${username}! You have ${Mail.Inbox.Count} pieces of mail for you!"
     arr[n] = obj.func(var)
     function average ( |int| a, |int| b ) { print (a + b)/2 }
     
