@@ -23,6 +23,7 @@ JBClass( FastString, JB_Object,
 
     u16             Indent;    // Jeebox itself needs this.
     u8              IndentChar;
+    u8              IndentMul;
 
     JB_String*      Result;
     int 			Reserved; // actual size of buffer.

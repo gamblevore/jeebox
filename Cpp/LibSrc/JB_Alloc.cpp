@@ -892,7 +892,8 @@ static void BlockFree_( AllocationBlock* FreeBlock ) {
 }
 
 
-static void JB_DeleteSub_( FreeObject* Obj, AllocationBlock* Block ) {
+void JB_DeleteSub_( FreeObject* Obj, AllocationBlock* Block ) {
+    // used by my other projects for custom memory managers!
     Obj->Next = Block->FirstFree;
     Block->FirstFree = Obj;
     

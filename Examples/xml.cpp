@@ -10,9 +10,20 @@ using namespace Jeebox;
 
 void ExampleOfJeeboxToXML (Message M, int Depth=0) {
     for (int i = 0; i < Depth; i++) { // indent
-        putchar('\t'); 
+        printf("    "); 
     }
-    putchar('<'); M.type().name().print(); putchar('>'); M.name().print();
+    putchar('<'); M.type().name().print();
+    if (M.first()) {
+        if (M.name()) {
+            printf(" name=\"");
+            M.name().print();
+            putchar('"');
+        }
+        putchar('>');
+    } else {
+        putchar('>');
+        M.name().print();
+    }
 
     for (auto C : M) {
         putchar('\n');
@@ -22,7 +33,7 @@ void ExampleOfJeeboxToXML (Message M, int Depth=0) {
     if (M.first()) {
         putchar('\n');
         for (int i = 0; i < Depth; i++) { // indent
-            putchar('\t'); 
+        printf("    "); 
         }
     }
     printf("</"); M.type().name().print(); putchar('>');
@@ -35,7 +46,7 @@ void ExampleOfJeeboxToXML (Message M, int Depth=0) {
 
 int main(int argc, const char * argv[]) {
     jb_init(1);
-    String S = String("@Mary laughed (at:the~adorable~birbs)");
+    String S = String("while @Mary laughed (at:the~adorable~birbs) (the~rain fell)");
     S.printline();
     ExampleOfJeeboxToXML(S.parse());
 }

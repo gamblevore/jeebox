@@ -2031,6 +2031,8 @@ JB_String* JB_Msg_Locate(Message* self);
 
 JB_String* JB_Msg_MakeReadable(Message* self, FastString* fs_in);
 
+JB_String* JB_Msg_MakeReadableSpaces(Message* self, int Spaces);
+
 void JB_Msg_Name__(Message* self, FastString* fs);
 
 Message* JB_Msg_NormalCopy(Message* self);

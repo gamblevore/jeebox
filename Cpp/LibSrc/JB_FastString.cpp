@@ -204,7 +204,8 @@ void JB_FS_AppendIndent( FastString* self ) {
         debugger;
     }
     if (self->IndentChar) {
-        JB_FS_AppendMultiByte( self, self->IndentChar, self->Indent );
+        int M = Max(self->IndentMul,1);
+        JB_FS_AppendMultiByte( self, self->IndentChar, self->Indent*M );
     }
 }
 
@@ -577,6 +578,7 @@ void JB_FS_ConstructorSize(FastString* self, int Size) {
 void JB_FS_Constructor(FastString* self) {
     JB_Zero(self);
     self->IndentChar = '\t';
+    self->IndentMul = 1;
 }
 
 void JB_FS_Destructor(FastString* self) {
