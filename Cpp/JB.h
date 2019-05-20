@@ -339,12 +339,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_167)
-#define kJB__ErrorColors_error (JB_str_168)
-#define kJB__ErrorColors_good (JB_str_169)
-#define kJB__ErrorColors_normal (JB_str_166)
-#define kJB__ErrorColors_underline (JB_str_169)
-#define kJB__ErrorColors_warn (JB_str_170)
+#define kJB__ErrorColors_bold (JB_str_168)
+#define kJB__ErrorColors_error (JB_str_169)
+#define kJB__ErrorColors_good (JB_str_170)
+#define kJB__ErrorColors_normal (JB_str_167)
+#define kJB__ErrorColors_underline (JB_str_170)
+#define kJB__ErrorColors_warn (JB_str_171)
 //
 
 
@@ -438,7 +438,7 @@ extern int JB__Tk_StopBars;
 extern Array* JB__FuncArray_;
 extern Dictionary* JB__SyxDict_;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_165)
+#define kJB_SaverStart1 (JB_str_166)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -2008,6 +2008,8 @@ void JB_Msg_Dummy(Message* self, FastString* fs);
 void JB_Msg_Emb__(Message* self, FastString* fs);
 
 void JB_Msg_ERel__(Message* self, FastString* fs);
+
+bool JB_Msg_Expect(Message* self, Syntax* type, JB_String* name);
 
 Message* JB_Msg_FixTRels(Message* self, Message* Last);
 
