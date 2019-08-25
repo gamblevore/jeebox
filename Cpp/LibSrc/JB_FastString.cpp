@@ -64,7 +64,7 @@ void JB_FS_AppendMini(FastString* fs, MiniStr S) {
 
 
 void JB_FS_AppendMem_(FastString* fs, u8* s0, int Length) {
-    MiniStr S = {s0, Length};
+    MiniStr S = {Length, s0};
 	JB_FS_AppendMini(fs, S);
 }
 
@@ -378,7 +378,7 @@ void JB_FS_AppendIntegerAsText(FastString* self, s64 LeftOver, int RoundTo) {
 
 
 void JB_FS_AppendDate(FastString* self, Date D) {
-    JB_FS_AppendDoubleAsText(self, ((double)D) / 0x10000, (u8*)"%.3f");
+    JB_FS_AppendDoubleAsText(self, ((double)D) / 0x10000, (u8*)"%.3g");
     // maybe convert to a double and render it?
 }
 
@@ -389,7 +389,7 @@ void JB_FS_AppendDoubleAsText0(FastString* self, double D) {
 void JB_FS_AppendDoubleAsText(FastString* self, double D, u8* fmt) {
     const int Max = 64;
     if (!fmt) {
-        fmt = (u8*)"%f";
+        fmt = (u8*)"%g";
     }
 	u8* wp = JB_FS_WriteAlloc_( self, Max );
     int Used = snprintf((char*)wp, Max, (const char*)fmt, D);

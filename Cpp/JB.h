@@ -82,7 +82,7 @@ struct FastString_Behaviour;
 
 struct File_Behaviour;
 
-struct FixedDict_Behaviour;
+struct Image_Behaviour;
 
 struct LeakTester_Behaviour;
 
@@ -94,11 +94,11 @@ struct RingTree_Behaviour;
 
 struct SaverClassInfo_Behaviour;
 
+struct Message_Behaviour;
+
 struct ErrorReceiver_Behaviour;
 
 struct Error_Behaviour;
-
-struct Message_Behaviour;
 
 struct FastAppenderChunk_Behaviour;
 
@@ -180,6 +180,7 @@ struct ObjectLoader {
 struct ObjectSaver {
 	FastString* Dest;
 	JB_Object* CantSaveThis;
+	JB_Object* Root;
 };
 
 struct Random {
@@ -235,8 +236,7 @@ struct StringFields_Behaviour: Object_Behaviour {
 
 JBClass ( StringFields , JB_Object , 
 	JB_String* Data;
-	JB_String* Sep;
-	int SepLen;
+	byte Sep;
 );
 
 struct Syntax_Behaviour: Object_Behaviour {
@@ -292,14 +292,14 @@ JBClass ( JB_Error , JB_LinkedList ,
 	JB_String* Path;
 	JB_String* Description;
 	JB_String* OriginalData;
-	Message* Node;
+	JB_Object* Source;
 );
 
 struct ErrorReceiver_Behaviour: LinkedList_Behaviour {
 };
 
 JBClass ( JB_ErrorReceiver , JB_LinkedList , 
-	LLRef List;
+	LLRef Errors;
 	int MaxErrors;
 	int ErrorCount;
 	int WarnCount;
@@ -339,12 +339,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_168)
-#define kJB__ErrorColors_error (JB_str_169)
-#define kJB__ErrorColors_good (JB_str_170)
-#define kJB__ErrorColors_normal (JB_str_167)
-#define kJB__ErrorColors_underline (JB_str_170)
-#define kJB__ErrorColors_warn (JB_str_171)
+#define kJB__ErrorColors_bold (JB_str_170)
+#define kJB__ErrorColors_error (JB_str_171)
+#define kJB__ErrorColors_good (JB_str_172)
+#define kJB__ErrorColors_normal (JB_str_169)
+#define kJB__ErrorColors_underline (JB_str_172)
+#define kJB__ErrorColors_warn (JB_str_173)
 //
 
 
@@ -367,6 +367,8 @@ extern ByteMap* JB__Constants_CSWordMiddle;
 extern ByteMap* JB__Constants_CSWordStart;
 extern Dictionary* JB__Constants_EscapeChr;
 extern Dictionary* JB__Constants_EscapeStr;
+extern Dictionary* JB__Constants_JS_EscapeStr;
+extern Dictionary* JB__Constants_JS_UnEscapeStr;
 extern Dictionary* JB__Constants_UnEscapeStr;
 //
 
@@ -437,8 +439,9 @@ extern int JB__Tk_StopBars;
 // module: JB
 extern Array* JB__FuncArray_;
 extern Dictionary* JB__SyxDict_;
+extern JB_String* JB_JSONTest;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_166)
+#define kJB_SaverStart1 (JB_str_168)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -618,7 +621,15 @@ extern JB_String* JB_str_255;
 extern JB_String* JB_str_256;
 extern JB_String* JB_str_257;
 extern JB_String* JB_str_258;
+extern JB_String* JB_str_259;
 extern JB_String* JB_str_26;
+extern JB_String* JB_str_260;
+extern JB_String* JB_str_261;
+extern JB_String* JB_str_262;
+extern JB_String* JB_str_263;
+extern JB_String* JB_str_264;
+extern JB_String* JB_str_265;
+extern JB_String* JB_str_266;
 extern JB_String* JB_str_27;
 extern JB_String* JB_str_28;
 extern JB_String* JB_str_29;
@@ -771,6 +782,9 @@ extern Syntax* JB_SyxUnit;
 // module: f16_
 
 
+// module: ImagePixel_
+
+
 // module: int_
 #define kJB__int_max (0x7FFFffff)
 #define kJB__int_min (0x80000000)
@@ -806,9 +820,6 @@ extern SaverClassInfo* JB__Saver_SaveableList;
 //
 
 
-
-
-// module: OverFlow_
 
 
 // module: Random_
@@ -934,7 +945,7 @@ extern Random JB__Random_Shared;
 // module: File_Behaviour_
 
 
-// module: FixedDict_Behaviour_
+// module: Image_Behaviour_
 
 
 // module: LeakTester_Behaviour_
@@ -952,13 +963,13 @@ extern Random JB__Random_Shared;
 // module: SaverClassInfo_Behaviour_
 
 
+// module: Message_Behaviour_
+
+
 // module: ErrorReceiver_Behaviour_
 
 
 // module: Error_Behaviour_
-
-
-// module: Message_Behaviour_
 
 
 // module: FastAppenderChunk_Behaviour_
@@ -995,7 +1006,7 @@ extern FastString* JB__FS_StdOutFS;
 
 
 
-// module: FDT_
+// module: Image_
 
 
 // module: Lk_
@@ -1053,6 +1064,9 @@ extern FastString* JB__FS_StdOutFS;
 // module: SaverLoadClass_
 
 
+// module: ShellOption_
+
+
 // module: TokenHandler_fp_
 
 
@@ -1101,6 +1115,12 @@ extern bool JB__FAP_Tested;
 
 
 // module: Rec_
+#define kJB__Rec_iswarning (1)
+#define kJB__Rec_printcount (2)
+#define kJB__Rec_LargestFlag (2)
+//
+
+
 
 
 // module: FAC_
@@ -1119,6 +1139,8 @@ extern bool JB__FAP_Tested;
 
 
 // App
+int JB_Main();
+
 
 
 // Compression
@@ -1334,8 +1356,6 @@ JB_String* JB_EntityTest();
 
 int JB_Init_();
 
-int JB_Main();
-
 Dictionary* JB_Dict_Reverse(Dictionary* Dict);
 
 bool JB_TestCasting();
@@ -1357,6 +1377,8 @@ void JB_ClassData_Restore(JB_Class* self);
 
 
 // f64
+JB_String* JB_dbl_RenderFmt(double self, JB_String* fmt, FastString* fs_in);
+
 
 
 // JB_FastAppenderLister
@@ -1376,12 +1398,17 @@ JB_String* JB_f_Render(float self, FastString* fs_in);
 // hfloat
 
 
+// JB_ImagePixel
+
+
 // int
 inline bool JB_int_Found(int self);
 
 int JB_int_OperatorMin(int self, int other);
 
 JB_String* JB_int_Render(int self, FastString* fs_in);
+
+JB_String* JB_int_RenderZeros(int self, int zeros, FastString* fs_in);
 
 
 
@@ -1396,7 +1423,7 @@ void JB_LLRef_Clear(LLRef* self);
 
 void JB_LLRef_Destructor(LLRef* self);
 
-void JB_LLRef_HeaderSanity(LLRef* self);
+bool JB_LLRef_HeaderSanity(LLRef* self);
 
 int JB_LLRef_ListCount(LLRef* self);
 
@@ -1446,9 +1473,6 @@ void JB_Saver_Destructor(ObjectSaver* self);
 
 int JB_Saver__Init_();
 
-
-
-// JB_OverFlow
 
 
 // JB_Random
@@ -1520,6 +1544,8 @@ void JB_StructSaveTest_SaveWrite(StructSaveTest* self, ObjectSaver* Saver);
 // byte
 bool JB_byte_CanPrintAsNormalChar(byte self);
 
+bool JB_byte_In(byte self, int a, int b);
+
 bool JB_byte_IsNum(byte self);
 
 bool JB_byte_IsNumeric(byte self);
@@ -1554,7 +1580,7 @@ JB_String* JB_Date_Render(Date self, FastString* fs_in);
 // JB_File_Behaviour
 
 
-// JB_FixedDict_Behaviour
+// JB_Image_Behaviour
 
 
 // JB_LeakTester_Behaviour
@@ -1572,13 +1598,13 @@ JB_String* JB_Date_Render(Date self, FastString* fs_in);
 // JB_SaverClassInfo_Behaviour
 
 
+// JB_Message_Behaviour
+
+
 // JB_ErrorReceiver_Behaviour
 
 
 // JB_Error_Behaviour
-
-
-// JB_Message_Behaviour
 
 
 // JB_FastAppenderChunk_Behaviour
@@ -1630,6 +1656,8 @@ void JB_FS_MsgErrorName(FastString* self, JB_String* name);
 
 JB_String* JB_FS_Render(FastString* self, FastString* fs_in);
 
+void JB_FS_AppendS64(FastString* self, s64 data);
+
 void JB_FS_AppendInt32AsText(FastString* self, int data);
 
 void JB_FS_AppendFloatAsText(FastString* self, float F);
@@ -1649,7 +1677,7 @@ FastString* JB_FS__New();
 // JB_File
 
 
-// JB_FixedDict
+// JB_Image
 
 
 // JB_LeakTester
@@ -1700,6 +1728,8 @@ Array* JB_Str_ByteSplit(JB_String* self);
 
 ByteMap* JB_Str_Charset(JB_String* self, bool Range);
 
+int JB_Str_CountBytes(JB_String* self, byte b);
+
 JB_String* JB_Str_Escape(JB_String* self);
 
 JB_String* JB_Str_EscapeChr(JB_String* self);
@@ -1722,13 +1752,13 @@ int JB_Str_OutCharSet(JB_String* self, int Start, int After, ByteMap* cs);
 
 int JB_Str_OutWhite(JB_String* self, int Start, int After);
 
-Message* JB_Str_Parse(JB_String* self, Message* Result);
+Message* JB_Str_Parse(JB_String* self, Message* into);
 
 Message* JB_Str_ParseAs(JB_String* self, JB_String* name);
 
 int JB_Str_ParseInt(JB_String* self, Message* Where);
 
-Array* JB_Str_Split(JB_String* self, JB_String* sep);
+Array* JB_Str_Split(JB_String* self, byte sep);
 
 byte JB_Str_SyntaxAccess(JB_String* self, int index);
 
@@ -1743,9 +1773,7 @@ JB_String* JB_Str_Unescape(JB_String* self);
 
 
 // JB_StringFields
-void JB_FI_Constructor(StringFields* self, JB_String* Source, JB_String* Sep);
-
-int JB_FI_Count(StringFields* self);
+void JB_FI_Constructor(StringFields* self, JB_String* Source, byte Sep);
 
 void JB_FI_Destructor(StringFields* self);
 
@@ -1755,7 +1783,7 @@ int JB_FI_NextSep(StringFields* self, int Prev);
 
 StringFields* JB_FI__Alloc();
 
-StringFields* JB_FI__New(JB_String* Source, JB_String* Sep);
+StringFields* JB_FI__New(JB_String* Source, byte Sep);
 
 
 
@@ -1798,6 +1826,9 @@ inline TokenHandler_fp JB_ParseHandler_cast(ParseHandler self);
 
 
 // SaverLoadClass
+
+
+// ShellOption
 
 
 // TokenHandler_fp
@@ -1865,7 +1896,7 @@ int JB_FAP__Init_();
 
 
 // JB_LinkedList
-void JB_LinkedList_ListSanity(JB_LinkedList* self);
+bool JB_LinkedList_ListSanity(JB_LinkedList* self);
 
 void JB_LinkedList_LoadProperties(JB_LinkedList* self, ObjectLoader* Loader);
 
@@ -1877,8 +1908,6 @@ void JB_LinkedList_SaveWrite(JB_LinkedList* self, ObjectSaver* Saver);
 RingTree* JB_Tree_First_(RingTree* self);
 
 bool JB_Tree_HasOneChild(RingTree* self);
-
-bool JB_Tree_IsWithin(RingTree* self, RingTree* other);
 
 void JB_Tree_Remove(RingTree* self);
 
@@ -1933,6 +1962,8 @@ void JB_Rec_NewItemWithNode(JB_ErrorReceiver* self, Message* node, JB_String* De
 
 bool JB_Rec_OK(JB_ErrorReceiver* self);
 
+void JB_Rec_PrintErrors(JB_ErrorReceiver* self, int Flags);
+
 void JB_Rec_NewItem(JB_ErrorReceiver* self, JB_Error* Err);
 
 int JB_Rec_TotalCount(JB_ErrorReceiver* self);
@@ -1942,6 +1973,8 @@ JB_ErrorReceiver* JB_Rec__Alloc();
 JB_String* JB_Rec__ErrorType(bool IsWarning);
 
 JB_ErrorReceiver* JB_Rec__New();
+
+void JB_Rec__PrintErrors();
 
 
 

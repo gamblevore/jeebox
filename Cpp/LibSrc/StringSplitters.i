@@ -33,8 +33,7 @@ JB_String* JB_Str_Range(JB_String* self, int StartOff, int AfterOff) {
             return JB_Str_UniqueSplit(self, StartOff, Length, StrUniquer);
         }
         if (Length <= 4) {
-            MiniStr Str = {(u8*)self->Addr + StartOff, Length};
-            return JB_Str_CopyFromPtr(Str);
+            return JB_Str_CopyFromPtr( (u8*)self->Addr + StartOff, Length);
         }
         
         JB_StringShared* u = JB_New( JB_StringShared );
@@ -152,8 +151,4 @@ JB_String* JB_Str_Unshare(JB_String* self) {
     return self;
 }
 
-
-
-    // OK so... we have some shit here. We will KILL THEM ALL! ALL OF THEM!
-    // Atlas... the wretched scum 87.5% twisted shits... and the rest...
 

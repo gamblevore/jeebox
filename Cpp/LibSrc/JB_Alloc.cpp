@@ -129,7 +129,10 @@ JB_Class JBClassInit(JB_Class& Cls, const char* Name, int Size, JB_Class* Parent
     Cls.Memory.IsActive = true;
     Cls.Memory.World = &MemoryManager;
     Cls.Size = Max(Size, kObjMinSize);
-
+    if (Parent) {
+        Parent->HasSubclasses = true;
+    }
+    
     Cls.NextClass = AllClasses;
     AllClasses = &Cls;
     return Cls;
@@ -334,7 +337,7 @@ void JB_Mem_Use( JB_MemoryLayer* self ) {
     /// what does this do even, or why? I forgot?
     /// we are putting into the class, but why compare something to self and why incr or decr?
     if (ClsBlock->Owner != self) {
-        JB_Incr(self);
+        JB_Incr_((JB_Object*)self);
         JB_Decr(ClsBlock->Owner);
     }
 }
@@ -1087,7 +1090,6 @@ void* JB_BuildAllocatorTable(JB_MemoryWorld* World) {
         }
         Table->Bins[ActualNeeded>>2] = j;
     }
-    
 
     return Table;
 }

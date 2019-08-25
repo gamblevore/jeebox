@@ -34,7 +34,6 @@ int JB_PointerSize() {
 
 
 static bool TooLargeHappenedAlready;
-bool JB_ErrorsPrinted;
 
 
 

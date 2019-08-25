@@ -98,8 +98,8 @@ JBClass( JB_String20, JB_String,
 
 
 struct MiniStr {
-    u8*			Addr; // address
     int			Length; // length
+    u8*			Addr; // address
     
     bool Exists() {
         return Length;
@@ -143,7 +143,7 @@ struct MiniStr {
         return Addr==str.Addr and Length == str.Length;
     }
     MiniStr operator+(int D) const{
-        MiniStr Result = {Addr + D, Length - D};
+        MiniStr Result = {Length - D, Addr + D};
         return Result;
     }
 //    int operator-(const MiniStr &str) const{
@@ -153,6 +153,13 @@ struct MiniStr {
         return !(*this == str);
     }
 };
+
+
+inline MiniStr Mini(JB_String* S, int N=0) {
+    MiniStr M = {S->Length, S->Addr};
+    return M + N;
+}
+
 
 // how to "unshare" this? If we are only keeping a small part of many files?
 // seems... we could try to re-link the parent memorylayer into the main memorylayer for String, and go through all the AllocationBlocks and set them to use the main memorylayer...
@@ -181,10 +188,6 @@ inline bool SectFix_( int& srOffset, int& srLength, int CurrLen ) {
 }
 
 
-inline MiniStr* Mini(JB_String* self) {
-    return ((MiniStr*)(JBShift(self,sizeof(void*))));
-}
-
 inline MiniStr ReadAddrs_( JB_String* self, int StartOff, int AfterOff ) {
     int SelfAfter = self->Length;
     if (StartOff < 0) {
@@ -198,7 +201,7 @@ inline MiniStr ReadAddrs_( JB_String* self, int StartOff, int AfterOff ) {
         AfterOff = SelfAfter + 1 + AfterOff;
     }
 
-    return {self->Addr + StartOff, AfterOff - StartOff};  
+    return {AfterOff - StartOff, self->Addr + StartOff};  
 }
     
 

@@ -62,14 +62,6 @@ inline int VerifyUTF8_(u8* source, u8* sourceEnd) {
 
 // I can’t seem to make up my mind and wasted all this time reworking the function! However,
 // if I have it like this, I can make up mind without barely any reworking.
-int JB_Str_Verify(JB_String* self, int utf) {
-	if (utf == 8) {
-		return Verify8_(self);
-	} else if (utf == 16) {
-		return Verify16( self );
-	}
-	return -1;
-}
 
 int Verify8_(JB_String* u) {
 	if ( JB_Str_IsASCII(u) ) {
@@ -85,4 +77,13 @@ int Verify16(JB_String* u) {
 	u8* uAddr = u->Addr;
 	
 	return VerifyUTF16_((u16*)uAddr, (u16*)(uAddr + Len));
+}
+
+int JB_Str_Verify(JB_String* self, int utf) {
+	if (utf == 8) {
+		return Verify8_(self);
+	} else if (utf == 16) {
+		return Verify16( self );
+	}
+	return -1;
 }

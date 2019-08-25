@@ -2,7 +2,11 @@
 // Copyright, Theodore H. Smith 2019.
 // Released under jeebox-licence http://jeebox.org/licence.txt
 
-#define kStrLengthMax (16*1024*1024) // 16MB string max
+#ifdef ENV64BIT
+    #define kStrLengthMax (2147483644) // 2GB string max
+#else
+    #define kStrLengthMax (1024*1024*1024) // 1GB string max
+#endif
 
 JB_String* JB_BA_Realloc_( JB_String* self, int Length ) {
     if (Length <= 0) {
@@ -36,17 +40,20 @@ void JB_Str_Constructor( JB_String* self ) {
 }
 
 
-JB_String* JB_Str_CopyFromPtr( MiniStr M ) {
-    JB_String* e = JB_Str_New( M.Length );
-    if (e and M.Length) {
-        CopyBytes(M.Addr, e->Addr, M.Length);
+JB_String* JB_Str_CopyFromPtr( u8* Addr, int N ) {
+    JB_String* e = JB_Str_New( N );
+    if (e and N) {
+        CopyBytes(Addr, e->Addr, N);
     }
     return e;
         
 }
 
 JB_String* JB_Str_Copy( JB_String* self ) {
-    return JB_Str_CopyFromPtr(*Mini(self));
+    if (self) {
+        return JB_Str_CopyFromPtr(self->Addr, self->Length);
+    }
+    return 0;
 }
 
 JB_String* JB_Str3(const char* c, int N) {

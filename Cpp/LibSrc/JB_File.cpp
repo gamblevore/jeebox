@@ -273,7 +273,7 @@ JB_String* JB_File_ReadAll( JB_File* self, bool IgnoreDoesntExist ) {
 }
 
 
-JB_String* JB_Str_ResolvePath( JB_String* self ) {
+JB_String* JB_Str_ResolvePath( JB_String* self, bool Err ) {
      char* realpath(const char* file_name, char* resolved_name);
      u8 Tmp[1024];
      
@@ -285,8 +285,8 @@ JB_String* JB_Str_ResolvePath( JB_String* self ) {
          if (Resolved) {
              // cool... a string.
              Result = JB_Str_FromCString_( Resolved );
-         } else {
-            JB_ErrorHandleFile(self, errno, "resolve path");
+         } else if (Err) {
+            JB_ErrorHandleFile(self, errno, "resolve path for");
          }
      }
      if (UserPath!=self) {
@@ -305,7 +305,7 @@ JB_String* JB_App__Path() {
         _NSGetExecutablePath(0, &N);
         JB_String* Tmp = JB_Str_New(N);
         _NSGetExecutablePath((char*)(Tmp->Addr), &N);
-        Result = JB_Str_ResolvePath(Tmp);
+        Result = JB_Str_ResolvePath(Tmp, true);
         JB_Decr(Tmp);
         JB_Incr(Result);
     }
@@ -602,7 +602,7 @@ int JB_File_Copy(JB_File* self, JB_File* To) {
 			N = N - 1;
 		}
         
-        JB_String* Result = JB_Str_CopyFromPtr( {(u8*)path, (int)N} );
+        JB_String* Result = JB_Str_CopyFromPtr( (u8*)path, (int)N );
 		free( path );
 		return Result;
 	}
@@ -675,7 +675,7 @@ JB_String* JB_File_CurrChild (JB_File* self) {
     u32 NameLength = (u32)strlen( ChildName );
 #endif
 
-    return JB_Str_CopyFromPtr( {(u8*)ChildName, (int)NameLength} );
+    return JB_Str_CopyFromPtr( (u8*)ChildName, (int)NameLength );
 }
 
 

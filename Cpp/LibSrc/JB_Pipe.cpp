@@ -13,6 +13,10 @@
 #include <execinfo.h>
 #include <signal.h>
 
+#include <string>
+#include <iostream>
+
+
 extern "C" {
 void JB_PrintStackTrace() {
     void* array[32];
@@ -27,6 +31,16 @@ void JB_PrintStackTrace() {
 
     // free( strings ); why free if we just exit?
 }
+
+
+JB_String* JB_App__Readline() {
+    std::string L;
+    if (std::getline(std::cin, L)) {
+        return JB_Str_CopyFromPtr((u8*)L.c_str(), (int)L.length());
+    }
+    return 0;
+}
+
 
 static void PrintStackTraceAndExit_(int Signal) {
     printf( "error: unhandled signal %i\n", Signal);

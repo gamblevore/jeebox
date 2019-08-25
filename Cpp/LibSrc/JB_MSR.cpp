@@ -96,7 +96,7 @@ JB_String* JB_MSR_ReplaceAll( Dictionary* Dict, JB_String* Data, FastString* fs_
 	
 	do {
         MiniStr FoundStr;
-        MiniStr Input = {SearchStart, (int)(SearchEnd - SearchStart)};
+        MiniStr Input = {(int)(SearchEnd - SearchStart), SearchStart};
         JB_String* Found = (JB_String*)JB_Dict_Scan_(Dict, Input, &FoundStr);
 
         if (!fs) {

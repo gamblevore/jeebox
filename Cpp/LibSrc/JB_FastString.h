@@ -15,10 +15,8 @@ typedef void (*FSEventResize)(FastString* self, int Needed);
 
 
 JBClass( FastString, JB_Object,
-    u8*				ResultPtr; // makes it compatible with string?
-	int 			Length;    // better to not bother! I think... we can dump ResultPtr + Length...
-                               // instead... use CurrPlace + After... this means less vars to update.
-                               // Even Reserved... we can remove.
+	int 			Length;
+    u8*				ResultPtr;
     int             WrittenLength;
 
     u16             Indent;    // Jeebox itself needs this.
@@ -26,7 +24,7 @@ JBClass( FastString, JB_Object,
     u8              IndentMul;
 
     JB_String*      Result;
-    int 			Reserved; // actual size of buffer.
+    int 			Reserved;  // actual size of buffer.
 
     JB_File*        File;
 );

@@ -26,6 +26,7 @@ JBClass( Dictionary0, Saveable,
     Dictionary*     Parent;
     u8              Letter;
     u8              Start;
+    u8              UserFlags; // not used by the dict itself.
     u8              Width;
     u16             Depth; 
     JB_Object*      InPlaceValue;

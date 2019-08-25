@@ -55,7 +55,7 @@ extern "C" {
     #define JB_DoAt(count) static int DB = 0; DB++; int lDB = DB; if (lDB == count) {debugger;}
     #define DEBUGONLY(x) x
 #else
-    #define debugger // would crash...
+    #define debugger// would crash...
     #define dbgexpect(test)
     #define dbgexpect2(test)
     #define JB_DoAt(count)
@@ -125,8 +125,7 @@ struct JB_Object {
     u32 RefCount;
 };
 
-struct JB_MemoryLayer  { // is actually a JBObject... but a clang bug won't let me use "JBClass(JB_MemoryLayer..."
-    u32                 RefCount;
+struct JB_MemoryLayer : JB_Object  { // is actually a JBObject... but a clang bug won't let me use "JBClass(JB_MemoryLayer..."
     u16                 HiddenRefCount;
     bool                IsActive;
     bool                DontAlloc;
@@ -149,6 +148,8 @@ struct JB_Class {
     JB_Class*           NextClass;
     JB_MemoryLayer      Memory;
     u16                 Size; // Move to JB_MemoryLayer for refcountless allocs. Or put a "UsesRefCounts" bool in MemLayer
+    bool                HasSubclasses;  // for optimised isa testing
+    u8                  ClassDepth; // for optimised isa testing
     u8*                 Name;
     JBObject_Behaviour* FuncTable;
     u8*                 SaveInfo;
@@ -246,8 +247,7 @@ u32 JB_ObjCount();
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-#define JB_Incr(Obj)        JB_Incr_((JB_Object*)(Obj))
+#define JB_Incr(Obj)        ({ auto _tMp_ = Obj; JB_Incr_(_tMp_); (_tMp_);})
 #define JB_Decr(Obj)        JB_Decr_((JB_Object*)(Obj))
 #define JB_SafeDecr(Obj)    JB_SafeDecr_((JB_Object*)(Obj))
 #define JB_FreeIfDead(Obj)  ((__typeof__(Obj))JB_FreeIfDead_((JB_Object*)(Obj)))
@@ -265,7 +265,24 @@ u32 JB_ObjCount();
         JB_FreeIfDead(_B);               \
     }                                    \
     JB_FreeIfDead(_A);                   \
-    _B;                                  \
+    (bool)(_B)                           \
+})
+
+#define JB_SafeOr(A, B)               ({ \
+    JB_Object* _T = (A);                 \
+    if (!_T) {                           \
+        _T = (B);                        \
+    }                                    \
+    JB_FreeIfDead(_T);                   \
+    (bool)(_T)                          \
+})
+
+#define JB_LongOr(A, B)               ({ \
+    JB_Object* _T = (A);                 \
+    if (!_T) {                           \
+        _T = (B);                        \
+    }                                    \
+    (_T)                                 \
 })
 
 

@@ -182,7 +182,7 @@ JB_String* JB_Lower() {
     return JB_Str_Range( JB_ASCII(), 'a', 'z' + 1 );
 }
 
-bool JB_IsLetterOrSpace(int N) {
+static bool IsLetterOrSpace_(int N) {
     return (N >= 'a' and N <= 'z') or (N >= 'A' and N <= 'Z') or N == 0x20;
 }
 
@@ -192,7 +192,7 @@ JB_String* JB_Str_FastLower(JB_String* self) {
         return JB_Str_LowerCase(self);
     }
     dbgexpect2(N <= 4 and N >= 1);
-    dbgexpect2(JB_IsLetterOrSpace(self->Addr[3]));
+    dbgexpect2(IsLetterOrSpace_(self->Addr[3]));
     int OldData = *((int*)self->Addr);
     int NewData = OldData | 0x20202020; // assumes ASCII.
     if (OldData != NewData) {

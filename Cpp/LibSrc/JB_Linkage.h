@@ -1,15 +1,14 @@
 
 
 extern "C" {
-    void JB_LibStartup();
-    int  JB_HostSet (int a); // interfacing...
-    void JB_HostClear (int a); // with host.
-    void JB_HostException (const char* msg); // with host.
     JB_String* JB_Platform();
     Array* JB_App__Args();
+    JB_String* JB_App__Readline(); 
     Dictionary* JB_App__Env();
     void JB_App__Quit (int Code);
     JB_String* JB_App__Path();
+    void JB_Rec__PrintErrors();
+    void JB_LibStartup();
     int JB_LibInit();
     int JB_LibShutdown();
     

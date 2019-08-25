@@ -2,10 +2,6 @@
 // Copyright, Theodore H. Smith 2019.
 // Released under jeebox-licence http://jeebox.org/licence.txt
 
-/*
-	Copyright (C) 2005 Theodore H. Smith.
-*/
-
 
 /*
     A tree good for fast insert, append, remove and with no cyclical refcounting.
@@ -90,7 +86,7 @@ static void Sanity_(RingTree* Curr) {
 
 
 static RingTree* LastSanity = 0;
-void JB_Tree_TotalSanity(RingTree* Root) {
+void JB_Ring_TotalSanity(RingTree* Root) {
     if (!Root) {
         Root = LastSanity;
         if (!Root) {
@@ -100,11 +96,11 @@ void JB_Tree_TotalSanity(RingTree* Root) {
         LastSanity = Root;
     }
     
-    RingTree* After = JB_Tree_FlatAfter(Root);
+    RingTree* After = JB_Ring_FlatAfter(Root);
     RingTree* Curr = Root;
     while (Curr != After) {
         AmContainedSanity_(Curr);
-        Curr = JB_Tree_FlatNext0(Curr);
+        Curr = JB_Ring_FlatNext0(Curr);
     }
 }
 #endif
@@ -171,11 +167,11 @@ static bool Remove_( RingTree* self ) {
 }
 
 
-bool JB_Tree_HasChildren( RingTree* self ) {
+bool JB_Ring_HasChildren( RingTree* self ) {
     return self->Child;
 }
 
-int JB_Tree_Count( RingTree* self ) {
+int JB_Ring_Count( RingTree* self ) {
 	Sanity_( self );
 	RingTree* c = self->Child;
 	
@@ -188,8 +184,8 @@ int JB_Tree_Count( RingTree* self ) {
 	return N;
 }
 
-bool JB_Tree_HasChildCount( RingTree* self, int HasCount ) {
-//    JB_Tree_Count(0); // stop compiler removing it
+bool JB_Ring_HasChildCount( RingTree* self, int HasCount ) {
+//    JB_Ring_Count(0); // stop compiler removing it
 	Sanity_( self );
 	RingTree* c = self->Child;
 	
@@ -203,7 +199,7 @@ bool JB_Tree_HasChildCount( RingTree* self, int HasCount ) {
 	return ( !c );
 }
 
-RingTree* JB_Tree_Last( RingTree* self ) {
+RingTree* JB_Ring_Last( RingTree* self ) {
 	RingTree* c = self->Child;
 
 	if ( c ) {
@@ -212,12 +208,12 @@ RingTree* JB_Tree_Last( RingTree* self ) {
 	return 0;
 }
 
-RingTree* JB_Tree_NextSib( RingTree* self ) {
+RingTree* JB_Ring_NextSib( RingTree* self ) {
 	Sanity_( self );
 	return self->Next;
 }
 
-RingTree* JB_Tree_PrevSib( RingTree* self ) {
+RingTree* JB_Ring_PrevSib( RingTree* self ) {
 	Sanity_( self );
 	RingTree* Prev = self->Prev;
 	
@@ -228,15 +224,15 @@ RingTree* JB_Tree_PrevSib( RingTree* self ) {
 	return 0;
 }
 
-RingTree* JB_Tree_First( RingTree* self ) {
+RingTree* JB_Ring_First( RingTree* self ) {
 	return self->Child;
 }
 
-RingTree* JB_Tree_Parent( RingTree* self ) {
+RingTree* JB_Ring_Parent( RingTree* self ) {
 	return self->Parent;
 }
 
-RingTree* JB_Tree_Root( RingTree* self ) {
+RingTree* JB_Ring_Root( RingTree* self ) {
 	Sanity_(self);
 	RingTree* p = self->Parent;
 	
@@ -249,7 +245,7 @@ RingTree* JB_Tree_Root( RingTree* self ) {
 }
 
 
-bool JB_Tree_IsRoot( RingTree* self ) {
+bool JB_Ring_IsRoot( RingTree* self ) {
 	Sanity_( self );
 	return ( !self->Parent );
 }
@@ -323,12 +319,12 @@ inline void Insert_( RingTree* pl, RingTree* rt, bool After ) {
 }
 
 // very cool
-RingTree* JB_Tree_FlatNext0( RingTree* self ) {
-	return JB_Tree_FlatNext( self, true ).Node;
+RingTree* JB_Ring_FlatNext0( RingTree* self ) {
+	return JB_Ring_FlatNext( self, true ).Node;
 }
 
 
-DepthNode JB_Tree_FlatNext( RingTree* self, bool AllowDown ) {
+DepthNode JB_Ring_FlatNext( RingTree* self, bool AllowDown ) {
 	Sanity_( self );
 	
 	RingTree* c = self->Child;
@@ -359,8 +355,8 @@ DepthNode JB_Tree_FlatNext( RingTree* self, bool AllowDown ) {
 }
 
 
-RingTree* JB_Tree_FlatAfter( RingTree* self ) {
-	return JB_Tree_FlatNext( self, false ).Node;
+RingTree* JB_Ring_FlatAfter( RingTree* self ) {
+	return JB_Ring_FlatNext( self, false ).Node;
 }
 
 
@@ -376,26 +372,26 @@ static void Move_( RingTree* Place, RingTree* Mover, bool After ) {
 }
 
 
-void JB_Tree_ParentSet( RingTree* self, RingTree* NewParent ) {
+void JB_Ring_ParentSet( RingTree* self, RingTree* NewParent ) {
 	if (NewParent) {
-		JB_Tree_LastSet( NewParent, self );
+		JB_Ring_LastSet( NewParent, self );
 	} else {
 		Remove_( self );
 	}
 }
  // 
 
-void JB_Tree_NextSibSet( RingTree* self, RingTree* Mover ) {
+void JB_Ring_NextSibSet( RingTree* self, RingTree* Mover ) {
 	Move_( self, Mover, true );
 }
 
 
-void JB_Tree_PrevSibSet( RingTree* self, RingTree* Mover ) {
+void JB_Ring_PrevSibSet( RingTree* self, RingTree* Mover ) {
 	Move_( self, Mover, false );
 }
 
 
-void JB_Tree_LastSet( RingTree* self, RingTree* New ) {
+void JB_Ring_LastSet( RingTree* self, RingTree* New ) {
 	Sanity_( self );
 	Sanity_( New );
 	if ( !PrepareMove_( self, New ) ) {
@@ -425,19 +421,19 @@ void JB_Tree_LastSet( RingTree* self, RingTree* New ) {
 
 
 
-void JB_Tree_FirstSet( RingTree* self, RingTree* Mover ) {
+void JB_Ring_FirstSet( RingTree* self, RingTree* Mover ) {
 	if ( Mover ) {
-        RingTree* First = JB_Tree_First( self );
+        RingTree* First = JB_Ring_First( self );
         if ( First ) {
-            JB_Tree_PrevSibSet( First, Mover );
+            JB_Ring_PrevSibSet( First, Mover );
         } else {
-            JB_Tree_LastSet( self, Mover );
+            JB_Ring_LastSet( self, Mover );
         }
     }
 }
 
 
-void JB_Tree_Constructor0( RingTree* self ) {
+void JB_Ring_Constructor0( RingTree* self ) {
     self->Parent = 0;
     self->Next = 0;
     self->Prev = 0;
@@ -445,7 +441,7 @@ void JB_Tree_Constructor0( RingTree* self ) {
 }
     
     
-void JB_Tree_Constructor( RingTree* self, RingTree* Parent ) {
+void JB_Ring_Constructor( RingTree* self, RingTree* Parent ) {
     self->Next = 0;
     self->Child = 0;
     self->Parent = Parent;
@@ -473,18 +469,18 @@ void JB_Tree_Constructor( RingTree* self, RingTree* Parent ) {
 }
     
 
-void JB_Tree_Dispose( RingTree* self ) {
+void JB_Ring_Dispose( RingTree* self ) {
 	int Ref = JB_RefCount(self); // we want this BEFORE we decr ourself!
 
 	if ( RingIsRoot_( self ) or (Remove_( self ) and Ref > 1) ) { // now we are the owner!
-		JB_Tree_Destructor( self );
-        JB_Tree_Constructor0(self);
+		JB_Ring_Destructor( self );
+        JB_Ring_Constructor0(self);
 		Sanity_(self);
 	}
 }
 
 
-void JB_Tree_Destructor( RingTree* self ) {
+void JB_Ring_Destructor( RingTree* self ) {
     dbgexpect(!self->Parent);
 	RingTree* Curr = self->Child;
 

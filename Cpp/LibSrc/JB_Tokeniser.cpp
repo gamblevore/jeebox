@@ -209,7 +209,7 @@ Message* JB_Tk__Process( u32 AskBits, long Mode ) {
 	}
 	
 	u32 Start = JB_Tk__CleanSpacesSub( );
-    MiniStr AL = *Mini(self->Data) + (int)Start;
+    MiniStr AL = Mini(self->Data,Start);
     ObjLength Found = JB_Dict_LongestKey_( self->WordDict, AL );
     TokHan* FatData = (TokHan*)Found.Obj;
     

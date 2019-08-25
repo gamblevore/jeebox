@@ -39,8 +39,7 @@ JBClass( JB_File, JB_Object,
 
 
 JB_String* JB_File__FileData( JB_String* Path );
-void ED_FS_AppendPathsRecursive( FastString* self, JB_String* EDPath, bool Prepend, long Sep );
-
+int JB_File_WritePng(void* file, int w, int h, const void *data);
 JB_String* JB_File_CurrChild (JB_File* self);
 long JB_File_Test( );
 JB_String* JB_File_Render(JB_File* self, FastString* fs);
@@ -49,7 +48,7 @@ bool JB_File_ListStart( JB_File* self );
 JB_Object JB_File__File( JB_File* self );
 void JB_FS_AppendRead(FastString* self, int fd);
 
-JB_String* JB_Str_ResolvePath( JB_String* self );
+JB_String* JB_Str_ResolvePath( JB_String* self, bool err );
 int JB_Str_CopyFile(JB_String* self, JB_String* To);
 int JB_File_Copy(JB_File* self, JB_File* To);
 u8* FastShellPath_( JB_String* Path, u8* WriteTo );

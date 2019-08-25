@@ -7,6 +7,8 @@ project(Jeebox VERSION 1.2.3 DESCRIPTION "Extensible language that can describe 
 
 if (UNIX AND NOT APPLE)
 	set(LINUX TRUE)
+elseif(APPLE)
+	SET( CMAKE_CXX_COMPILER "c++" ) #more pointless issues to solve
 endif()
 set(Root ${CMAKE_SOURCE_DIR})
 set(JbCpp ${Root}/Cpp)
@@ -20,7 +22,7 @@ set(AllocSrc ${JbCpp}/LibSrc/JB_Alloc.cpp)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS YES CACHE BOOL "Export all symbols")
 
 add_compile_definitions(TARGET_UNIX=1 AS_LIBRARY=1)
-add_compile_options(${ARCH} ${DEBUG} -Wno-return-type-c-linkage -Wno-invalid-source-encoding -std=gnu++14  -fno-strict-aliasing -fvisibility=hidden -march=core2 -mfpmath=sse -mmmx -msse -msse2 -msse4.1 -msse4.2 -mtune=native -Os)
+add_compile_options(${ARCH} ${DEBUG} -Wno-return-type-c-linkage -Wno-invalid-source-encoding -std=gnu++14 -stdlib=libc++ -fno-strict-aliasing -fvisibility=hidden -march=core2 -mfpmath=sse -mmmx -msse -msse2 -msse4.1 -msse4.2 -mtune=native -Os)
 add_link_options(${ARCH} -flto)
 
 

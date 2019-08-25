@@ -11,8 +11,8 @@
 extern "C" {
 
 JBClass( JB_String, JB_Object,
-    u8*			   Addr;
     int            Length;
+    u8*			   Addr;
 );
 
 

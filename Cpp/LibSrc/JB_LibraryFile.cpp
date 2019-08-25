@@ -41,7 +41,7 @@ JB_String* JB_cPath_ReadAll (const char* path, bool AllowMissingFile, int MaxFil
         if (!Result) {
             jb_lib_file_err(path, "allocate memory for");
         } else {
-            int Size = fread(JB_Str_Address(Result), 1, N, fp);
+            int Size = (int)fread(JB_Str_Address(Result), 1, N, fp);
             if (ferror(fp)) {
                 jb_lib_file_err(path, "read");
                 JB_Delete((FreeObject*)Result); Result = 0;

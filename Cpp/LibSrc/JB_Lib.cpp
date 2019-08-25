@@ -65,8 +65,9 @@ JBClassPlaceSaver( Saveable,     0,                     0,                      
 
 JBClassPlace( FastString,       JB_FS_Destructor,      JB_AsClass(JB_Object),      JB_Str_Render );
 JBClassPlace( ByteMap,          0,                     JB_AsClass(JB_Object),      JB_BM_Render );
-JBClassPlace( RingTree,         JB_Tree_Destructor,    JB_AsClass(Saveable),       0 );
+JBClassPlace( RingTree,         JB_Ring_Destructor,    JB_AsClass(Saveable),       0 );
 JBClassPlace( TokHan,           0,                     JB_AsClass(JB_Object),      0 );
+
 
 ByteMap*            WhiteSpace_;
 JB_StringC*         EmptyString_;
@@ -75,12 +76,12 @@ JB_Class*           ClassList;
 void                JB_Dict__Init();
 char**              ArgV_; // externed...
 static char**       Env_;
-extern bool JB_ErrorsPrinted;
 
 
 
 
 Array* JB_App__Args() { 
+//    const char* aasds[] = {"a", "b", "c"};
     static Array* App_Args;
     if (!App_Args) {
         App_Args = JB_Str_ArgV(ArgV_ + 1); // seems to take no ram?
@@ -99,8 +100,6 @@ Dictionary* JB_App__Env() {
     }
     return App_Env;
 }
-
-
 
 
 int JB_LibInit() {
@@ -129,9 +128,10 @@ int JB_LibInit() {
 }
 
 
+extern bool JB_ErrorsPrinted; // terminals complain if printerror without return -1;
 int JB_LibShutdown() {
     JB_MemFree(JB_MemStandardWorld());
-    return -(JB_ErrorsPrinted);
+    return -JB_ErrorsPrinted;
 }
 
 
@@ -140,6 +140,7 @@ void JB_App__Quit (int Code) {
     exit(Code);
 }
 
+
 int main (int ArgC, char** ArgV, char** Env) {
     ArgV_ = ArgV;
     Env_ = Env;
@@ -147,9 +148,8 @@ int main (int ArgC, char** ArgV, char** Env) {
     int Err = JB_LibInit();
     if (Err) {return Err;}
     Err = JB_Main();
+    JB_Rec__PrintErrors();
     int StopErr = JB_LibShutdown();
-//    Err |= JB_LibInit(); // i think the default blocks need resetting? we can do that?
-//    StopErr |= JB_LibShutdown();
     if (!Err) {Err = StopErr;}
     return Err;
 }

@@ -445,15 +445,17 @@ struct GameText {
 
 //////////////////
 struct GameMiniKey {
-    u16              FramesDelay : 6;
-    u16              ToRemove    : 1;
-    u16              ScanCode    : 9;
+    u16              FramesDelay;
+    u16              ToRemove    : 1; // only needs 1 but whatever.
+    u16              ScanCode    : 15;
     u32              FrameCount;
 };
 
+
+#define kMaxDownKeys 8
 struct GameKeyManager {
     short              Count;
-    GameMiniKey        DownKeys[5];
+    GameMiniKey        DownKeys[kMaxDownKeys];
 
     int Find(u16 Scan);
     void Add( u16 H );

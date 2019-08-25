@@ -29,7 +29,7 @@ JB_String* JB_Str_FromCString_( const char* c );
 JB_String* JB_Str_ZeroTerm(JB_String* self);
 bool JB_Str_NeedsZeroTerm(JB_String* self);
 JB_StringShared* JB_Str_FromPtr( MiniStr M );
-JB_String* JB_Str_CopyFromPtr( MiniStr M );
+JB_String* JB_Str_CopyFromPtr( u8* Addr, int N );
 JB_String* JB_Str_Copy( JB_String* self );
 void JB_Str_Destructor(JB_StringShared* self);
 void JB_XStr_Destructor(JB_StringExternal* self);

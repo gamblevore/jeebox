@@ -12,17 +12,19 @@ struct {
     bool GotAny;
     bool quiet;
     bool xml;
-    bool NoParseOut;
+    bool ReRender;
+    bool NoRenderOut;
 } Options;
 
 const char* kHelpStr = R"(Just a simple util for Jeebox.
     Usage: jb /path/to/jb_file.txt
     -r = turn readable-ast into jeebox-syntax
     -i = multiple lines of input
-    -n = no parse output
+    -n = no render output
     -s = string escape
     -d = show input
     -q = less noisy
+    -j = print as Jeebox instead of readable-syntax
     -x = print as XML
 )";
 
@@ -59,10 +61,22 @@ void JeeboxToXML (Message M, int Depth=0) {
 }
 
 
+
+void Whisper (const char* s, bool Quiet) {
+    if (!Quiet) {
+        std::cout << s;
+    }
+}
+
+void Whisper (const char* s) {
+    Whisper(s, Options.quiet);
+}
+
+
 void PrintReadable(String A, String Path) {
     std::cout << "\n";
     if (Options.show_input) {
-        if (!Options.quiet)             std::cout << " :: Displaying input. :: \n";
+        Whisper(" :: Displaying input. :: \n");
         A.printline();
     }
     if (Options.string) {
@@ -70,17 +84,24 @@ void PrintReadable(String A, String Path) {
         
     } else if (Jeebox::ok()) { // could be a file-read error!
         Message s = A.parse(Path);
-        if (Options.readable)           s = s.convertreadable();
+        if (Options.readable) {
+            s = s.convertreadable();
+        }
         if (!Jeebox::ok()) {
             // fall through
         } else if (Options.xml) {
             JeeboxToXML(s);
-        } else if (Options.readable) {
-            if (!Options.quiet)         std::cout << " :: Converting back to jeebox-syntax! :: \n";
-            if (!Options.NoParseOut)    s.render().printline();
-        } else {
-            if (!Options.quiet)         std::cout << " :: Displaying the parse tree for you! :: \n";
-            if (!Options.NoParseOut)    s.renderreadable().printline();
+        } else if (!Options.NoRenderOut) {
+            if (Options.readable) {
+                Whisper(" :: Converting back to jeebox-syntax! :: \n");
+                s.render().printline();
+            } else if (Options.ReRender) {
+                Whisper(" :: Re-rendering as jeebox! :: \n");
+                s.render().printline();
+            } else {
+                Whisper(" :: Displaying the parse tree for you! :: \n");
+                s.renderreadable().printline();
+            }
         }
     }
     
@@ -91,15 +112,15 @@ void PrintReadable(String A, String Path) {
 void ParseStdIn() {
     if (!Options.GotAny) {
         bool Quiet = Options.quiet; 
-        if (!Quiet) { std::cout << " :: Type lines of Jeebox, type empty line when you are done :: \n\n";}
+        Whisper(" :: Type lines of Jeebox, type empty line when you are done :: \n\n");
         Options.quiet = true; // stupid otherwise.
         std::string input_line;
         while (std::getline(std::cin, input_line) and input_line.size()) {
             PrintReadable(String(input_line), "");
-            if (!Quiet) { std::cout << " :: Enter next line :: \n\n";}
+            Whisper(" :: Enter next line :: \n\n", Quiet);
         }
     } else {
-        if (!Options.quiet) { std::cout << " :: Type some jeebox and press control-D once you are done! :: \n\n";}
+        Whisper(" :: Type some jeebox and press control-D once you are done! :: \n\n");
         std::string std_string(std::istreambuf_iterator<char>(std::cin), {}); // C++ is so baaad
         PrintReadable(String(std_string), "");
     }
@@ -122,8 +143,9 @@ void HandleSwitch(const char* s) {
         } else if (c == "q") {Options.quiet=true;
         } else if (c == "i") {Options.Stdin=true; Options.GotAny=true;
         } else if (c == "r") {Options.readable=true; 
-        } else if (c == "n") {Options.NoParseOut=true; 
+        } else if (c == "n") {Options.NoRenderOut=true; 
         } else if (c == "x") {Options.xml=true; 
+        } else if (c == "j") {Options.ReRender=true; 
         } else if (c == "h") {std::cout << kHelpStr; exit(0); 
         } else {
             std::cerr << "Unrecognised switch: " << s << "\n" << kHelpStr;

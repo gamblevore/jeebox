@@ -12,8 +12,14 @@
 
 extern "C" {
 
-#define kArrayLengthMax (1024*1024) // 4MB, 1 million length!
+#ifndef ENV64BIT
+    #define kArrayLengthMax (1024*1024*512) // 512MB
+#else
+    #define kArrayLengthMax (2147483644) // 2GB
+#endif
 #define PtrSize (sizeof(void*))
+
+
 inline MArray mrealloc(Array* self, u32 N) {
     MArray M = self->ArrData;
     if (N > kArrayLengthMax) {

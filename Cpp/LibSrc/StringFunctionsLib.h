@@ -63,7 +63,7 @@ bool StrEqualsLex( MiniStr S, MiniStr F );
 bool StrEquals( MiniStr A, MiniStr B );
 inline bool OffsetEquals_( u8* S, MiniStr F );
 bool OffsetEqualsLex( u8* S, MiniStr F );
-int OffsetCompareLex( MiniStr* S, MiniStr* F );
+int OffsetCompareLex( MiniStr S, MiniStr F );
 
 bool IsAscii_(JB_String* e);
 bool IsAsciiSub_(u8* SelfPos, u32 Length);
@@ -72,28 +72,6 @@ bool IsAsciiSub_(u8* SelfPos, u32 Length);
 // StringAlterCopy
 
 void SwapShortEndian_(u8* CurrShort, u8* WriteTo, int Len);
-static JB_String* Swap_(u8* source, int Len, JB_String* u);
-static void SwapM_(JB_String* self);
-
-
-
-
-
-
-// StringEncoding
-
-static int ReadBOM_(u8* StartPos, int Len, int* Flags );
-
-
-
-
-// StringVerify
-
-static int VerifyUTF16_(u16* source, u16* sourceEnd);
-static int VerifyUTF8_(u8* source, u8* sourceEnd);
-static int Verify8_(JB_String* self); // blah
-static int Verify16(JB_String* self);
-static int Verify32_(JB_String* self);
 
 
 

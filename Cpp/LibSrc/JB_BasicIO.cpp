@@ -17,7 +17,7 @@ extern "C" {
 
 int StdOutFD_ = 1;
 int StdErrFD_ = 2;
-extern bool JB_ErrorsPrinted;
+bool JB_ErrorsPrinted = false;
    
 void JB_Pipe__StdErrorSet(int F) {
     StdErrFD_ = F;
@@ -32,15 +32,23 @@ void JB_Pipe__StdOutSet(int F) {
 static void MyWrite_(int F, const char* s, int N) {
     write(F, s, N); // avoid writing to files if it's just jeebox!
 }
+
 void JB_Str_PrintError(JB_String* s) {
-    JB_ErrorsPrinted = true;
     JB_Str_PrintTo(s, StdErrFD_);
+    JB_ErrorsPrinted = true;  // terminals complain if printerror without return -1;
 }
+
 #else
+
 static void MyWrite_(int F, const char* s, int N) {
     printf("%.*s", N, s);
 }
+void JB_Str_PrintError(JB_String* s) {
+    JB_Str_PrintTo(s, StdErrFD_);
+}
+
 #endif
+
 
 void JB_Str_PrintTo(JB_String* s, int Num) {
     int N = JB_Str_Length( s );

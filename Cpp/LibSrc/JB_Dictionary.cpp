@@ -105,7 +105,7 @@ void DictValueRemove_(JB_Object** Place) {
 
 
 static MiniStr LeafKey (DictionaryLeaf* Leaf) {
-    return *Mini(Leaf->Key) + Leaf->Depth;
+    return Mini(Leaf->Key, Leaf->Depth);
 }
 
 inline FindResult BeginFind_(Dictionary* self, MiniStr key) {
@@ -309,7 +309,7 @@ static void WriteLeaf_(FindResult& F, JB_String* Key) {
     
 static void WriteItem_(FindResult& F, JB_String* NewKey, Dictionary* P) {
     // write place into F... May be a leaf, branch or value...
-    MiniStr S = *Mini(NewKey) + P->Depth;
+    MiniStr S = Mini(NewKey, P->Depth);
     F.Parent = P;
     if (!S.Length) {
         F.Place = &P->InPlaceValue;
@@ -521,7 +521,7 @@ bool TrySet_(FindResult& F, JB_String* Key) {
 
 bool CanFind_(Dictionary* self, JB_String* key, FindResult* F) {
     if (key and self) {
-        *F = BeginFind_( self,    *Mini(key) );
+        *F = BeginFind_( self, Mini(key, 0) );
         JB_Dict_Value_(*F);
         return !F->Data.Length;
     }
@@ -531,17 +531,16 @@ bool CanFind_(Dictionary* self, JB_String* key, FindResult* F) {
 
 bool CanSet_(Dictionary* self, JB_String* key, FindResult* F) {
     if (key and self) {
-        *F = BeginFind_( self,    *Mini(key) );
+        *F = BeginFind_( self,  Mini(key, 0) );
         JB_Dict_Value_(*F);
         return TrySet_(*F, key);
-        // The stolen-energy doesn't understand... and never will. until THEY are drained.
     }
     return false;
 }
 
 
 JB_String* JB_Str_UniqueSplit(JB_String* self, int StartOff, int Length, Dictionary* D) {
-    MiniStr S = {self->Addr + StartOff, Length};
+    MiniStr S = {Length, self->Addr + StartOff};
     FindResult F = BeginFind_( D, S );
     JB_Dict_Value_(F);
     if (!F.Data.Length and F.Obj) { // Found
@@ -549,7 +548,7 @@ JB_String* JB_Str_UniqueSplit(JB_String* self, int StartOff, int Length, Diction
     }    
     
     // not found, so... copy, set, and return? makes sense?
-    JB_String* key = JB_Str_CopyFromPtr(S);
+    JB_String* key = JB_Str_CopyFromPtr(S.Addr, S.Length);
     if (!TrySet_(F, key)) {
         debugger;
         JB_SetRef(key, 0);
@@ -666,7 +665,7 @@ ObjLength JB_Dict_LongestKey_( Dictionary* Curr, MiniStr Data ) {
                     continue;
                 }
                 MiniStr Key = LeafKey((DictionaryLeaf*)Curr); // So... how to compare? I guess let's make a smaller string?
-                MiniStr SmallerData = {Data.Addr + i, Min(Key.Length, Data.Length)};
+                MiniStr SmallerData = {Min(Key.Length, Data.Length), Data.Addr + i};
                 if (StrEquals(Key, SmallerData)) {
                     Take_(Result, ((DictionaryLeaf*)Curr)->Value, SmallerData.Length + i);
                 }
@@ -700,7 +699,7 @@ JB_Object* JB_Dict_Scan_(Dictionary* self, MiniStr Data, MiniStr* Result) {
     u8* ReadEnd = Read + Data.Length;
     
     for ( ; Read < ReadEnd; Read++ ) {
-        ObjLength Found = JB_Dict_LongestKey_( self, {Read, (int)(ReadEnd-Read)} );
+        ObjLength Found = JB_Dict_LongestKey_( self, {(int)(ReadEnd-Read), Read} );
         if ( Found.Obj ) {
             Result->Addr = Read;
             Result->Length = Found.Length;

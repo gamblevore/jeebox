@@ -164,6 +164,53 @@ ByteMap* JB_BM_( JB_String* a, JB_String* b ) {
 
 
 
+
+
+// over engineered? unused?
+int JB_BM_Count(ByteMap* self, JB_String* Source) {
+	u8* Cache = self->Cache;
+    int N = JB_Str_Length(Source);
+    int Count = 0;
+	for (int i = 0; i < N; i++) {
+		if ( BM_In_( Cache, Source->Addr[i] ) ) {
+            Count++;
+		}
+	}
+
+	return Count;
+}
+
+
+JB_String* JB_BM_Remove(ByteMap* self, JB_String* Source, FastString* fs_in) {
+    int N = JB_Str_Length(Source);
+    if (JB_Str_CharSet(Source, 0, N, self, false) == -1) {
+        // entirely in. append entire thing.
+        if (!fs_in) {
+            return Source;
+        }
+        JB_FS_AppendString(fs_in, Source);
+        return 0;
+    }
+    
+	u8* Cache = self->Cache;
+    FastString* fs = 0;
+    
+	for (int i = 0; i < N; i++) {
+        u8 B = Source->Addr[i];
+		if ( BM_Out_( Cache, B ) ) {
+            if (!fs) {
+                fs = JB_FS__FastNew(fs_in);
+            }
+            JB_FS_AppendByte(fs, B); 
+		}
+	}
+
+	JB_String* Result = JB_FS_SmartResult(fs, fs_in);
+    JB_FreeIfDead(fs);
+    return Result;
+}
+
+
 } // 
 
 

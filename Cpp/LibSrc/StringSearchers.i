@@ -133,14 +133,13 @@ bool StrEqualsLex( MiniStr S, MiniStr F ) {
 
 
 int JB_Str_DiffAt( JB_String* S, JB_String* F ) {
-    return StrDiffAt( *Mini(S), *Mini(F) );
+    return StrDiffAt( Mini(S), Mini(F) );
 }
 
 int StrDiffAt( MiniStr S, MiniStr F ) {
     u8* bS = S;
     u8* bF = F;
     int N = Min(S.Length, F.Length);
-    int C = 0;
 
     for (int C = 0;  C < N;  C++) {
         if (*bS++ != *bF++) {
@@ -155,9 +154,7 @@ int StrDiffAt( MiniStr S, MiniStr F ) {
     return 0;
 }
 
-inline int OffsetCompare_( MiniStr* S_, MiniStr* F_ ) {
-    MiniStr S = *S_;
-    MiniStr F = *F_;
+inline int OffsetCompare_( MiniStr S, MiniStr F ) {
 	int UseLen = Min( S.Length, F.Length );
 	
 	if (S.Addr != F.Addr) {
@@ -183,9 +180,9 @@ inline int OffsetCompare_( MiniStr* S_, MiniStr* F_ ) {
 }
 
 
-int OffsetCompareLex( MiniStr* S_, MiniStr* F_ ) {
-    MiniStr S = *S_;
-    MiniStr F = *F_;
+int OffsetCompareLex( MiniStr S_, MiniStr F_ ) {
+    MiniStr S = S_;
+    MiniStr F = F_;
 	int UseLen = Min(S.Length, F.Length);
 
 	if (S.Addr != F.Addr) {
@@ -213,9 +210,9 @@ bool JB_Str_Equals(JB_String* self, JB_String* find, bool Lexer) {
 	}
 
 	if ( ! Lexer ) {
-		return StrEquals( *Mini(self), *Mini(find) );
+		return StrEquals( Mini(self), Mini(find) );
 	} else {
-		return StrEqualsLex( *Mini(self), *Mini(find) );
+		return StrEqualsLex( Mini(self), Mini(find) );
 	}
 }
 
@@ -244,9 +241,9 @@ bool JB_Str_MidEquals(JB_String* self, int BeginOff, JB_String* find, bool Lexer
 
 	MiniStr S = ReadAddrs_( self,  BeginOff,  BeginOff + find->Length );
 	if ( Lexer ) {
-		return StrEqualsLex( *Mini(find), S );
+		return StrEqualsLex( Mini(find), S );
 	} else {
-		return StrEquals( *Mini(find), S );
+		return StrEquals( Mini(find), S );
 	}
 }
 
@@ -299,7 +296,7 @@ int JB_Str_InStr( JB_String* self, JB_String* f, int BeginOff, int AfterOff, boo
 	if ( f and self ) {
         MiniStr S = ReadAddrs_( self, BeginOff, AfterOff );
         if ( S.Forward() ) {
-            MiniStr F = *Mini( f );
+            MiniStr F = Mini( f );
             int Dir = 1;
             return ResultFix_( SearchForward_( S, F, lex ), self, Dir );
         }
@@ -375,30 +372,57 @@ int JB_Str_ByteValue(JB_String* self, int offset) {
 }
 
 
-static double ParseDouble_(u8** ReadPlaceOut, u8* ReadEnd, bool IsFrac, Message* Where) {
+
+#define kParseEnd_Dot 1
+#define kParseEnd_E 2
+#define kParseEnd_Both 3
+
+void JB_Err__CantParseNum(Message* Where, JB_String* self, int Pos);
+void ParseNumErr_( JB_String* self, u8* BadPos, Message*& Where ) {
+    require0(Where);
+    
+    int CharPos = (int)(BadPos - self->Addr - 1);
+    JB_Err__CantParseNum(Where, self, CharPos);
+    
+    Where = nil;
+}
+
+
+static double ParseDouble_(JB_String* Str, u8** ReadPlaceOut, u8* ReadEnd, bool IsFrac, Message*& Where, int Endable) {
 	double Value = 0;
 	double Mul = 10;
 	double Div = 0.1;
 	u8* Read = *ReadPlaceOut;
 
 	while ( Read < ReadEnd ) {
-		int c = *Read++;
-		c = c - '0';
-		if ((u32)c > 9) break;
+		int ch = *Read++;
+        if (ch != '_') {
+            int c = ch - '0';
+            if ((u32)c > 9) {
+                if (ch == 'e' and Endable&kParseEnd_E) {
+                    ; //
+                } else if (ch == '.' and Endable&kParseEnd_Dot) {
+                    ; //
+                } else {
+                    ParseNumErr_( Str, Read, Where );
+                }
+                break;
+            };
 
-		double num = (double)c;
-		if ( IsFrac ) {
-			Value = Value + num*Div;
-			Div = Div * 0.1;
-		} else {
-			Value = Value*Mul + num;
-		}
+            double num = (double)c;
+            if ( IsFrac ) {
+                Value = Value + num*Div;
+                Div = Div * 0.1;
+            } else {
+                Value = Value*Mul + num;
+            }
+        }
 	}
 
 	*ReadPlaceOut = Read;
 	return Value;
 }
-	
+
 
 double JB_Str_TextDouble(JB_String* self, Message* Where) {
 	int Length = JB_Str_Length(self);
@@ -411,17 +435,16 @@ double JB_Str_TextDouble(JB_String* self, Message* Where) {
 	bool IsMinus = (ReadPlace[0] == '-');
 	if (IsMinus) ReadPlace++;
 
-	double Value = ParseDouble_( &ReadPlace, ReadEnd, false, Where );
+	double Value = ParseDouble_( self, &ReadPlace, ReadEnd, false, Where, kParseEnd_Both );
 
 	if (ReadPlace[-1] == '.') {
-		Value += ParseDouble_( &ReadPlace, ReadEnd, true, Where );
+		Value += ParseDouble_( self, &ReadPlace, ReadEnd, true, Where, kParseEnd_E );
 	}
 	if (ReadPlace[-1] == 'e') {
 		bool ExpMinus = (ReadPlace[0] == '-');
 		if (ExpMinus) ReadPlace++;
-		double Exp = ParseDouble_( &ReadPlace, ReadEnd, false, Where );
+		double Exp = ParseDouble_( self, &ReadPlace, ReadEnd, false, Where, 0 );
 		if (ExpMinus) Exp = -Exp;
-// double __cdecl pow(double, double);
 		Value = Value * pow(10, Exp);
 	}
 	
@@ -430,22 +453,10 @@ double JB_Str_TextDouble(JB_String* self, Message* Where) {
 }
 
 
-
-void JB_Err__CantParseNum(Message* Where, JB_String* self, int Pos);
-inline void ParseNumErr_( JB_String* self, u8* BadPos, Message*& Where ) {
-    require0(Where);
-    
-    int CharPos = (int)(BadPos - self->Addr - 1);
-    JB_Err__CantParseNum(Where, self, CharPos);
-    
-    Where = nil;
-}
-
-
 static s64 ParseNumbers_( JB_String* self, int AsHex, Message* Where ) {
 // assumes valid input
     require (JB_Str_Length(self));
-    MiniStr S = {self->Addr, self->Length};
+    MiniStr S = {self->Length, self->Addr};
 
 	bool IsMinus = (S.Curr() == '-');
 	if (IsMinus) {
@@ -479,6 +490,7 @@ static s64 ParseNumbers_( JB_String* self, int AsHex, Message* Where ) {
             } else if (c != '_') {
                 BadPos:;
                 ParseNumErr_(self, S.Addr, Where);
+                break;
             }
         }
 	}
