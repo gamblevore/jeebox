@@ -33,7 +33,6 @@ extern "C" {
 // these could be moved into an object for concurrency... make it thread-local... function passes it to "self" param...
         int					ErrorStart;
 		
-		JB_String*          Data;
 		int					NextStart;
         bool                ErrorImprove;
 	);

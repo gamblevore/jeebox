@@ -28,10 +28,7 @@ int JB_Tk__ErrorStart () {
     return self->ErrorStart;
 }
 
-JB_String* JB_Tk__Data () {
-    return self->Data;
-}
-
+extern JB_String* JB__Tk_Data;
 void JB_Tk__ErrorStartSet (int Start) {
     self->ErrorStart = Start;
 }
@@ -48,7 +45,7 @@ Message* JB_Tk__Avoid () {
 inline fpTok FindBits_( TokHan* FatData, u32 AskBits );
 
 inline bool Running_( u32 NextStart ) {
-	return  (NextStart < self->Data->Length)  and  (self->ErrorStart < 0);
+	return  (NextStart < JB__Tk_Data->Length)  and  (self->ErrorStart < 0);
 }
 
 
@@ -77,7 +74,7 @@ bool JB_Tk__CppInited() {
 
 
 void JB_Tk__Clear(  ) { // never called
-	JB_ClearRef( self->Data );
+	JB_ClearRef( JB__Tk_Data );
 	JB_ClearRef( self->WordDict );
     JB_Zero(self);
 }
@@ -86,9 +83,9 @@ void JB_Tk__Clear(  ) { // never called
 
 
 byte JB_Tk__NextByte() {
-    byte* B = self->Data->Addr; 
+    byte* B = JB__Tk_Data->Addr; 
     if (B) {
-        int L = self->Data->Length;
+        int L = JB__Tk_Data->Length;
         int N = self->NextStart;
         if (N < L) {
             byte b = B[N];
@@ -108,10 +105,10 @@ bool JB_Tk__GetNextByte(byte b) {
 
 
 void JB_Tk__NextStartSet( u32 NextStart ) {
-	if ( NextStart < self->Data->Length ) { // 0 - 1 = 4billion!
+	if ( NextStart < JB__Tk_Data->Length ) { // 0 - 1 = 4billion!
 		self->NextStart = NextStart;
 	} else {
-        self->NextStart = self->Data->Length; // Not Running
+        self->NextStart = JB__Tk_Data->Length; // Not Running
 	}
 }
 
@@ -125,7 +122,7 @@ void JB_Tk__StartParse( JB_String* Data ) {
 		Data = JB_Str_Empty();
 	}
 
-	JB_SetRef( self->Data, Data );
+	JB_SetRef( JB__Tk_Data, Data );
 	
 	self->NextStart = 0;
 	self->ErrorStart = -1;
@@ -209,7 +206,7 @@ Message* JB_Tk__Process( u32 AskBits, long Mode ) {
 	}
 	
 	u32 Start = JB_Tk__CleanSpacesSub( );
-    MiniStr AL = Mini(self->Data,Start);
+    MiniStr AL = Mini(JB__Tk_Data,Start);
     ObjLength Found = JB_Dict_LongestKey_( self->WordDict, AL );
     TokHan* FatData = (TokHan*)Found.Obj;
     
@@ -246,7 +243,7 @@ Message* JB_Tk__Process( u32 AskBits, long Mode ) {
 ////////////////////////////////////////////////////////////////////////////////
 
 int JB_Tk__CleanSpacesSub (  ) {
-	JB_String* D = self->Data;
+	JB_String* D = JB__Tk_Data;
     u8* A = D->Addr;
 	int S = self->NextStart;
 	int N = D->Length;

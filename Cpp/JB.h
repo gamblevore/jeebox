@@ -36,11 +36,15 @@ struct JB_Class;
 
 struct FreeObject;
 
+struct iPoint2;
+
 struct LLRef;
 
 struct ObjectLoader;
 
 struct ObjectSaver;
+
+struct Point2;
 
 struct Random;
 
@@ -164,6 +168,11 @@ typedef void (*__Saveable_SaveWrite__)(Saveable* self, ObjectSaver* Saver);
 
 //// HEADER Proj.h
 
+struct iPoint2 {
+	int X;
+	int Y;
+};
+
 struct LLRef {
 	JB_LinkedList* First;
 };
@@ -181,6 +190,11 @@ struct ObjectSaver {
 	FastString* Dest;
 	JB_Object* CantSaveThis;
 	JB_Object* Root;
+};
+
+struct Point2 {
+	float X;
+	float Y;
 };
 
 struct Random {
@@ -339,12 +353,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_170)
-#define kJB__ErrorColors_error (JB_str_171)
-#define kJB__ErrorColors_good (JB_str_172)
-#define kJB__ErrorColors_normal (JB_str_169)
-#define kJB__ErrorColors_underline (JB_str_172)
-#define kJB__ErrorColors_warn (JB_str_173)
+#define kJB__ErrorColors_bold (JB_str_175)
+#define kJB__ErrorColors_error (JB_str_176)
+#define kJB__ErrorColors_good (JB_str_177)
+#define kJB__ErrorColors_normal (JB_str_174)
+#define kJB__ErrorColors_underline (JB_str_177)
+#define kJB__ErrorColors_warn (JB_str_178)
 //
 
 
@@ -389,6 +403,7 @@ extern Dictionary* JB__Constants_UnEscapeStr;
 
 // module: Tk
 extern int JB__Tk_BaseMessagePosition;
+extern JB_String* JB__Tk_Data;
 extern Message* JB__Tk_ErrNode;
 extern Dictionary* JB__Tk_ErrorNames;
 #define kJB__Tk_adjectiveop (1)
@@ -441,7 +456,7 @@ extern Array* JB__FuncArray_;
 extern Dictionary* JB__SyxDict_;
 extern JB_String* JB_JSONTest;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_168)
+#define kJB_SaverStart1 (JB_str_173)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -630,6 +645,7 @@ extern JB_String* JB_str_263;
 extern JB_String* JB_str_264;
 extern JB_String* JB_str_265;
 extern JB_String* JB_str_266;
+extern JB_String* JB_str_267;
 extern JB_String* JB_str_27;
 extern JB_String* JB_str_28;
 extern JB_String* JB_str_29;
@@ -799,6 +815,9 @@ extern Syntax* JB_SyxUnit;
 // module: IntRange_
 
 
+// module: iPoint2_
+
+
 // module: LLRef_
 
 
@@ -820,6 +839,9 @@ extern SaverClassInfo* JB__Saver_SaveableList;
 //
 
 
+
+
+// module: Point2_
 
 
 // module: Random_
@@ -1167,6 +1189,8 @@ Message* JB_API__Parse(JB_String* s, JB_String* path);
 // Constants
 int JB_Constants__Init_();
 
+void JB_Constants__InitConstants();
+
 JB_String* JB_Constants__Test();
 
 
@@ -1262,7 +1286,7 @@ Message* JB_Tk__fShebang(int Start);
 
 Message* JB_Tk__fStatementOpen(int Start);
 
-Message* JB_Tk__fString(int Start);
+Message* JB_Tk__fString2(int Start);
 
 Message* JB_Tk__fStrSub(int Start, JB_String* Ender, Syntax* syx);
 
@@ -1418,6 +1442,11 @@ JB_String* JB_int_RenderZeros(int self, int zeros, FastString* fs_in);
 // JB_IntRange
 
 
+// JB_iPoint2
+JB_String* JB_iPoint2_Render(iPoint2* self, FastString* fs_in);
+
+
+
 // JB_List
 void JB_LLRef_Clear(LLRef* self);
 
@@ -1472,6 +1501,11 @@ void JB_Saver_AppendString(ObjectSaver* self, JB_String* s);
 void JB_Saver_Destructor(ObjectSaver* self);
 
 int JB_Saver__Init_();
+
+
+
+// JB_Point2
+JB_String* JB_Point2_Render(Point2* self, FastString* fs_in);
 
 
 
