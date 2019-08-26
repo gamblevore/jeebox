@@ -375,8 +375,8 @@ void JB_File_Flush(JB_File* self) {
 }
 
 
-int JB_File_OpenBlank( JB_File* self ) {
-	return JB_File_Open( self, O_RDWR | O_CREAT | O_TRUNC, false );
+bool JB_File_OpenBlank( JB_File* self ) {
+	return JB_File_Open( self, O_RDWR | O_CREAT | O_TRUNC, false ) >= 0;
 }
 
 
