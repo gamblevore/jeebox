@@ -373,10 +373,10 @@ extern u16 JB__API_NilHappened;
 
 // module: Constants
 extern ByteMap* JB__Constants_CSAfterTemporal;
+extern ByteMap* JB__Constants_CSLettersOnly;
 extern ByteMap* JB__Constants_CSLine;
 extern ByteMap* JB__Constants_CSLineBlack;
 extern ByteMap* JB__Constants_CSNum;
-extern ByteMap* JB__Constants_CSNumUnit;
 extern ByteMap* JB__Constants_CSWordMiddle;
 extern ByteMap* JB__Constants_CSWordStart;
 extern Dictionary* JB__Constants_EscapeChr;
@@ -932,11 +932,11 @@ extern Random JB__Random_Shared;
 
 // module: Date_
 #define kJB__Date_ClocksPerSecond (1000000)
-#define kJB__Date_OneSecond (0x010000)
+#define kJB__Date_OneSecond (0x10000)
 #define kJB__Date_SecondsPerDay (86400)
 #define kJB__Date_SecondsPerWeek (604800)
 #define kJB__Date_TickBits (16)
-#define kJB__Date_Ticks (0x010000)
+#define kJB__Date_Ticks (0x10000)
 //
 
 
@@ -1012,13 +1012,13 @@ extern FastString* JB__FS_StdOutFS;
 // module: File_
 #define kJB__File_CreateErrors (false)
 #define kJB__File_IgnoreErrors (true)
-#define kJB__File_O_APPEND (0x0008)
-#define kJB__File_O_CREAT (0x0200)
-#define kJB__File_O_EXCL (0x0800)
-#define kJB__File_O_RDONLY (0x0000)
-#define kJB__File_O_RDWR (0x0002)
-#define kJB__File_O_TRUNC (0x0400)
-#define kJB__File_O_WRONLY (0x0001)
+#define kJB__File_O_APPEND (0x008)
+#define kJB__File_O_CREAT (0x200)
+#define kJB__File_O_EXCL (0x800)
+#define kJB__File_O_RDONLY (0x000)
+#define kJB__File_O_RDWR (0x002)
+#define kJB__File_O_TRUNC (0x400)
+#define kJB__File_O_WRONLY (0x001)
 //
 
 
@@ -1308,8 +1308,6 @@ void JB_Tk__Init();
 
 int JB_Tk__Init_();
 
-int JB_Tk__IsHexLike(JB_String* S, int N);
-
 Message* JB_Tk__MakeRel(Message* first, int Bits);
 
 int JB_Tk__MessageErrorSub(FastString* fs, int num, int ButFound);
@@ -1576,6 +1574,8 @@ bool JB_byte_CanPrintAsNormalChar(byte self);
 
 bool JB_byte_In(byte self, int a, int b);
 
+bool JB_byte_IsLetter(byte self);
+
 bool JB_byte_IsNum(byte self);
 
 bool JB_byte_IsNumeric(byte self);
@@ -1766,13 +1766,17 @@ int JB_Str_FindByte(JB_String* self, byte find, int Start, int After);
 
 int JB_Str_Find(JB_String* self, ByteMap* cs, int Start, int After);
 
+int JB_Str_IsHexLike(JB_String* self, int N);
+
 int JB_Str_JBFind(JB_String* self, byte find, int Off, int After);
+
+byte JB_Str_Last(JB_String* self);
 
 int JB_Str_LineCount(JB_String* self);
 
 bool JB_Str_OperatorContains(JB_String* self, JB_String* s);
 
-int JB_Str_OutCharSet2(JB_String* self, ByteMap* cs, int Start, int After);
+int JB_Str_OutCharSet(JB_String* self, ByteMap* cs, int Start, int After);
 
 Message* JB_Str_Parse(JB_String* self, Message* into);
 
