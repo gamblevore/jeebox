@@ -1650,11 +1650,10 @@ bool JB_Tk__NoFuncAfter(byte b) {
 }
 
 Message* JB_Tk__NumberSub(int Start, int RealStart) {
-	JB_String* D = JB__Tk_Data;
-	int After = JB_Tk__NumEnd(D, Start);
+	int After = JB_Tk__NumEnd(JB__Tk_Data, Start);
 	(JB_Tk__NextStartSet(After));
-	int StartAt = JB_Tk__IsHexLike(D, Start);
-	int UnitPos2 = JB_Str_OutCharSet2(D, JB__Constants_CSNumUnit, After, Start + StartAt);
+	int StartAt = JB_Tk__IsHexLike(JB__Tk_Data, Start);
+	int UnitPos2 = JB_Str_OutCharSet2(JB__Tk_Data, JB__Constants_CSNumUnit, After, Start + StartAt);
 	if ((!JB_int_Found(UnitPos2))) {
 		UnitPos2 = (After - 1);
 	}
@@ -1669,6 +1668,9 @@ Message* JB_Tk__NumberSub(int Start, int RealStart) {
 
 int JB_Tk__NumEnd(JB_String* D, int Start) {
 	int Dot = JB_Str_OutCharSet2(D, JB__Constants_CSNum, Start, kJB__int_max);
+	if ((!JB_int_Found(Dot))) {
+		return JB_Str_Length(D);
+	}
 	if (JB_Str_SyntaxAccess(D, Dot) != '.') {
 		return Dot;
 	}
@@ -5342,7 +5344,7 @@ __lib__ int jb_shutdown() {
 }
 
 __lib__ int jb_version() {
-	return 2019082612;
+	return 2019082616;
 }
 
 __lib__ JB_String* jb_readfile(_cstring path, bool AllowMissingFile) {

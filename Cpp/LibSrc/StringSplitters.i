@@ -19,7 +19,7 @@ JB_String* JB_Str_Range(JB_String* self, int StartOff, int AfterOff) {
 	}
 
 	int CurrLen = self->Length;
-	if_rare ( (u32)AfterOff > (u32)CurrLen ) {
+	if ( (u32)AfterOff > (u32)CurrLen ) {
 		AfterOff = CurrLen;
 	}
 
@@ -28,10 +28,10 @@ JB_String* JB_Str_Range(JB_String* self, int StartOff, int AfterOff) {
         return self;
     }
 
-	if_usual ( Length > 1 ) {
-        if (StrUniquer) {
-            return JB_Str_UniqueSplit(self, StartOff, Length, StrUniquer);
-        }
+	if ( Length > 1 ) {
+//        if (StrUniquer) {
+//            return JB_Str_UniqueSplit(self, StartOff, Length, StrUniquer);
+//        }
         if (Length <= 4) {
             return JB_Str_CopyFromPtr( (u8*)self->Addr + StartOff, Length);
         }
@@ -55,17 +55,6 @@ JB_String* JB_Str_Range(JB_String* self, int StartOff, int AfterOff) {
 
 	return JB_Str_Empty();
 }
-
-
-
-JB_String* JB_Str_Left(JB_String* self, int Count) {
-	return JB_Str_Range(self, 0, Count);
-}
-
-JB_String* JB_Str_Right(JB_String* self, int Count) {
-	return JB_Str_Range(self, self->Length - Count, self->Length);
-}
-
 
 
 // useful later when I add support for faster string appends...
