@@ -23,7 +23,7 @@ Dictionary* JB_C_Args_Env(char** self) {
     for (int i = 0; const char* C = self[i]; i++) {
         JB_String* S = JB_Str_FromCString_(C);
         if (JB_Str_Exists(S)) {
-            int Eq = JB_Str_FindByte(S, 0, '=');
+            int Eq = JB_Str_InByte(S, 0, kJB__int_max, '=');
             JB_String* Before = JB_Str_Range(S, 0, Eq);
             JB_String* After = JB_Str_Range(S, Eq + 1, kJB__int_max);
             (JB_Dict_ValueSet(D, Before, After));

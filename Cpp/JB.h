@@ -353,12 +353,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_174)
-#define kJB__ErrorColors_error (JB_str_175)
-#define kJB__ErrorColors_good (JB_str_176)
-#define kJB__ErrorColors_normal (JB_str_173)
-#define kJB__ErrorColors_underline (JB_str_176)
-#define kJB__ErrorColors_warn (JB_str_177)
+#define kJB__ErrorColors_bold (JB_str_171)
+#define kJB__ErrorColors_error (JB_str_172)
+#define kJB__ErrorColors_good (JB_str_173)
+#define kJB__ErrorColors_normal (JB_str_170)
+#define kJB__ErrorColors_underline (JB_str_173)
+#define kJB__ErrorColors_warn (JB_str_174)
 //
 
 
@@ -456,7 +456,7 @@ extern Array* JB__FuncArray_;
 extern Dictionary* JB__SyxDict_;
 extern JB_String* JB_JSONTest;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_172)
+#define kJB_SaverStart1 (JB_str_169)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -642,9 +642,6 @@ extern JB_String* JB_str_260;
 extern JB_String* JB_str_261;
 extern JB_String* JB_str_262;
 extern JB_String* JB_str_263;
-extern JB_String* JB_str_264;
-extern JB_String* JB_str_265;
-extern JB_String* JB_str_266;
 extern JB_String* JB_str_27;
 extern JB_String* JB_str_28;
 extern JB_String* JB_str_29;
@@ -1765,23 +1762,17 @@ JB_String* JB_Str_Escape(JB_String* self);
 
 JB_String* JB_Str_EscapeChr(JB_String* self);
 
-int JB_Str_FindStr(JB_String* self, int Start, JB_String* find);
+int JB_Str_FindByte(JB_String* self, byte find, int Start, int After);
 
-int JB_Str_FindByte(JB_String* self, int off, byte find);
+int JB_Str_Find(JB_String* self, ByteMap* cs, int Start, int After);
 
-int JB_Str_InCharSet(JB_String* self, int Start, int After, ByteMap* cs);
-
-int JB_Str_InWhite(JB_String* self, int Start, int After);
-
-int JB_Str_JBFind(JB_String* self, int Off, int After, byte find);
+int JB_Str_JBFind(JB_String* self, byte find, int Off, int After);
 
 int JB_Str_LineCount(JB_String* self);
 
 bool JB_Str_OperatorContains(JB_String* self, JB_String* s);
 
-int JB_Str_OutCharSet(JB_String* self, int Start, int After, ByteMap* cs);
-
-int JB_Str_OutWhite(JB_String* self, int Start, int After);
+int JB_Str_OutCharSet2(JB_String* self, ByteMap* cs, int Start, int After);
 
 Message* JB_Str_Parse(JB_String* self, Message* into);
 
@@ -1792,8 +1783,6 @@ int JB_Str_ParseInt(JB_String* self, Message* Where);
 Array* JB_Str_Split(JB_String* self, byte sep);
 
 byte JB_Str_SyntaxAccess(JB_String* self, int index);
-
-JB_String* JB_Str_AccessRange(JB_String* self, int start, int after);
 
 bool JB_Str_SyntaxEquals(JB_String* self, JB_String* Other, bool Aware);
 

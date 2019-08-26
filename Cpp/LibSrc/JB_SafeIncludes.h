@@ -30,7 +30,6 @@ int JB_Main();
 
 Array* JB_Array__New(int N);
 Dictionary* JB_Dict__New();
-int JB_Str_FindByte(JB_String* S, int Pos, u8 B);
 
 }
 
