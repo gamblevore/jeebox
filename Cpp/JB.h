@@ -353,12 +353,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_171)
-#define kJB__ErrorColors_error (JB_str_172)
-#define kJB__ErrorColors_good (JB_str_173)
-#define kJB__ErrorColors_normal (JB_str_170)
-#define kJB__ErrorColors_underline (JB_str_173)
-#define kJB__ErrorColors_warn (JB_str_174)
+#define kJB__ErrorColors_bold (JB_str_172)
+#define kJB__ErrorColors_error (JB_str_173)
+#define kJB__ErrorColors_good (JB_str_174)
+#define kJB__ErrorColors_normal (JB_str_171)
+#define kJB__ErrorColors_underline (JB_str_174)
+#define kJB__ErrorColors_warn (JB_str_175)
 //
 
 
@@ -456,7 +456,7 @@ extern Array* JB__FuncArray_;
 extern Dictionary* JB__SyxDict_;
 extern JB_String* JB_JSONTest;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_169)
+#define kJB_SaverStart1 (JB_str_170)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -642,6 +642,7 @@ extern JB_String* JB_str_260;
 extern JB_String* JB_str_261;
 extern JB_String* JB_str_262;
 extern JB_String* JB_str_263;
+extern JB_String* JB_str_264;
 extern JB_String* JB_str_27;
 extern JB_String* JB_str_28;
 extern JB_String* JB_str_29;
@@ -1370,6 +1371,8 @@ bool JB_CompareError(Message* expected, Message* found);
 
 Dictionary* JB_Dict_Copy(Dictionary* Dict);
 
+void JB_debugbastard();
+
 JB_String* JB_EntityTest();
 
 int JB_Init_();
@@ -1500,6 +1503,8 @@ int JB_Saver__Init_();
 
 // JB_Point2
 JB_String* JB_Point2_Render(Point2* self, FastString* fs_in);
+
+Point2 JB_Point2__New(float a, float b);
 
 
 
