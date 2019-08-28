@@ -56,11 +56,11 @@ The other downside is that there is some kind of cultural resistance to accepti
 
 # The Future Path For Jeebox?
 
-Jeebox would benefit greatly from real-world translation app.
+Jeebox would benefit greatly from real-world translation app. But I'm waiting for events in real life to change so that it could become possible to find people to work with.
 
-The thing is this would need a team, and I'm not a business person. Don't ask me to come up with a business plan. Just because I know it could transform the world of translation, doesn't mean I can even think about how to make money from it.
+I mean the way my mind works is like "Hey, this could make everything better for everyone, surely we should be supported for that? Considering the value of our translation stuff could probably saving people billions of dollars time-worth".
 
-I mean the way my mind works is like "Hey, this could make everything better for everyone, surely we should be supported for that? Considering the value of our translation stuff could probably saving people billions of dollars time-worth". Unfortunately that's not how the world works, but it is how **my mind** works, and I'm not gonna change how I work or feel, because I just get frazzled and ruined if I have to think about how to be accepted "just for money". And I get ruined long before even getting any success. It just doesn't work to tell me to become someone else.
+Unfortunately that's not how the world works, but it is how **my mind** works, and I'm not gonna change how I work or feel, because I just get frazzled and ruined if I have to think about how to be accepted "just for money". And I get ruined long before even getting any success. It just doesn't work to tell me to become someone else.
 
 Jeebox has a lot of potential. By capturing the grammatical structure of a sentence, Jeebox can improve translation accuracy by 10x-100x, and the syntax is light. Jeebox could be very useful for medical documents, or technical documents (electronics/engineering/etc) which need precise translation.
 
