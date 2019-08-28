@@ -64,7 +64,7 @@ Unfortunately that's not how the world works, but it is how **my mind** works, a
 
 Jeebox has a lot of potential. By capturing the grammatical structure of a sentence, Jeebox can improve translation accuracy by 10x-100x, and the syntax is light. Jeebox could be very useful for medical documents, or technical documents (electronics/engineering/etc) which need precise translation.
 
-In the future this ability of Jeebox will be used. I guess it's a matter of destiny or fate, to allow the world time for things to happen.
+In the future this ability of Jeebox will be used. I guess it's a matter of destiny or fate, to allow the world time for things to happen. There is an element of delay, but that shouldn't be seen as a negative thing, more that the world needs time to sort matters out before its possible for me to work on something so potentially transformative.
 
 # Notes
 
