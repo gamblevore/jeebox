@@ -42,7 +42,7 @@ I added many features to make programmers lives easier. For example: "Double-quo
 
 # Why Use Jeebox?
 
-Jeebox is good-looking and combines good parts from many languages.
+Jeebox is good-looking, modern and combines the best parts from many languages.
 
 Lets say you want to "create your own file format". Using Jeebox you'll find it much easier than if you had to create a parser or a "grammar" for a parser-generator. Also, Jeebox gives you the best string-parsing built in. And it's reusable anytime you need a new format!
 
