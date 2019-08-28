@@ -40,41 +40,37 @@ Jeebox's parse-speed is near that of TinyXML2's, it's pretty fast! Jeebox is hig
 
 I added many features to make programmers lives easier. For example: "Double-quoted" strings allow embedded expressions, unicode and byte escape codes. But \`backtick\` strings have none of that. [Read the website](http://jeebox.org/stuff/introduction) to see what I put into Jeebox. Jeebox is clean, because unlike [Javascript / C# / Java](https://msdn.microsoft.com/en-us/data/aa664669(v=vs.85)) Jeebox strings **can** express characters above `&#xFFFF;` without 'surrogates'!
 
-# Why use Jeebox?
+# Why Use Jeebox?
 
-The issues surrounding Jeebox are not a matter of how good it is. There seems to be "invisible rules" guiding society, including on technical things. People want to move things in a certain direction, and I was moving in a different direction.
+Jeebox is good-looking and combines good parts from many languages.
 
-I guess I'm moving towards unity/simplicity, while most people move towards fragmentation/complexity. There's other issues like me "not being part of any power-system" (I've never worked at, or have friends with people at apple/google/intel/etc).
+Lets say you want to "create your own file format". Using Jeebox you'll find it much easier than if you had to create a parser or a "grammar" for a parser-generator. Also, Jeebox gives you the best string-parsing built in. And it's reusable anytime you need a new format!
 
-And I notice that all big popular stuff (XML/JSON) never had to "get accepted from the outside". They were created by powerful groups in the first place. So, maybe a new approach is needed?
+I built a programming language `Speedie` around Jeebox, so I know using Jeebox is easy to use and fun. `Speedie` is beautiful and Jeebox never restricts me.
 
-All I can say is that Jeebox is great, it's better than any other format I've seen. And it is multi-purpose so you can replace multiple formats with Jeebox. If everything is in Jeebox, then there's actually less formats you need to learn. It won't let you down. Really all I can say is that I hope Jeebox has a great future...
+Being open-sourced on github means that I'm not controlling the future of Jeebox users.
 
+The downsides to using Jeebox? Well... it is another language to learn, its an eye-opening experience but not everyone has time to learn.
 
-# Jeebox Is Still Great
+The other downside is that there is some kind of cultural resistance to accepting Jeebox, mostly that I'm "not being part of the power-system" (I've never worked at, or have friends with people at apple/google/intel/etc). All big popular stuff (XML/JSON) never had to "get accepted from the outside". They were created by powerful groups in the first place. So, maybe a new approach is needed?
 
-If you just look at the code and how easy it is to use... Jeebox is truely amazing! Really frees you from a lot of things.
+# The Future Path For Jeebox?
 
-Like needing to write parsers. You get a load of advanced features built-in. Also, assuming enough languages are expressed in Jeebox, this could reduce code-size because we replace many parsers with Jeebox!
+Jeebox would benefit greatly from real-world translation app.
 
-I built a programming language `Speedie` around Jeebox, so I know it's really easy to use and fun. `Speedie` is beautiful and Jeebox never restricts me.
+The thing is this would need a team, and I'm not a business person. Don't ask me to come up with a business plan. Just because I know it could transform the world of translation, doesn't mean I can even think about how to make money from it.
 
-Being open-sourced on github means that if you were worried about me not adding things you need, you could add them yourself. I'm not controlling anyone's future.
-
-# Looking for a translation app, as a real-world-test
-
-Jeebox can also describe human language. I think Jeebox could really do with a real-world translation app to test it, just like I tested Jeebox with my compiler `speedie`. I actually barely modified jeebox during the making of `speedie`, but minor tweaks can be important. I think it will be the same for translation too?
-
-The thing is, I've done far too much alone. Translation is something that needs a team, and I'm not a business person (at all). Don't ask me to come up with a business plan. Just because I know it could transform the world of translation, doesn't mean I can even think about how to make money from it.
-
-I mean the way my mind works is like "Hey, this could make everything better for everyone, surely we should be supported for that? Considering the value of our translation stuff could probably saving people billions of dollars time-worth". Unfortunately that's not how the world works, but it is how **my mind** works, and I'm not gonna change how I work or feel, because I just get frazzled and ruined if I have to think about how to be accepted "just for money".
+I mean the way my mind works is like "Hey, this could make everything better for everyone, surely we should be supported for that? Considering the value of our translation stuff could probably saving people billions of dollars time-worth". Unfortunately that's not how the world works, but it is how **my mind** works, and I'm not gonna change how I work or feel, because I just get frazzled and ruined if I have to think about how to be accepted "just for money". And I get ruined long before even getting any success. It just doesn't work to tell me to become someone else.
 
 Jeebox has a lot of potential. By capturing the grammatical structure of a sentence, Jeebox can improve translation accuracy by 10x-100x, and the syntax is light. Jeebox could be very useful for medical documents, or technical documents (electronics/engineering/etc) which need precise translation.
 
+In the future this ability of Jeebox will be used. I guess it's a matter of destiny or fate, to allow the world time for things to happen.
+
 # Notes
 
-Jeebox has a C-API and a C++ API. The C++ version is better, because you can "just use it". The C-API requires you to do memory-management, which is verbose and error-prone. But useful if you are writing a Jeebox binding for another language (python/ruby/etc). Jeebox can compile for 64-bit or 32-bit environments. Tested on OS X, and Ubuntu Linux. Windows will come when I have people interested in it.
+Jeebox has a C-API and a C++ API. Jeebox can compile for 64-bit or 32-bit environments. Tested on OS X, and Ubuntu Linux. Windows will come when I have people interested in it. Jeebox is single-threaded right now.
 
-Jeebox is single-threaded right now.
+The C++ version is easier, because it has automatic memory-management. The C version requires you to manually do memory-management, which is best avoided. The C version is intended for writing a Jeebox binding for another languages (python/ruby/etc).
 
-Jeebox is being used for one large real-world project right now, my unreleased compiler `Speedie`. In fact, the source code for Jeebox, is written in Jeebox! Imagine trying to write a JSON parser in JSON, impossible ;) because JSON can't describe code. But Jeebox can describe code, data and meaning, so with Jeebox it is possible. I'll release `Speedie` at some point in the future anyhow. Releasing Jeebox was a big enough job!
+Jeebox is being used for two large real-world projects right now, my unreleased compiler `Speedie` and a computer game. In fact, the source code for Jeebox, is written in Jeebox!
+
