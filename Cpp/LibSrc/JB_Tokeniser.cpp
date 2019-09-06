@@ -158,7 +158,7 @@ void TH_Copy_( TokHan* T, TokHan* F ) {
 
 
 TokHan* JB_Tk__Token(JB_String* s) {
-    return (TokHan*)JB_Dict_Value(self->WordDict, s);
+    return (TokHan*)JB_Dict_Value(self->WordDict, s, 0);
 }
 
 void JB_Tk__TokenSet( JB_String* TokStr, TokHan* New_ ) {
@@ -307,7 +307,7 @@ bool JB_Tk__CheckEnded ( u32 AskBits ) { // has to be called with an "ender". ")
 
 
 void JB_Tk__TokenNilSet( JB_String* Key, JB_Object* Value ) {
-    JB_Object* Curr = JB_Dict_Value( self->WordDict, Key );
+    JB_Object* Curr = JB_Dict_Value( self->WordDict, Key, 0 );
     if (!Curr) {
         JB_Dict_ValueSet(self->WordDict, Key, Value);
     }

@@ -128,7 +128,7 @@ JB_String* JB_MSR_ReplaceAll( Dictionary* Dict, JB_String* Data, FastString* fs_
 // maybe don't add it? Is it worth it?
 int JB_MSR_CombiningCode( Dictionary* self, JB_String* Data ) {
 	if ( Data ) {
-		Data = (JB_String*)JB_Dict_Value( self, Data );
+		Data = (JB_String*)JB_Dict_Value( self, Data, 0 );
 		if (Data) {
 			if (Data->Length) {
 				return *Data->Addr;

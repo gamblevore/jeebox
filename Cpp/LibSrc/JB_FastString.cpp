@@ -332,6 +332,18 @@ void JB_Str_UnHexRaw(JB_String* Str, u8* Write, int N) {
 }
 
 // "2 000 000 000" is 10 int!
+
+u8* JB__WriteIntToBuffer (u8* wp, s64 LeftOver) {
+    do {
+        s64 NewLeftOver = LeftOver / 10;
+        s64 ThisChar = LeftOver - (NewLeftOver * 10) + '0';
+        *--wp = (u8)ThisChar;
+        LeftOver = NewLeftOver;
+    } while (LeftOver);
+    return wp;
+}
+
+
 void JB_FS_AppendIntegerAsText(FastString* self, s64 LeftOver, int RoundTo) {
 	if (RoundTo <= 0) {RoundTo = 1;} else if (RoundTo > 16) {RoundTo = 16;}
      
@@ -361,13 +373,7 @@ void JB_FS_AppendIntegerAsText(FastString* self, s64 LeftOver, int RoundTo) {
     int PadFirst = PadCount;
 
     wp = wp + CountDigits + PadCount;
-
-    do {
-        s64 NewLeftOver = LeftOver / 10;
-        s64 ThisChar = LeftOver - (NewLeftOver * 10) + '0';
-        *--wp = (u8)ThisChar;
-        LeftOver = NewLeftOver;
-    } while (LeftOver);
+    wp = JB__WriteIntToBuffer(wp, LeftOver);
 
     while ( PadCount-- ) {
         *--wp = '0';

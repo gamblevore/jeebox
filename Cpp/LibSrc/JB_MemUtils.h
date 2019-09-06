@@ -13,12 +13,12 @@ extern "C" {
 #define CopyBytes(s0, d, Length) memcpy((void*)(d), (void*)(s0), (unsigned int)(Length));
 
 struct JB_Object;
-typedef JB_Object** MArray ;
 
 bool JB_OutOfMemoryOccurred();
 u64 JB_TotalMemoryCount();
 void JB_TooLargeAlloc(const char* S, int N, int R);
-void JB_OutOfMemory(int N);
+void JB_OutOfMainMemory(int N);
+void JB_OutOfUserMemory(int N);
 void* JB_malloc(int N);
 void* JB_zalloc(int N);
 void* JB_realloc(const void* Arr, int N);

@@ -86,11 +86,8 @@ JB_String* JB_Str_ChrB(int i) {
     struct ChrBData {
         JB_String* Objects[256];
     };
-	static ChrBData* block = 0;
-    if (!block) {
-        block = (ChrBData*)JB_zalloc(sizeof(ChrBData) );
-    }
-
+	static ChrBData* block = (ChrBData*)JB_zalloc(sizeof(ChrBData) );
+    
 	i = i & 0xFF; // make sure it's actually a byte!!
 	JB_String* Result = block->Objects[i];
 	if (Result) {

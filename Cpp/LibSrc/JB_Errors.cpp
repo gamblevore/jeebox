@@ -65,6 +65,9 @@ static JB_String* Path_(JB_String* self) {
 
 int JB_ErrorHandleFile(JB_String* self, int err, const char* op) {
     JB_Error* Err = JB_Err__New(0);
+    if (!Err) {
+        return -1;
+    }
     JB_String* Desc = Desc_(self, err, op);
     JB_String* Path = Path_(self);
     JB_Err_Fill(Err, Path, Desc ); 
@@ -73,14 +76,38 @@ int JB_ErrorHandleFile(JB_String* self, int err, const char* op) {
     return 0;
 }
 
+
 int JB_ErrorHandleC(const char* Desc, bool CanFreeDesc) {
     JB_Error* Err = JB_Err__New(0);
+    if (!Err) {
+        return -1;
+    }
     JB_Err_Fill(Err, nil, FreeableStr_(Desc, CanFreeDesc)); 
     JB_Rec_NewItem(JB_StdErr, Err);
     return 0;
 }
 
 
+
+void JB_Str_SyntaxExpect(JB_String* self);
+
+void JB_OutOfUserMemory(int N) {
+    static u8 ReportCount = 0;
+    if (ReportCount < 50) {
+        FastString* FS = JB_FS__FastNew(0);
+        if (FS) {
+            JB_FS_AppendCString(FS, "Jeebox: Can't allocate ");
+            JB_FS_AppendIntegerAsText(FS, N, 0);
+            JB_FS_AppendCString(FS, " bytes of memory.");
+            JB_String* Str = JB_FS_GetResult(FS);
+            if (JB_Str_Length(Str)) {
+                ReportCount++;
+                JB_Str_SyntaxExpect(Str);
+            }
+        }
+    }
 }
 
+
+}
 

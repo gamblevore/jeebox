@@ -172,7 +172,7 @@ JB_String* JB_Str_Execute(JB_String* self, Array* R) {
     char* CurrBuffer = Buffer;
 
     
-    JB_String** R_ = (JB_String**)(R->ArrData);
+    JB_String** R_ = (JB_String**)(&(R->Vec)[0]);
     int N = JB_Array_Size(R);
     if (N > MaxArgs) {
         return nil;

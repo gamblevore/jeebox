@@ -41,7 +41,6 @@ void JB_TooLargeAlloc(const char* S, int N, int R) {
     if (!TooLargeHappenedAlready) {
         TooLargeHappenedAlready = true;
         printf("Not allowed to allocate %s over %i size, (%i requested).\n", S, R, N);
-        JB_ErrorHandleC("Too large allocation requested", false);
     }
     debugger;
 }
@@ -55,9 +54,8 @@ void* JB_zalloc(int N) {
         if (Result) {
             return Result;
         }
-        JB_OutOfMemory(N);
+        JB_OutOfUserMemory(N);
     }
-    debugger;
     return 0;
 }
 
@@ -71,10 +69,10 @@ void* JB_malloc(int N) {
 void* JB_realloc (const void* Arr, int N) {
     if (N > 0) {
         void* Result = realloc((void*)Arr, N);
-        if (Result) { // Nothing has changed...
+        if (Result) {
             return Result;
         }
-        JB_OutOfMemory(N);
+        JB_OutOfUserMemory(N);        // Nothing has changed...
     } else {
         free((void*)Arr);
     }

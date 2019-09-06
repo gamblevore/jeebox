@@ -70,6 +70,8 @@ struct Syntax_Behaviour;
 
 typedef u8 byte;
 
+typedef u8 DataTypeCode;
+
 typedef s64 Date;
 
 struct Array_Behaviour;
@@ -86,13 +88,15 @@ struct FastString_Behaviour;
 
 struct File_Behaviour;
 
-struct Image_Behaviour;
-
 struct LeakTester_Behaviour;
 
 struct StripMe_Behaviour;
 
 struct LinkedList_Behaviour;
+
+struct DataTypeWrapper_Behaviour;
+
+struct Memory_Behaviour;
 
 struct RingTree_Behaviour;
 
@@ -106,9 +110,13 @@ struct Error_Behaviour;
 
 struct FastAppenderChunk_Behaviour;
 
+struct Image_Behaviour;
+
 struct JB_Object;
 
 struct ByteMap;
+
+struct DTWrap;
 
 struct DictionaryReader;
 
@@ -137,6 +145,8 @@ struct Dictionary;
 struct FastAppender;
 
 struct JB_LinkedList;
+
+struct MWrap;
 
 struct RingTree;
 
@@ -216,6 +226,14 @@ struct Object_Behaviour {
 struct Charset_Behaviour: Object_Behaviour {
 };
 
+struct DataTypeWrapper_Behaviour: Object_Behaviour {
+};
+
+JBClass ( DTWrap , JB_Object , 
+	DataTypeCode DataType;
+	s64 _PrivValue;
+);
+
 struct DictionaryReader_Behaviour: Object_Behaviour {
 };
 
@@ -285,6 +303,14 @@ JBClass ( FastAppender , Saveable ,
 struct LinkedList_Behaviour: Saveable_Behaviour {
 };
 
+struct Memory_Behaviour: DataTypeWrapper_Behaviour {
+};
+
+JBClass ( MWrap , DTWrap , 
+	int _ItemCount;
+	u16 _ItemSize;
+);
+
 struct RingTree_Behaviour: Saveable_Behaviour {
 };
 
@@ -334,7 +360,7 @@ struct Message_Behaviour: RingTree_Behaviour {
 
 JBClass ( Message , RingTree , 
 	JB_Object* Obj;
-	Syntax* Type;
+	Syntax* Func;
 	JB_String* Name;
 	int Position;
 );
@@ -353,12 +379,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_172)
-#define kJB__ErrorColors_error (JB_str_173)
-#define kJB__ErrorColors_good (JB_str_174)
-#define kJB__ErrorColors_normal (JB_str_171)
-#define kJB__ErrorColors_underline (JB_str_174)
-#define kJB__ErrorColors_warn (JB_str_175)
+#define kJB__ErrorColors_bold (JB_str_212)
+#define kJB__ErrorColors_error (JB_str_213)
+#define kJB__ErrorColors_good (JB_str_214)
+#define kJB__ErrorColors_normal (JB_str_211)
+#define kJB__ErrorColors_underline (JB_str_214)
+#define kJB__ErrorColors_warn (JB_str_215)
 //
 
 
@@ -387,9 +413,6 @@ extern Dictionary* JB__Constants_UnEscapeStr;
 //
 
 
-
-
-// module: LowLevel
 
 
 // module: Math
@@ -456,7 +479,7 @@ extern Array* JB__FuncArray_;
 extern Dictionary* JB__SyxDict_;
 extern JB_String* JB_JSONTest;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_170)
+#define kJB_SaverStart1 (JB_str_210)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -643,11 +666,50 @@ extern JB_String* JB_str_261;
 extern JB_String* JB_str_262;
 extern JB_String* JB_str_263;
 extern JB_String* JB_str_264;
+extern JB_String* JB_str_265;
+extern JB_String* JB_str_266;
+extern JB_String* JB_str_267;
+extern JB_String* JB_str_268;
+extern JB_String* JB_str_269;
 extern JB_String* JB_str_27;
+extern JB_String* JB_str_270;
+extern JB_String* JB_str_271;
+extern JB_String* JB_str_272;
+extern JB_String* JB_str_273;
+extern JB_String* JB_str_274;
+extern JB_String* JB_str_275;
+extern JB_String* JB_str_276;
+extern JB_String* JB_str_277;
+extern JB_String* JB_str_278;
+extern JB_String* JB_str_279;
 extern JB_String* JB_str_28;
+extern JB_String* JB_str_280;
+extern JB_String* JB_str_281;
+extern JB_String* JB_str_282;
+extern JB_String* JB_str_283;
+extern JB_String* JB_str_284;
+extern JB_String* JB_str_285;
+extern JB_String* JB_str_286;
+extern JB_String* JB_str_287;
+extern JB_String* JB_str_288;
+extern JB_String* JB_str_289;
 extern JB_String* JB_str_29;
+extern JB_String* JB_str_290;
+extern JB_String* JB_str_291;
+extern JB_String* JB_str_292;
+extern JB_String* JB_str_293;
+extern JB_String* JB_str_294;
+extern JB_String* JB_str_295;
+extern JB_String* JB_str_296;
+extern JB_String* JB_str_297;
+extern JB_String* JB_str_298;
+extern JB_String* JB_str_299;
 extern JB_String* JB_str_3;
 extern JB_String* JB_str_30;
+extern JB_String* JB_str_300;
+extern JB_String* JB_str_301;
+extern JB_String* JB_str_302;
+extern JB_String* JB_str_303;
 extern JB_String* JB_str_31;
 extern JB_String* JB_str_32;
 extern JB_String* JB_str_33;
@@ -931,6 +993,53 @@ extern Random JB__Random_Shared;
 // module: byte_
 
 
+// module: DataTypeCode_
+#define kJB__DataTypeCode_Byte2 (1 + (0 + (0 + 0)))
+#define kJB__DataTypeCode_Byte3 (2 + (0 + (0 + 0)))
+#define kJB__DataTypeCode_Byte4 (3 + (0 + (0 + 0)))
+#define kJB__DataTypeCode_char (kJB__DataTypeCode_s8)
+#define kJB__DataTypeCode_Double (0 + (48 + (64 + 128)))
+#define kJB__DataTypeCode_f16 (kJB__DataTypeCode_HFloat)
+#define kJB__DataTypeCode_f64 (kJB__DataTypeCode_Double)
+#define kJB__DataTypeCode_Float (0 + (32 + (64 + 128)))
+#define kJB__DataTypeCode_HFloat (0 + (16 + (64 + 128)))
+#define kJB__DataTypeCode_Int (0 + (32 + (64 + 0)))
+#define kJB__DataTypeCode_iPoint2 (1 + (32 + (64 + 0)))
+#define kJB__DataTypeCode_iPoint3 (2 + (32 + (64 + 0)))
+#define kJB__DataTypeCode_iPoint4 (3 + (32 + (64 + 0)))
+#define kJB__DataTypeCode_iVec2 (1 + (32 + (64 + 0)))
+#define kJB__DataTypeCode_iVec3 (2 + (32 + (64 + 0)))
+#define kJB__DataTypeCode_iVec4 (3 + (32 + (64 + 0)))
+#define kJB__DataTypeCode_Mat2 (1 + (32 + (64 + (128 + 4))))
+#define kJB__DataTypeCode_Mat4 (3 + (32 + (64 + (128 + 4))))
+#define kJB__DataTypeCode_Point2 (1 + (32 + (64 + 128)))
+#define kJB__DataTypeCode_Point3 (2 + (32 + (64 + 128)))
+#define kJB__DataTypeCode_Point4 (3 + (32 + (64 + 128)))
+#define kJB__DataTypeCode_S16 (0 + (16 + (64 + 0)))
+#define kJB__DataTypeCode_S16x2 (1 + (16 + (64 + 0)))
+#define kJB__DataTypeCode_S16x3 (2 + (16 + (64 + 0)))
+#define kJB__DataTypeCode_S16x4 (3 + (16 + (64 + 0)))
+#define kJB__DataTypeCode_s64 (0 + (48 + (64 + 0)))
+#define kJB__DataTypeCode_s8 (0 + (0 + (64 + 0)))
+#define kJB__DataTypeCode_SByte (0 + (0 + (64 + 0)))
+#define kJB__DataTypeCode_SByte2 (1 + (0 + (64 + 0)))
+#define kJB__DataTypeCode_SByte3 (2 + (0 + (64 + 0)))
+#define kJB__DataTypeCode_SByte4 (3 + (0 + (64 + 0)))
+extern Dictionary* JB__DataTypeCode_Types_Dict;
+#define kJB__DataTypeCode_U16 (0 + (16 + (0 + 0)))
+#define kJB__DataTypeCode_u32 (kJB__DataTypeCode_UInt)
+#define kJB__DataTypeCode_u64 (0 + (48 + (0 + 0)))
+#define kJB__DataTypeCode_u8 (0)
+#define kJB__DataTypeCode_UInt (0 + (32 + (0 + 0)))
+#define kJB__DataTypeCode_UnusedType (128)
+#define kJB__DataTypeCode_Vec2 (1 + (32 + (64 + 128)))
+#define kJB__DataTypeCode_Vec3 (2 + (32 + (64 + 128)))
+#define kJB__DataTypeCode_Vec4 (3 + (32 + (64 + 128)))
+//
+
+
+
+
 // module: Date_
 #define kJB__Date_ClocksPerSecond (1000000)
 #define kJB__Date_OneSecond (0x10000)
@@ -964,9 +1073,6 @@ extern Random JB__Random_Shared;
 // module: File_Behaviour_
 
 
-// module: Image_Behaviour_
-
-
 // module: LeakTester_Behaviour_
 
 
@@ -974,6 +1080,12 @@ extern Random JB__Random_Shared;
 
 
 // module: LinkedList_Behaviour_
+
+
+// module: DataTypeWrapper_Behaviour_
+
+
+// module: Memory_Behaviour_
 
 
 // module: RingTree_Behaviour_
@@ -994,10 +1106,16 @@ extern Random JB__Random_Shared;
 // module: FastAppenderChunk_Behaviour_
 
 
+// module: Image_Behaviour_
+
+
 // module: Object_
 
 
 // module: BM_
+
+
+// module: Wrap_
 
 
 // module: DictionaryReader_
@@ -1023,9 +1141,6 @@ extern FastString* JB__FS_StdOutFS;
 //
 
 
-
-
-// module: Image_
 
 
 // module: Lk_
@@ -1117,6 +1232,9 @@ extern bool JB__FAP_Tested;
 // module: LinkedList_
 
 
+// module: Mrap_
+
+
 // module: Tree_
 
 
@@ -1143,6 +1261,9 @@ extern bool JB__FAP_Tested;
 
 
 // module: FAC_
+
+
+// module: Image_
 
 
 // module: Msg_
@@ -1190,9 +1311,6 @@ void JB_Constants__InitConstants();
 
 JB_String* JB_Constants__Test();
 
-
-
-// LowLevel
 
 
 // Math
@@ -1378,6 +1496,8 @@ JB_String* JB_EntityTest();
 int JB_Init_();
 
 Dictionary* JB_Dict_Reverse(Dictionary* Dict);
+
+void JB_test_point2();
 
 bool JB_TestCasting();
 
@@ -1589,6 +1709,11 @@ JB_String* JB_byte_Render(byte self, FastString* fs_in);
 
 
 
+// DataTypeCode
+bool JB_DataTypeCode_IsFloat(DataTypeCode self);
+
+
+
 // Date
 JB_String* JB_Date_Render(Date self, FastString* fs_in);
 
@@ -1615,9 +1740,6 @@ JB_String* JB_Date_Render(Date self, FastString* fs_in);
 // JB_File_Behaviour
 
 
-// JB_Image_Behaviour
-
-
 // JB_LeakTester_Behaviour
 
 
@@ -1625,6 +1747,12 @@ JB_String* JB_Date_Render(Date self, FastString* fs_in);
 
 
 // JB_LinkedList_Behaviour
+
+
+// JB_DataTypeWrapper_Behaviour
+
+
+// JB_Memory_Behaviour
 
 
 // JB_RingTree_Behaviour
@@ -1643,6 +1771,9 @@ JB_String* JB_Date_Render(Date self, FastString* fs_in);
 
 
 // JB_FastAppenderChunk_Behaviour
+
+
+// JB_Image_Behaviour
 
 
 // JB_Object
@@ -1668,6 +1799,21 @@ Array* JB_BM_Bytes(ByteMap* self);
 ByteMap* JB_BM__Alloc();
 
 ByteMap* JB_BM__NewCharset(JB_String* charset, bool Ranges);
+
+
+
+// JB_DataTypeWrapper
+void JB_Wrap_Constructor(DTWrap* self, s64 v);
+
+void JB_Wrap_ConstructorPtr(DTWrap* self, _voidptr p);
+
+double JB_Wrap_FloatValue(DTWrap* self);
+
+JB_String* JB_Wrap_Render(DTWrap* self, FastString* fs_in);
+
+DTWrap* JB_Wrap__Alloc();
+
+DTWrap* JB_Wrap__New(s64 v);
 
 
 
@@ -1708,9 +1854,6 @@ FastString* JB_FS__New();
 
 
 // JB_File
-
-
-// JB_Image
 
 
 // JB_LeakTester
@@ -1899,9 +2042,11 @@ void JB_Dict_SaveWrite(Dictionary* self, ObjectSaver* Saver);
 
 JB_Object* JB_Dict_Syntax(Dictionary* self, JB_String* Key);
 
-void JB_Dict_a2(Dictionary* self, JB_String* Key, s64 Result);
+JB_Object* JB_Dict_SyntaxAccess(Dictionary* self, JB_String* Key);
 
 void JB_Dict_a4(Dictionary* self, s64 Key, JB_Object* Result);
+
+JB_Object* JB_Dict_a5(Dictionary* self, s64 Key);
 
 Dictionary* JB_Dict__Alloc();
 
@@ -1930,6 +2075,25 @@ bool JB_LinkedList_ListSanity(JB_LinkedList* self);
 void JB_LinkedList_LoadProperties(JB_LinkedList* self, ObjectLoader* Loader);
 
 void JB_LinkedList_SaveWrite(JB_LinkedList* self, ObjectSaver* Saver);
+
+
+
+// JB_Memory
+void JB_Mrap_Clear(MWrap* self);
+
+void JB_Mrap_Constructor(MWrap* self, int ItemCount, u32 ItemSize, bool DummyParam);
+
+void JB_Mrap_Destructor(MWrap* self);
+
+byte* JB_Mrap_Ptr(MWrap* self);
+
+MWrap* JB_Mrap__Alloc();
+
+MWrap* JB_Mrap__New(int ItemCount, u32 ItemSize, bool DummyParam);
+
+MWrap* JB_Mrap__Object(int ItemCount, int ItemSize);
+
+byte* JB_Mrap__Zalloc(int n);
 
 
 
@@ -2020,6 +2184,9 @@ FastAppenderChunk* JB_FAC__Alloc();
 
 FastAppenderChunk* JB_FAC__New();
 
+
+
+// JB_Image
 
 
 // JB_Message

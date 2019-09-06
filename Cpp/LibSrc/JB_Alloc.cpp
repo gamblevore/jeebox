@@ -413,8 +413,11 @@ JB_MemoryLayer* JB_Class_DefaultLayer( JB_Class* Cls ) {
 }
 
 JB_MemoryLayer* JB_ObjLayer( JB_Object* Obj ) {
-    AllocationBlock* Block = ObjBlock_(Obj);
-    return Block->Owner;
+    if (Obj) {
+        AllocationBlock* Block = ObjBlock_(Obj);
+        return Block->Owner;
+    }
+    return 0;
 }
 
 int JB_ObjID( JB_Object* Obj ) {
@@ -600,12 +603,17 @@ static FreeObject* BlockSetup_ ( JB_MemoryLayer* Mem, AllocationBlock* NewBlock,
 
 
 static bool OutOfMemoryHappenedAlready;
-void JB_OutOfMemory(int N) {
+extern "C" int JB_ErrorHandleC(const char* Desc, bool CanFreeDesc);
+extern "C" u8* JB__WriteIntToBuffer (u8* wp, s64 LeftOver);
+
+
+void JB_OutOfMainMemory(int N) {
     if (!OutOfMemoryHappenedAlready) {
+        printf("Jeebox: Can't allocate %i bytes for main memory.", N);
         OutOfMemoryHappenedAlready = true;
-        printf("Failed to allocate RAM (%i bytes) : (JB_Alloc.cpp)\n", N);
     }
 }
+
 
 bool JB_OutOfMemoryOccurred () {
     // read by ErrorReceiver!
@@ -633,7 +641,7 @@ static SuperBlock* Super_calloc(JB_MemoryWorld* World) {
         N -= Align;
     }
     
-    JB_OutOfMemory(N);
+    JB_OutOfMainMemory(N);
     return 0;
 }
 

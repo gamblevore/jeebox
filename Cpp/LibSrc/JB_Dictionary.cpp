@@ -49,9 +49,6 @@ static int Type_(JB_Object* Obj) {
 static bool IsValue_(JB_Object* Obj) {
     return Type_(Obj) == 0;
 }
-static bool IsInt_(JB_Object* Obj) {
-    return Type_(Obj) == 1;
-}
 static bool IsLeaf_(JB_Object* Obj) {
     return Type_(Obj) == 2;
 }
@@ -97,7 +94,6 @@ void DictValueRemove_(JB_Object** Place) {
     if (Item == B) {                    // a normal object
         if (--B->RefCount) { return; }
     } else {
-        if (IsInt_(Item)) { return; }
         B->RefCount = 0;
     }
     JB_Delete((FreeObject*)B);
@@ -569,66 +565,15 @@ JB_Object** JB_Dict_MakePlace(Dictionary* self, JB_String* key) {
 }
 
 
-static JB_Object* IntStore_(u64 V) {
-    JB_Object* Stored = (JB_Object*)WasInt_(V);
-    if (((u64)Stored >> 2)==V) {
-        return Stored;
-    }
-    
-    // need to wrap...
-    Stored = JB_New(IntWrapper);
-    if (Stored) {
-        Stored->RefCount = 1;
-        ((IntWrapper*)Stored)->Value = V;
-    }
-    return Stored; 
-}
-
-
-bool ObjIsInt_(JB_Object* Obj) {
-    return (JB_ObjLayer(Obj) == &(JB_AsClass(IntWrapper)->Memory));
-}
-
-
-s64 JB_Dict_IntValue(Dictionary* self, JB_String* key, s64 Missing) {
+JB_Object* JB_Dict_Value(Dictionary* self, JB_String* key, JB_Object* Default) {
     FindResult F;
     if (CanFind_(self, key, &F)) {
         JB_Object* B = F.Obj;
         if (B) {
-            if (IsInt_(B)) {
-                return ((IntPtr)B) >> 2;
-            }
-            
-            if (ObjIsInt_(B)) {
-                return ((IntWrapper*)B)->Value;
-            }
-        }
-    }
-    return Missing;
-}
-
-
-void JB_Dict_IntValueSet(Dictionary* self, JB_String* key, s64 Value) {
-    FindResult F;
-    if (CanSet_(self, key, &F)) {
-        *F.Place = IntStore_(Value);
-        if (IsValue_(F.Obj)) { // could be a direct int
-            JB_Decr(F.Obj);
-        }
-    }
-}
-
-
-
-JB_Object* JB_Dict_Value(Dictionary* self, JB_String* key) {
-    FindResult F;
-    if (CanFind_(self, key, &F)) {
-        JB_Object* B = F.Obj;
-        if (!IsInt_(B)) {
             return B;
         }
     }
-    return 0;
+    return Default;
 }
 
 
@@ -877,9 +822,6 @@ bool JB_Nav_MoveNext(DictionaryReader* self) {
 JB_Object* JB_Nav_Value(DictionaryReader* self) {
     JB_Object* B = self->State.Obj; 
     dbgexpect2( !IsSomeDict_(B) );
-    if (IsInt_(B)) {
-        return 0; // sigh
-    }
     return B;
 }
 
@@ -888,19 +830,6 @@ void JB_Nav_ValueSet(DictionaryReader* self, JB_Object* V) {
     JB_Incr(V);
     JB_Decr(JB_Nav_Value(self));
     *(self->State.Place) = V;
-}
-
-
-bool JB_Nav_HasInt(DictionaryReader* self, s64* Where) {
-    JB_Object* B = self->State.Obj; 
-    if (IsInt_(B)) {
-        *Where = ((IntPtr)B) >> 2;
-    } else if (ObjIsInt_(B)) {
-        *Where = ((IntWrapper*)B)->Value;
-    } else {
-        return false;
-    }
-    return true;
 }
 
 
@@ -978,63 +907,6 @@ JB_String* JB_s64_DictName (s64 obj) {
     *((s64*)D->Data) = obj;
     return JB_DictName_Trim(D, sizeof(obj));
 }
-
-
-    
-//// TESTS
-
-void JB_Dict_MainTests() {
-    Dictionary* self = JB_New(Dictionary);
-    JB_Dict_Constructor(self);
-    JB_Incr(self);
-
-    JB_String* s7 = JB_Str("\\n");
-    JB_String* s6 = JB_Str("\\");
-    JB_String* s5 = JB_Str("Operator_As_Thing");
-    JB_String* s4 = JB_Str("Operator");
-    JB_String* s3 = JB_Str("abcxyz");
-    JB_String* s2 = JB_Str("abcdef");
-    JB_String* s1 = JB_Str("abc123");
-    JB_Incr(s7); JB_Incr(s6); JB_Incr(s5); JB_Incr(s4); JB_Incr(s3); JB_Incr(s2); JB_Incr(s1);
-
-
-    JB_Dict_IntValueSet(self, s6, (IntPtr)s6);
-    JB_Dict_IntValueSet(self, s7, (IntPtr)s7);
-    dbgexpect(JB_Dict_IntValue(self, s6,-1) == (IntPtr)s6);
-    dbgexpect(JB_Dict_IntValue(self, s7,-1) == (IntPtr)s7);
-    
-    JB_Dict_IntValueSet(self, s1, (IntPtr)s1);
-    
-    JB_Dict_IntValueSet(self, s2, (IntPtr)s2);
-    dbgexpect(JB_Dict_IntValue(self, s1,-1) == (IntPtr)s1);
-    
-    JB_Dict_IntValueSet(self, s3, (IntPtr)s3);
-    dbgexpect(JB_Dict_IntValue(self, s1,-1) == (IntPtr)s1);
-    dbgexpect(JB_Dict_IntValue(self, s2,-1) == (IntPtr)s2);
-
-    JB_Dict_IntValueSet(self, s4, (IntPtr)s4);
-    JB_Dict_IntValueSet(self, s5, (IntPtr)s5);
-    dbgexpect(JB_Dict_IntValue(self, s4,-1) == (IntPtr)s4);
-    dbgexpect(JB_Dict_IntValue(self, s5,-1) == (IntPtr)s5);
-
-    for (int i = -2; i < 100; i++) {
-        JB_Dict_IntValueSet(self, s1, i);
-        dbgexpect(JB_Dict_IntValue(self,s1,-1)==i);
-        JB_Dict_IntValueSet(self, s1, kMaxint-i);
-        dbgexpect(JB_Dict_IntValue(self,s1,-1)==(kMaxint-i));
-    }
-    
-    JB_Dict_ValueSet(self, s2, s2);
-    dbgexpect(JB_Dict_IntValue(self,s2,-1)==-1);
-    JB_Dict_ValueSet(self, s1, s1);
-    dbgexpect(JB_Dict_Value(self, s1) == s1);
-
-
-    JB_Decr(s7); JB_Decr(s6); JB_Decr(s5); JB_Decr(s4); JB_Decr(s3); JB_Decr(s2); JB_Decr(s1);
-    JB_Decr(self);
-}
-
-
 
 
     

@@ -9,6 +9,7 @@
 #include "JB_Umbrella.h"
 #include "smmintrin.h"
 
+#include <vector>
 
 extern "C" {
 
@@ -20,19 +21,58 @@ extern "C" {
 #define PtrSize (sizeof(void*))
 
 
-inline MArray mrealloc(Array* self, u32 N) {
-    MArray M = self->ArrData;
+
+inline bool mrealloc(Array* self, u32 N) {
     if (N > kArrayLengthMax) {
         JB_TooLargeAlloc("arrays", N, kArrayLengthMax);
-        return 0;
+        return false;
     }
-    MArray Result = (MArray)JB_realloc(M, N*PtrSize);
-    if (!Result and N) {return 0;} // we tried to allocate something but couldnt, so return 0.
-    self->ArrData = Result;
-    self->UsableSize = (u32)JB_msize(Result) / PtrSize;
-    return Result;
+    
+    try {
+        self->Vec.resize(N);
+        return true;
+    } catch (const std::bad_alloc&) {
+        JB_OutOfUserMemory(N*sizeof(void*));
+        return false;
+    }
 }
 
+
+void JB_Array_AppendCount( Array* self, JB_Object* Value, int Count ) {
+    try {
+        while (Count-- > 0) {
+            self->Vec.push_back(Value);
+            JB_Incr(Value);
+        }
+    } catch (const std::bad_alloc&) {
+        JB_OutOfUserMemory((self->Vec.size()+Count)*sizeof(void*));
+    }
+}
+
+void JB_Array_Insert( Array* self, int Pos, JB_Object* Value ) {
+    try {
+        self->Vec.insert(self->Vec.begin()+Pos, 1, Value);
+        JB_Incr(Value);
+    } catch (const std::bad_alloc&) {
+        JB_OutOfUserMemory((self->Vec.size()+1)*sizeof(void*));
+    }
+}
+
+
+void JB_Array_SizeSet( Array* self, int NewLength ) {
+    require0(self);
+    int Length = self->Vec.size();
+    int Extra = NewLength - Length;
+    require0(Extra); 
+    if (Extra < 0) {
+        JB_Object** Last = &self->Vec[Length];
+        JB_Object** Curr = &self->Vec[NewLength];
+        while ( Curr < Last ) {
+            JB_Decr( *Curr++ );
+        }
+    }
+    mrealloc(self, NewLength);
+}
 
 
 JB_String* JB_Array_Render(Array* self, FastString* fs_in) {
@@ -50,52 +90,21 @@ JB_String* JB_Array_Render(Array* self, FastString* fs_in) {
 }
 
 
-JB_Object* JB_Array_UnorderedRemove(Array* self, int Item) {
-    MArray M = self->ArrData;
-    int Length = self->Count;
-    require (Item < Length);
-    
-    self->Count = Length-1;
-    JB_Object* ToRemove = M[Item];
-    JB_Object* Last = M[Length-1];
-    M[Item] = Last;
-    JB_SafeDecr(ToRemove);
-    return ToRemove;
-}
-
-
-void JB_Array_SizeSet( Array* self, int NewSize ) {
-    require0(self);
-    MArray M = self->ArrData;
-    // JB_mtest(M);
-    
-    int Length = self->Count;
-    if (NewSize < Length) {
-        self->Count = NewSize;
-        while ( NewSize < Length ) {
-            JB_Decr( M[--Length] );
-        }
-    }
-    mrealloc(self, NewSize);
-}
-
 
 void JB_Array_Append( Array* self, JB_Object* Value ) {
-    MArray M = self->ArrData;
-    // JB_mtest(M);
-    int Length = self->Count;
-    int Size = self->UsableSize;
-    if (Length >= Size) {
-        Size += Size/2;
-        M = mrealloc(self, Max(Size, 8));
-        require0(M);
-    }
+    JB_Array_AppendCount(self, Value, 1);
+}
 
-    // JB_mtest(M);
-    self->Count = Length + 1;
-    M[Length] = Value;
-    JB_Incr(Value);
-    // JB_mtest(M);
+void JB_Array_Reverse( Array* self ) {
+    int n = self->Vec.size();
+    auto F = self->Vec.begin();
+    for (int i = 0; i < n/2; i++) {
+        F[i] = F[n-(i+1)];
+    }
+}
+
+void JB_Array_Remove( Array* self, int Pos ) {
+    self->Vec.erase(self->Vec.begin()+Pos);
 }
 
 
@@ -106,18 +115,17 @@ void JB_Array_Destructor( Array* self ) {
 
 int JB_Array_Size( Array* self ) {
     if (self) {
-        return self->Count;
+        return self->Vec.size();
     }
     return 0;
 }
 
 
 void JB_Array_Constructor( Array* self, int Length ) {
-    self->ArrData = 0;
-    self->Count = 0;
-    self->UsableSize = 0;
-    if (Length >= 0) {
-        mrealloc(self, Length);
+    auto Place = &self->Vec;
+    auto f = new (Place) std::vector<JB_Object*>(); 
+    if (Length >= 1) {
+        JB_Array_SizeSet(self, Length);
     }
 }
 
@@ -133,14 +141,9 @@ int JB_Array_Wipe(Array* self) {
 }
 
 void JB_Array_ValueSet( Array* self, int Pos, JB_Object* Value ) {
-    MArray Data = self->ArrData;
-    u32 Size = self->UsableSize;
-    if ((u32)Pos < Size) {
-        int Length = self->Count; 
-        if (Pos < Length) {
-            JB_SetRef( Data[Pos], Value );
-            return;
-        }
+    if ((u32)Pos < self->Vec.size()) {
+        JB_SetRef( self->Vec[Pos], Value );
+        return;
     }
     debugger; // error in caller...
 }
@@ -148,7 +151,7 @@ void JB_Array_ValueSet( Array* self, int Pos, JB_Object* Value ) {
 
 JB_Object* JB_Array_Value( Array* self, int Pos ) {
     if ( (u32)JB_Array_Size(self) > (u32)Pos) {
-        return self->ArrData[ Pos ];
+        return self->Vec[ Pos ];
     }
     return 0;
 }
@@ -157,7 +160,7 @@ JB_Object* JB_Array_Value( Array* self, int Pos ) {
 #ifndef AS_LIBRARY
 void JB_Array_Shuffle( Array* self ) {
     int n = JB_Array_Size(self);
-    JB_Object** Array = self->ArrData;
+    JB_Object** Array = &self->Vec[0];
 
     u32 CRC = 0x1EDC6F41;
     for (int i = 0; i < n; i++) {

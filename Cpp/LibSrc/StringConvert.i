@@ -537,9 +537,11 @@ const u8* DecodeTable_() {
     static u8* T = 0;
     if (!T) {
         T = (u8*)JB_zalloc(256);
-        memset(T, 255, 256);
-        for (int i = 0; i < 64; i++) {
-            T[EscapeTable_[i]] = i;
+        if (T) {
+            memset(T, 255, 256);
+            for (int i = 0; i < 64; i++) {
+                T[EscapeTable_[i]] = i;
+            }
         }
     }
     return T;
@@ -595,6 +597,8 @@ static u8 SafeDec_(const u8*& Read, const u8* End,  const u8* T) {
 
 
 JB_String* JB_Str_DecodeBinary(JB_String* self, FastString* fs_in) {
+    const u8* T = DecodeTable_();    // go handle whitespace and stuff...
+    require(T);
     FastString* fs = JB_FS__FastNew(fs_in);
     const u8* r = JB_Str_Address(self);
     int L = JB_Str_Length(self);
@@ -602,7 +606,6 @@ JB_String* JB_Str_DecodeBinary(JB_String* self, FastString* fs_in) {
     require(j);
     
     const u8* End = r + L;
-    const u8* T = DecodeTable_();    // go handle whitespace and stuff...
     
     while (r < End) {
         u32 

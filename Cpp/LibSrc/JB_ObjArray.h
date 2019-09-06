@@ -6,13 +6,12 @@
 #ifndef __JB_Array__
 #define __JB_Array__
 
+#include <vector>
 
 extern "C" {
 
     JBClass( Array, Saveable,
-        MArray          ArrData;
-        int             Count;
-        int             UsableSize;
+        std::vector<JB_Object*> Vec;
     );
 
 
@@ -20,6 +19,7 @@ JB_String* JB_Array_Render(Array* self, FastString* fs);
 void JB_Array_Shuffle( Array* self );
 void JB_Array_SizeSet( Array* self, int NewSize );
 void JB_Array_Append( Array* self, JB_Object* Value );
+void JB_Array_AppendCount( Array* self, JB_Object* Value, int Count );
 void JB_Array_Destructor( Array* self );
 int JB_Array_Size( Array* self );
 void JB_Array_Constructor( Array* self, int Length );

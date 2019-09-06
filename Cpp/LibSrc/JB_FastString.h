@@ -56,9 +56,10 @@ JB_String* JB_FS_SmartResult(FastString* fs, FastString* Orig);
 	#define JB_FS_AppendFileChar( a, b ) JB_FS_AppendByte( a, b )
 #endif 
 
+u8*  JB__WriteIntToBuffer (u8* wp, s64 LeftOver);
 bool JB_FS_SizeIf_( FastString* fs, int InitLength);
 void JB_FS_ByteSet(FastString* self, int offset, int Val);
-u8* JB_FS_WriteAlloc_(FastString* fs, int GrowBy);
+u8*  JB_FS_WriteAlloc_(FastString* fs, int GrowBy);
 void JB_FS_AppendString(FastString* self, JB_String* u);
 void JB_FS_AppendLine(FastString* self, JB_String* s);
 void JB_FS_AppendSection(FastString* self, JB_String* u, int srStart, int srLength);

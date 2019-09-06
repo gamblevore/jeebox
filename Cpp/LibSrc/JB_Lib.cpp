@@ -18,7 +18,7 @@ Hidden Caches:
 
 
 #include "JB_Umbrella.h"
-
+#include <vector>
 
 extern "C" {
 
@@ -51,7 +51,6 @@ JBClassPlace( JB_StringExternal,JB_XStr_Destructor,    JB_AsClass(JB_String),   
 JBClassPlace( JB_String4,       0,                     JB_AsClass(JB_String),      JB_Str_Render );
 JBClassPlace( JB_String20,      0,                     JB_AsClass(JB_String),      JB_Str_Render );
 
-JBClassPlace( IntWrapper,       0,                     JB_AsClass(JB_Object),      0 );
 JBClassPlace( Dictionary1,      JB_Dict_Destructor,    JB_AsClass(JB_Object),      0 );
 JBClassPlace( Dictionary2,      JB_Dict_Destructor,    JB_AsClass(JB_Object),      0 );
 JBClassPlace( Dictionary3,      JB_Dict_Destructor,    JB_AsClass(JB_Object),      0 );
@@ -141,7 +140,7 @@ void JB_App__Quit (int Code) {
 }
 
 
-int main (int ArgC, char** ArgV, char** Env) {
+int main (int ArgC, char** ArgV, char** Env) {    
     ArgV_ = ArgV;
     Env_ = Env;
     JB_Pipe__InstallStackTrace();
