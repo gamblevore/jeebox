@@ -7,40 +7,50 @@
 #ifndef __JB_TYPES__
 #define __JB_TYPES__
 
+#ifndef _cstring
+    typedef const char*         _cstring;
+#endif
+#ifndef _voidptr
+    typedef void*               _voidptr;
+#endif
+
 #ifndef u64
     typedef unsigned long long  u64; 
 #endif
+#ifndef uint64
+    typedef unsigned long long  uint64; 
+#endif
+#ifndef s64
+    typedef long long           s64; 
+#endif
+#ifndef int64
+    typedef long long           int64; 
+#endif
+
 #ifndef u32
     typedef unsigned int        u32;
+#endif
+#ifndef uint
+    typedef unsigned int        uint;
 #endif
 #ifndef Fixed32
     typedef unsigned int        Fixed32;
 #endif
+
+#ifndef s16
+    typedef short               s16; 
+#endif
 #ifndef u16
     typedef unsigned short      u16; 
 #endif
+
 #ifndef u8
     typedef unsigned char       u8;
 #endif
-
-#ifndef s64
-    typedef long long  s64; 
-#endif
-#ifndef s32
-    typedef int        s32;
-#endif
-#ifndef s16
-    typedef short      s16; 
-#endif
 #ifndef s8
-    typedef char       s8;
+    typedef char                s8;
 #endif
-#ifndef _cstring
-    typedef const char*       _cstring;
-#endif
-#ifndef _voidptr
-    typedef void*       _voidptr;
-#endif
+
 
 
 #if _WIN32 || _WIN64
@@ -71,7 +81,7 @@
 
 // nice simple time system... gives us almost 9 million years and a decent (64 thousand ticks per second) precision...
 #define kTicksPerSecond (2^16)
-typedef s64 Date;
+typedef int64 Date;
 
 typedef unsigned char byte;
 typedef u32 CodePoint;

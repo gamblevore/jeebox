@@ -69,7 +69,7 @@ DictionaryReader* JB_Dict_Navigate( Dictionary* Dict );
 
 JB_String* JB_Obj_DictName (JB_Object* obj);
 JB_String* JB_int_DictName (int obj);
-JB_String* JB_s64_DictName (s64 obj);
+JB_String* JB_int64_DictName (s64 obj);
 
     
     

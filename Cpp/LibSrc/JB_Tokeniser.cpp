@@ -212,7 +212,7 @@ Message* JB_Tk__Process( u32 AskBits, long Mode ) {
     
 	u32 FoundBits = FatData->BitTypes;
     u32 MatchBits = FoundBits & AskBits;
-
+    
     if ( MatchBits ) {
         u32 Undo = self->NextStart;
         self->NextStart = Start + Found.Length;
@@ -225,7 +225,7 @@ Message* JB_Tk__Process( u32 AskBits, long Mode ) {
 //            }
             return Result;
         }
-
+        
         self->NextStart = Undo;
     }
 	

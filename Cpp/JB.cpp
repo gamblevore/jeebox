@@ -65,7 +65,7 @@ int JB__Tk_StopBars;
 //
 
 
-Array* JB__FuncArray_;
+SyntaxObj* JB__FuncArray_[64];
 Dictionary* JB__SyxDict_;
 JB_String* JB_JSONTest;
 JB_ErrorReceiver* JB_StdErr;
@@ -298,6 +298,8 @@ JB_String* JB_str_300;
 JB_String* JB_str_301;
 JB_String* JB_str_302;
 JB_String* JB_str_303;
+JB_String* JB_str_304;
+JB_String* JB_str_305;
 JB_String* JB_str_31;
 JB_String* JB_str_32;
 JB_String* JB_str_33;
@@ -373,43 +375,43 @@ JB_String* JB_str_96;
 JB_String* JB_str_97;
 JB_String* JB_str_98;
 JB_String* JB_str_99;
-__lib__ Syntax* JB_SyxAcc;
-__lib__ Syntax* JB_SyxAdj;
-__lib__ Syntax* JB_SyxAna;
-__lib__ Syntax* JB_SyxARel;
-__lib__ Syntax* JB_SyxArg;
-__lib__ Syntax* JB_SyxArr;
-__lib__ Syntax* JB_SyxBack;
-__lib__ Syntax* JB_SyxBin;
-__lib__ Syntax* JB_SyxBra;
-__lib__ Syntax* JB_SyxBRel;
-__lib__ Syntax* JB_SyxChar;
-__lib__ Syntax* JB_SyxCnj;
-__lib__ Syntax* JB_SyxDecl;
-__lib__ Syntax* JB_SyxDot;
-__lib__ Syntax* JB_SyxEmb;
-__lib__ Syntax* JB_SyxERel;
-__lib__ Syntax* JB_SyxFunc;
-__lib__ Syntax* JB_SyxItem;
-__lib__ Syntax* JB_SyxList;
-__lib__ Syntax* JB_SyxName;
-__lib__ Syntax* JB_SyxNum;
-__lib__ Syntax* JB_SyxOat;
-__lib__ Syntax* JB_SyxOpp;
-__lib__ Syntax* JB_SyxRel;
-__lib__ Syntax* JB_SyxSCnj;
-__lib__ Syntax* JB_SyxSCom;
-__lib__ Syntax* JB_SyxSDot;
-__lib__ Syntax* JB_SyxSheb;
-__lib__ Syntax* JB_SyxSOpp;
-__lib__ Syntax* JB_SyxSStr;
-__lib__ Syntax* JB_SyxSThg;
-__lib__ Syntax* JB_SyxStr;
-__lib__ Syntax* JB_SyxThg;
-__lib__ Syntax* JB_SyxTmp;
-__lib__ Syntax* JB_SyxTRel;
-__lib__ Syntax* JB_SyxType;
-__lib__ Syntax* JB_SyxUnit;
+__lib__ Syntax JB_SyxAcc;
+__lib__ Syntax JB_SyxAdj;
+__lib__ Syntax JB_SyxAna;
+__lib__ Syntax JB_SyxARel;
+__lib__ Syntax JB_SyxArg;
+__lib__ Syntax JB_SyxArr;
+__lib__ Syntax JB_SyxBack;
+__lib__ Syntax JB_SyxBin;
+__lib__ Syntax JB_SyxBra;
+__lib__ Syntax JB_SyxBRel;
+__lib__ Syntax JB_SyxChar;
+__lib__ Syntax JB_SyxCnj;
+__lib__ Syntax JB_SyxDecl;
+__lib__ Syntax JB_SyxDot;
+__lib__ Syntax JB_SyxEmb;
+__lib__ Syntax JB_SyxERel;
+__lib__ Syntax JB_SyxFunc;
+__lib__ Syntax JB_SyxItem;
+__lib__ Syntax JB_SyxList;
+__lib__ Syntax JB_SyxName;
+__lib__ Syntax JB_SyxNum;
+__lib__ Syntax JB_SyxOat;
+__lib__ Syntax JB_SyxOpp;
+__lib__ Syntax JB_SyxRel;
+__lib__ Syntax JB_SyxSCnj;
+__lib__ Syntax JB_SyxSCom;
+__lib__ Syntax JB_SyxSDot;
+__lib__ Syntax JB_SyxSheb;
+__lib__ Syntax JB_SyxSOpp;
+__lib__ Syntax JB_SyxSStr;
+__lib__ Syntax JB_SyxSThg;
+__lib__ Syntax JB_SyxStr;
+__lib__ Syntax JB_SyxThg;
+__lib__ Syntax JB_SyxTmp;
+__lib__ Syntax JB_SyxTRel;
+__lib__ Syntax JB_SyxType;
+__lib__ Syntax JB_SyxUnit;
 //
 
 
@@ -453,6 +455,14 @@ Dictionary* JB__DataTypeCode_Types_Dict;
 //
 
 
+int JB__Syntax_CurrFuncID;
+//
+
+
+uint64 JB__Mrap_Dummy[2];
+//
+
+
 FastString* JB__FS_StdOutFS;
 //
 
@@ -480,7 +490,7 @@ inline bool JB_int_Found(int self) {
 	return self >= 0;
 }
 
-inline bool JB_Obj_NilCheck(JB_Object* self) {
+inline bool JB_Syx_NilCheck(Syntax self) {
 	if (self) {
 		return true;
 	}
@@ -505,6 +515,13 @@ inline TokenHandler_fp JB_ParseHandler_cast(ParseHandler self) {
 	return ((TokenHandler_fp)self);
 }
 
+inline bool JB_Msg_NilCheck(Message* self) {
+	if (self) {
+		return true;
+	}
+	return JB_API__NilHandler();
+}
+
 
 
 
@@ -520,14 +537,15 @@ Message* JB_API__errors() {
 	if (JB_Rec_OK(JB_StdErr)) {
 		return nil;
 	}
-	Message* result = JB_Fn_Msg(JB_SyxList, JB_str_0);
+	Message* result = (JB_Syntax_Msg(JB_SyxList, JB_str_0));
 	{
 		LLRef _LoopSrc2 = JB_StdErr->Errors;
 		JB_Error* err = (JB_Error*)(_LoopSrc2.First);
 		while (err) {
 			JB_LinkedList_ListSanity(err);
 			JB_Error* _N1 = (JB_Error*)(err->_Next);
-			Message* node = JB_Fn_MsgParent(JB_SyxStr, result, JB_Err_Render(err, nil));
+			Message* node = (JB_Syntax_Msg(JB_SyxStr, JB_Err_Render(err, nil)));
+			JB_Tree_SyntaxAppend(result, node);
 			node->Position = err->Position;
 			err = _N1;
 		};
@@ -587,13 +605,12 @@ Message* JB_API__Parse(JB_String* s, JB_String* path) {
 	if ((!(s != nil))) {
 		return nil;
 	}
-	JB_MemoryLayer* L = JB_Incr(JB_Mem_UseNewLayer((JB_AsClass(Message)), path));
+	JB_MemoryLayer* L = JB_Incr(JB_Mem_CreateLayer((JB_AsClass(Message)), path));
+	JB_Mem_Use(L);
 	JB_SetRef(L->Obj2, s);
+	JB_Decr(L);
 	Message* Result = JB_Incr(JB_Str_Parse(s, nil));
 	JB_ClassData_Restore((JB_AsClass(Message)));
-	if ((!L)) {
-	}
-	JB_Decr(L);
 	JB_SafeDecr(Result);
 	return Result;
 }
@@ -602,32 +619,32 @@ Message* JB_API__Parse(JB_String* s, JB_String* path) {
 int JB_Constants__Init_() {
 	{
 		JB_SetRef(JB__Constants_EscapeStr, JB_Dict__New());
-		(JB_Dict_ValueSet(JB__Constants_EscapeStr, JB_str_216, JB_str_52));
+		(JB_Dict_ValueSet(JB__Constants_EscapeStr, JB_str_218, JB_str_52));
 		(JB_Dict_ValueSet(JB__Constants_EscapeStr, JB_str_44, JB_str_79));
-		(JB_Dict_ValueSet(JB__Constants_EscapeStr, JB_str_217, JB_str_218));
-		(JB_Dict_ValueSet(JB__Constants_EscapeStr, JB_str_15, JB_str_219));
-		(JB_Dict_ValueSet(JB__Constants_EscapeStr, JB_str_51, JB_str_220));
-		(JB_Dict_ValueSet(JB__Constants_EscapeStr, JB_str_22, JB_str_221));
-		(JB_Dict_ValueSet(JB__Constants_EscapeStr, JB_str_54, JB_str_222));
-		(JB_Dict_ValueSet(JB__Constants_EscapeStr, JB_str_223, JB_str_224));
+		(JB_Dict_ValueSet(JB__Constants_EscapeStr, JB_str_219, JB_str_220));
+		(JB_Dict_ValueSet(JB__Constants_EscapeStr, JB_str_15, JB_str_221));
+		(JB_Dict_ValueSet(JB__Constants_EscapeStr, JB_str_51, JB_str_222));
+		(JB_Dict_ValueSet(JB__Constants_EscapeStr, JB_str_22, JB_str_223));
+		(JB_Dict_ValueSet(JB__Constants_EscapeStr, JB_str_54, JB_str_224));
+		(JB_Dict_ValueSet(JB__Constants_EscapeStr, JB_str_225, JB_str_226));
 		JB_SetRef(JB__Constants_JS_EscapeStr, JB_Dict__New());
-		(JB_Dict_ValueSet(JB__Constants_JS_EscapeStr, JB_str_225, JB_str_226));
 		(JB_Dict_ValueSet(JB__Constants_JS_EscapeStr, JB_str_227, JB_str_228));
+		(JB_Dict_ValueSet(JB__Constants_JS_EscapeStr, JB_str_229, JB_str_230));
 		(JB_Dict_ValueSet(JB__Constants_JS_EscapeStr, JB_str_44, JB_str_79));
-		(JB_Dict_ValueSet(JB__Constants_JS_EscapeStr, JB_str_217, JB_str_218));
-		(JB_Dict_ValueSet(JB__Constants_JS_EscapeStr, JB_str_15, JB_str_219));
-		(JB_Dict_ValueSet(JB__Constants_JS_EscapeStr, JB_str_51, JB_str_220));
-		(JB_Dict_ValueSet(JB__Constants_JS_EscapeStr, JB_str_54, JB_str_222));
+		(JB_Dict_ValueSet(JB__Constants_JS_EscapeStr, JB_str_219, JB_str_220));
+		(JB_Dict_ValueSet(JB__Constants_JS_EscapeStr, JB_str_15, JB_str_221));
+		(JB_Dict_ValueSet(JB__Constants_JS_EscapeStr, JB_str_51, JB_str_222));
+		(JB_Dict_ValueSet(JB__Constants_JS_EscapeStr, JB_str_54, JB_str_224));
 		JB_SetRef(JB__Constants_UnEscapeStr, ((Dictionary*)nil));
 		JB_SetRef(JB__Constants_JS_UnEscapeStr, ((Dictionary*)nil));
 		JB_SetRef(JB__Constants_EscapeChr, ((Dictionary*)nil));
-		JB_SetRef(JB__Constants_CSWordMiddle, JB_Str_Charset(JB_str_229, true));
-		JB_SetRef(JB__Constants_CSWordStart, JB_Str_Charset(JB_str_230, true));
+		JB_SetRef(JB__Constants_CSWordMiddle, JB_Str_Charset(JB_str_231, true));
+		JB_SetRef(JB__Constants_CSWordStart, JB_Str_Charset(JB_str_232, true));
 		JB_SetRef(JB__Constants_CSNum, JB__Constants_CSWordMiddle);
-		JB_SetRef(JB__Constants_CSLine, JB_Str_Charset(JB_str_231, false));
-		JB_SetRef(JB__Constants_CSAfterTemporal, JB_Str_Charset(JB_str_232, false));
-		JB_SetRef(JB__Constants_CSLineBlack, JB_Str_Charset(JB_str_233, false));
-		JB_SetRef(JB__Constants_CSLettersOnly, JB_Str_Charset(JB_str_234, true));
+		JB_SetRef(JB__Constants_CSLine, JB_Str_Charset(JB_str_233, false));
+		JB_SetRef(JB__Constants_CSAfterTemporal, JB_Str_Charset(JB_str_234, false));
+		JB_SetRef(JB__Constants_CSLineBlack, JB_Str_Charset(JB_str_235, false));
+		JB_SetRef(JB__Constants_CSLettersOnly, JB_Str_Charset(JB_str_236, true));
 		JB_Constants__InitConstants();
 	};
 	return 0;
@@ -678,10 +695,10 @@ JB_String* JB_Constants__Test() {
 	JB_String* str = JB_Incr(JB_FS_GetResult(fs));
 	JB_Decr(fs);
 	if ((!(({
-		JB_String* _tmp363 = JB_Incr(JB_Str_Unescape(JB_Str_Escape(str)));
-		bool _tmp362 = JB_Str_SyntaxEquals(_tmp363, str, false);
-		JB_Decr(_tmp363);
-		_tmp362;
+		JB_String* _tmp375 = JB_Incr(JB_Str_Unescape(JB_Str_Escape(str)));
+		bool _tmp374 = JB_Str_SyntaxEquals(_tmp375, str, false);
+		JB_Decr(_tmp375);
+		_tmp374;
 	})))) {
 		JB_Object_SyntaxExpect(nil);
 		JB_Decr(str);
@@ -717,17 +734,17 @@ JB_String* JB_Constants__Test() {
 			return nil;
 		}
 		({
-			Message* _tmp365 = JB_Incr(JB_Msg_Copy(root, false));
-			bool _tmp364 = JB_Msg_TreeCompare(root, _tmp365);
-			JB_Decr(_tmp365);
-			_tmp364;
+			Message* _tmp377 = JB_Incr(JB_Msg_Copy(root, false));
+			bool _tmp376 = JB_Msg_TreeCompare(root, _tmp377);
+			JB_Decr(_tmp377);
+			_tmp376;
 		});
 		Message* list = JB_Incr(({
-			Message* _tmp367 = JB_Incr(JB_Str_Parse(list_input, nil));
-			Message* _tmp366 = JB_Incr(JB_Msg_ParseReadable(_tmp367));
-			JB_Decr(_tmp367);
-			JB_SafeDecr(_tmp366);
-			_tmp366;
+			Message* _tmp379 = JB_Incr(JB_Str_Parse(list_input, nil));
+			Message* _tmp378 = JB_Incr(JB_Msg_ParseReadable(_tmp379));
+			JB_Decr(_tmp379);
+			JB_SafeDecr(_tmp378);
+			_tmp378;
 		}));
 		JB_Msg_TreeCompare(root, list);
 		JB_Decr(list);
@@ -763,7 +780,7 @@ JB_String* JB_Constants__Test() {
 
 
 
-Message* JB_Tk__BarThings(int Start, Syntax* Syx) {
+Message* JB_Tk__BarThings(int Start, Syntax Syx) {
 	JB__Tk_StopBars = (kJB__Tk_FuncAfterBar | kJB__Tk_TemporalSyx);
 	Message* item = JB_Incr(JB_Tk__ProcessThing(kJB__Tk_Opp, 0));
 	if ((!item)) {
@@ -845,7 +862,7 @@ bool JB_Tk__ConsumeLines(Message* output, Message* msg) {
 	return result;
 }
 
-Message* JB_Tk__DotSub(Syntax* fn, int Start) {
+Message* JB_Tk__DotSub(Syntax fn, int Start) {
 	if ((!JB_BM_HasChar(JB__Constants_CSWordStart, JB_Str_SyntaxAccess(JB__Tk_Data, (++Start))))) {
 		JB_Tk__ErrorLetter(Start);
 		return nil;
@@ -863,9 +880,9 @@ Message* JB_Tk__DotSub(Syntax* fn, int Start) {
 	return Result;
 }
 
-int JB_Tk__EmbeddedArg(JB_String* close, Message* result, Syntax* Mode) {
+int JB_Tk__EmbeddedArg(JB_String* close, Message* result, Syntax Mode) {
 	Message* arg = JB_Incr(JB_Tk__NewParent0(result, JB_SyxArg, JB_Tk__NextStart()));
-	int _tmp = JB_Tk__EmbeddedCode(close, arg, JB_Fn_Parseflags(Mode));
+	int _tmp = JB_Tk__EmbeddedCode(close, arg, JB_Syntax_Parseflags(Mode));
 	JB_Decr(arg);
 	return _tmp;
 }
@@ -960,11 +977,11 @@ void JB_Tk__ErrorEvent2(int Start, int ExpectedBits, int RealBits) {
 			JB_FS_AppendByte(Err, '\'');
 			int N = JB_int_OperatorMin(JB_Tk__NextStart(), (Start + 100));
 			JB_String* _tmp1 = JB_Incr(({
-				JB_String* _tmp355 = JB_Incr(JB_Str_Range(JB__Tk_Data, Start, N));
-				JB_String* _tmp354 = JB_Incr(JB_Str_Escape(_tmp355));
-				JB_Decr(_tmp355);
-				JB_SafeDecr(_tmp354);
-				_tmp354;
+				JB_String* _tmp367 = JB_Incr(JB_Str_Range(JB__Tk_Data, Start, N));
+				JB_String* _tmp366 = JB_Incr(JB_Str_Escape(_tmp367));
+				JB_Decr(_tmp367);
+				JB_SafeDecr(_tmp366);
+				_tmp366;
 			}));
 			JB_FS_AppendString(Err, _tmp1);
 			JB_Decr(_tmp1);
@@ -972,11 +989,11 @@ void JB_Tk__ErrorEvent2(int Start, int ExpectedBits, int RealBits) {
 		}
 	}
 	({
-		JB_String* _tmp357 = JB_Incr(JB_FS_SyntaxCastString(Err));
-		Message* _tmp356 = JB_Incr(JB_Tk__ErrorAdd(_tmp357, Start, false));
-		JB_Decr(_tmp357);
-		JB_SafeDecr(_tmp356);
-		_tmp356;
+		JB_String* _tmp369 = JB_Incr(JB_FS_SyntaxCastString(Err));
+		Message* _tmp368 = JB_Incr(JB_Tk__ErrorAdd(_tmp369, Start, false));
+		JB_Decr(_tmp369);
+		JB_SafeDecr(_tmp368);
+		_tmp368;
 	});
 	JB_Decr(Err);
 }
@@ -1087,11 +1104,11 @@ Message* JB_Tk__fBinary(int Start) {
 	JB_String* S = JB_Incr(JB_Str_Range(JB__Tk_Data, Start + 2, End));
 	(JB_Tk__NextStartSet(End + 2));
 	Message* _tmp = JB_Incr(({
-		JB_String* _tmp298 = JB_Incr(JB_Str_DecodeB64(S, nil));
-		Message* _tmp297 = JB_Incr(JB_Tk__NewParentName(nil, JB_SyxBin, Start, _tmp298));
-		JB_Decr(_tmp298);
-		JB_SafeDecr(_tmp297);
-		_tmp297;
+		JB_String* _tmp302 = JB_Incr(JB_Str_DecodeB64(S, nil));
+		Message* _tmp301 = JB_Incr(JB_Tk__NewParentName(nil, JB_SyxBin, Start, _tmp302));
+		JB_Decr(_tmp302);
+		JB_SafeDecr(_tmp301);
+		_tmp301;
 	}));
 	JB_Decr(S);
 	JB_SafeDecr(_tmp);
@@ -1115,11 +1132,11 @@ Message* JB_Tk__fChr(int Start) {
 	}
 	(JB_Tk__NextStartSet(After + 1));
 	JB_String* name = JB_Incr(({
-		JB_String* _tmp338 = JB_Incr(JB_Str_Range(JB__Tk_Data, Start + 1, After));
-		JB_String* _tmp337 = JB_Incr(JB_Str_Unescape(_tmp338));
-		JB_Decr(_tmp338);
-		JB_SafeDecr(_tmp337);
-		_tmp337;
+		JB_String* _tmp350 = JB_Incr(JB_Str_Range(JB__Tk_Data, Start + 1, After));
+		JB_String* _tmp349 = JB_Incr(JB_Str_Unescape(_tmp350));
+		JB_Decr(_tmp350);
+		JB_SafeDecr(_tmp349);
+		_tmp349;
 	}));
 	Message* _tmp = JB_Incr(JB_Tk__NewParentName(nil, JB_SyxChar, Start, name));
 	JB_Decr(name);
@@ -1329,7 +1346,7 @@ Message* JB_Tk__fString2(int Start) {
 		}
 		(JB_Tk__NextStartSet(NewStrPos));
 		if (C0 == '{') {
-			StrPos = JB_Tk__EmbeddedCode(JB_str_129, result, JB_Fn_Parseflags(JB_SyxList));
+			StrPos = JB_Tk__EmbeddedCode(JB_str_129, result, JB_Syntax_Parseflags(JB_SyxList));
 		} else {
 			StrPos = JB_Str_OutCharSet(JB__Tk_Data, JB__Constants_CSWordMiddle, NewStrPos + 1, After);
 			if ((!JB_int_Found(StrPos))) {
@@ -1348,7 +1365,7 @@ Message* JB_Tk__fString2(int Start) {
 	return result;
 }
 
-Message* JB_Tk__fStrSub(int Start, JB_String* Ender, Syntax* syx) {
+Message* JB_Tk__fStrSub(int Start, JB_String* Ender, Syntax syx) {
 	int After = JB_Str_InStr(JB__Tk_Data, Ender, JB_Tk__NextStart(), kJB__int_max, false);
 	if ((!JB_int_Found(After))) {
 		return JB_Tk__ErrorAdd(JB_str_124, JB_Tk__NextStart(), false);
@@ -1465,67 +1482,67 @@ void JB_Tk__Init() {
 	JB_String* op_math = JB_Incr(JB_str_102);
 	JB_String* PFix = JB_Incr(JB_str_103);
 	TokHan* H = JB_Incr(({
-		TokHan* _tmp313 = JB_Incr(JB_TH_Link(JB_Tk__Handler(kJB__Tk_ThingWord, ((TokenHandler_fp)JB_Tk__fThingWord)), kJB__Tk_TemporalWord, ((TokenHandler_fp)JB_Tk__fTemporalStatement)));
-		TokHan* _tmp312 = JB_Incr(JB_TH_Link(_tmp313, kJB__Tk_OppWord, ((TokenHandler_fp)JB_Tk__fOppWord)));
-		JB_Decr(_tmp313);
-		JB_SafeDecr(_tmp312);
-		_tmp312;
+		TokHan* _tmp325 = JB_Incr(JB_TH_Link(JB_Tk__Handler(kJB__Tk_ThingWord, ((TokenHandler_fp)JB_Tk__fThingWord)), kJB__Tk_TemporalWord, ((TokenHandler_fp)JB_Tk__fTemporalStatement)));
+		TokHan* _tmp324 = JB_Incr(JB_TH_Link(_tmp325, kJB__Tk_OppWord, ((TokenHandler_fp)JB_Tk__fOppWord)));
+		JB_Decr(_tmp325);
+		JB_SafeDecr(_tmp324);
+		_tmp324;
 	}));
 	Array* _tmp1 = JB_Incr(JB_BM_Bytes(JB__Constants_CSWordStart));
 	JB_Tk__TokensHandler(_tmp1, H);
 	JB_Decr(_tmp1);
 	JB_Decr(H);
 	TokHan* _tmp2 = JB_Incr(({
-		TokHan* _tmp317 = JB_Incr(JB_TH_Link(JB_Tk__Handler(kJB__Tk_FuncAfterNoSpace, ((TokenHandler_fp)JB_Tk__fFuncCall)), kJB__Tk_ThingSyx, ((TokenHandler_fp)JB_Tk__fBracket)));
-		TokHan* _tmp316 = JB_Incr(JB_TH_Link(_tmp317, kJB__Tk_OppBra, ((TokenHandler_fp)JB_Tk__fOppBracket)));
-		JB_Decr(_tmp317);
-		JB_SafeDecr(_tmp316);
-		_tmp316;
-	}));
-	(JB_Tk__TokenSet(JB_str_104, _tmp2));
-	JB_Decr(_tmp2);
-	TokHan* _tmp3 = JB_Incr(({
-		TokHan* _tmp320 = JB_Incr(JB_Tk__Handler(kJB__Tk_FuncAfterNoSpace, ((TokenHandler_fp)JB_Tk__fAccess)));
-		TokHan* _tmp319 = JB_Incr(JB_TH_Link(_tmp320, kJB__Tk_ThingSyx, ((TokenHandler_fp)JB_Tk__fArray)));
-		JB_Decr(_tmp320);
-		JB_SafeDecr(_tmp319);
-		_tmp319;
-	}));
-	(JB_Tk__TokenSet(JB_str_105, _tmp3));
-	JB_Decr(_tmp3);
-	TokHan* _tmp4 = JB_Incr(({
-		TokHan* _tmp323 = JB_Incr(JB_Tk__Handler(kJB__Tk_FuncAfterNoSpace, ((TokenHandler_fp)JB_Tk__fDot)));
-		TokHan* _tmp322 = JB_Incr(JB_TH_Link(_tmp323, kJB__Tk_ThingSyx, ((TokenHandler_fp)JB_Tk__fSDot)));
-		JB_Decr(_tmp323);
-		JB_SafeDecr(_tmp322);
-		_tmp322;
-	}));
-	(JB_Tk__TokenSet(JB_str_27, _tmp4));
-	JB_Decr(_tmp4);
-	TokHan* _tmp5 = JB_Incr(({
-		TokHan* _tmp326 = JB_Incr(JB_Tk__Handler(kJB__Tk_FuncAfterBar, ((TokenHandler_fp)JB_Tk__fBarTypeCast)));
-		TokHan* _tmp325 = JB_Incr(JB_TH_Link(_tmp326, kJB__Tk_TemporalSyx, ((TokenHandler_fp)JB_Tk__fDecl)));
-		JB_Decr(_tmp326);
-		JB_SafeDecr(_tmp325);
-		_tmp325;
-	}));
-	(JB_Tk__TokenSet(JB_str_106, _tmp5));
-	JB_Decr(_tmp5);
-	TokHan* _tmp6 = JB_Incr(({
-		TokHan* _tmp329 = JB_Incr(JB_Tk__Handler(kJB__Tk_ThingSyx, ((TokenHandler_fp)JB_Tk__fAtName)));
-		TokHan* _tmp328 = JB_Incr(JB_TH_Link(_tmp329, kJB__Tk_FuncAfterNormal, ((TokenHandler_fp)JB_Tk__fAtNamedExp)));
+		TokHan* _tmp329 = JB_Incr(JB_TH_Link(JB_Tk__Handler(kJB__Tk_FuncAfterNoSpace, ((TokenHandler_fp)JB_Tk__fFuncCall)), kJB__Tk_ThingSyx, ((TokenHandler_fp)JB_Tk__fBracket)));
+		TokHan* _tmp328 = JB_Incr(JB_TH_Link(_tmp329, kJB__Tk_OppBra, ((TokenHandler_fp)JB_Tk__fOppBracket)));
 		JB_Decr(_tmp329);
 		JB_SafeDecr(_tmp328);
 		_tmp328;
 	}));
-	(JB_Tk__TokenSet(JB_str_107, _tmp6));
-	JB_Decr(_tmp6);
-	TokHan* _tmp7 = JB_Incr(({
-		TokHan* _tmp332 = JB_Incr(JB_Tk__Handler(kJB__Tk_FuncAfterNormal, ((TokenHandler_fp)JB_Tk__fAdjectiveThing)));
-		TokHan* _tmp331 = JB_Incr(JB_TH_Link(_tmp332, kJB__Tk_adjectiveop, ((TokenHandler_fp)JB_Tk__fAdjectiveOp)));
+	(JB_Tk__TokenSet(JB_str_104, _tmp2));
+	JB_Decr(_tmp2);
+	TokHan* _tmp3 = JB_Incr(({
+		TokHan* _tmp332 = JB_Incr(JB_Tk__Handler(kJB__Tk_FuncAfterNoSpace, ((TokenHandler_fp)JB_Tk__fAccess)));
+		TokHan* _tmp331 = JB_Incr(JB_TH_Link(_tmp332, kJB__Tk_ThingSyx, ((TokenHandler_fp)JB_Tk__fArray)));
 		JB_Decr(_tmp332);
 		JB_SafeDecr(_tmp331);
 		_tmp331;
+	}));
+	(JB_Tk__TokenSet(JB_str_105, _tmp3));
+	JB_Decr(_tmp3);
+	TokHan* _tmp4 = JB_Incr(({
+		TokHan* _tmp335 = JB_Incr(JB_Tk__Handler(kJB__Tk_FuncAfterNoSpace, ((TokenHandler_fp)JB_Tk__fDot)));
+		TokHan* _tmp334 = JB_Incr(JB_TH_Link(_tmp335, kJB__Tk_ThingSyx, ((TokenHandler_fp)JB_Tk__fSDot)));
+		JB_Decr(_tmp335);
+		JB_SafeDecr(_tmp334);
+		_tmp334;
+	}));
+	(JB_Tk__TokenSet(JB_str_27, _tmp4));
+	JB_Decr(_tmp4);
+	TokHan* _tmp5 = JB_Incr(({
+		TokHan* _tmp338 = JB_Incr(JB_Tk__Handler(kJB__Tk_FuncAfterBar, ((TokenHandler_fp)JB_Tk__fBarTypeCast)));
+		TokHan* _tmp337 = JB_Incr(JB_TH_Link(_tmp338, kJB__Tk_TemporalSyx, ((TokenHandler_fp)JB_Tk__fDecl)));
+		JB_Decr(_tmp338);
+		JB_SafeDecr(_tmp337);
+		_tmp337;
+	}));
+	(JB_Tk__TokenSet(JB_str_106, _tmp5));
+	JB_Decr(_tmp5);
+	TokHan* _tmp6 = JB_Incr(({
+		TokHan* _tmp341 = JB_Incr(JB_Tk__Handler(kJB__Tk_ThingSyx, ((TokenHandler_fp)JB_Tk__fAtName)));
+		TokHan* _tmp340 = JB_Incr(JB_TH_Link(_tmp341, kJB__Tk_FuncAfterNormal, ((TokenHandler_fp)JB_Tk__fAtNamedExp)));
+		JB_Decr(_tmp341);
+		JB_SafeDecr(_tmp340);
+		_tmp340;
+	}));
+	(JB_Tk__TokenSet(JB_str_107, _tmp6));
+	JB_Decr(_tmp6);
+	TokHan* _tmp7 = JB_Incr(({
+		TokHan* _tmp344 = JB_Incr(JB_Tk__Handler(kJB__Tk_FuncAfterNormal, ((TokenHandler_fp)JB_Tk__fAdjectiveThing)));
+		TokHan* _tmp343 = JB_Incr(JB_TH_Link(_tmp344, kJB__Tk_adjectiveop, ((TokenHandler_fp)JB_Tk__fAdjectiveOp)));
+		JB_Decr(_tmp344);
+		JB_SafeDecr(_tmp343);
+		_tmp343;
 	}));
 	(JB_Tk__TokenSet(JB_str_108, _tmp7));
 	JB_Decr(_tmp7);
@@ -1645,27 +1662,27 @@ int JB_Tk__MessageErrorSub(FastString* fs, int num, int ButFound) {
 	return 0;
 }
 
-Message* JB_Tk__NewParent(Message* Parent, Syntax* Func, int Start, int End) {
+Message* JB_Tk__NewParent(Message* Parent, Syntax Func, int Start, int End) {
 	JB_String* Name = JB_Str_Range(JB__Tk_Data, Start, End);
 	Message* Result = JB_Msg__NewParser(Parent, Func, Start, Name);
 	return Result;
 }
 
-Message* JB_Tk__NewParent0(Message* Parent, Syntax* Func, int Start) {
+Message* JB_Tk__NewParent0(Message* Parent, Syntax Func, int Start) {
 	return JB_Msg__NewParser(Parent, Func, Start, JB_str_0);
 }
 
-Message* JB_Tk__NewParentName(Message* Parent, Syntax* Func, int Start, JB_String* name) {
+Message* JB_Tk__NewParentName(Message* Parent, Syntax Func, int Start, JB_String* name) {
 	return JB_Msg__NewParser(Parent, Func, Start, name);
 }
 
-Message* JB_Tk__NewSkip(Message* P, Syntax* F, int Start, int NameStart, int NameEnd) {
+Message* JB_Tk__NewSkip(Message* P, Syntax F, int Start, int NameStart, int NameEnd) {
 	Message* result = JB_Tk__NewParent(P, F, NameStart, NameEnd);
 	result->Position = Start;
 	return result;
 }
 
-Message* JB_Tk__NewWord(Message* P, Syntax* F, int Start, int SearchFrom) {
+Message* JB_Tk__NewWord(Message* P, Syntax F, int Start, int SearchFrom) {
 	int after = JB_Tk__WordAfter(SearchFrom);
 	Message* result = JB_Tk__NewParent(P, F, SearchFrom, after);
 	result->Position = Start;
@@ -1751,7 +1768,7 @@ Message* JB_Tk__ParseItem(Message* ch, int TemporalFlags) {
 }
 
 bool JB_Tk__ParseLoop(Message* Output, byte Ender) {
-	bool Result = JB_Tk__ParseLoopMode(Output, JB_Fn_Parseflags(Output->Func));
+	bool Result = JB_Tk__ParseLoopMode(Output, JB_Syntax_Parseflags(Output->Func));
 	if (Ender) {
 		JB_Tk__ExpectEndChar(Ender, true);
 	}
@@ -1776,16 +1793,14 @@ bool JB_Tk__ParseLoopMode(Message* Output, int Flags) {
 				break;
 			}
 		} else {
-			Syntax* f = JB_Incr(Item->Func);
+			Syntax f = Item->Func;
 			if ((f == JB_SyxCnj) or (f == JB_SyxSCnj)) {
 				JB_SetRef(Item, JB_Tk__ReRoute(Item, Output));
 				if ((!Item)) {
 					JB_Decr(Item);
-					JB_Decr(f);
 					break;
 				}
 			}
-			JB_Decr(f);
 		}
 		result++;
 		if ((!JB_Tk__ConsumeLines(Output, Item))) {
@@ -1973,11 +1988,11 @@ bool JB_CompareError(Message* expected, Message* found) {
 	FastString* _fs1_fs = JB_Incr(JB_FS__New());
 	JB_FS_AppendString(_fs1_fs, JB_str_75);
 	JB_String* _tmp5 = JB_Incr(({
-		Message* _tmp269 = JB_Incr(JB_Msg_PoorAnt(expected));
-		JB_String* _tmp268 = JB_Incr(JB_Msg_Locate(_tmp269));
-		JB_Decr(_tmp269);
-		JB_SafeDecr(_tmp268);
-		_tmp268;
+		Message* _tmp273 = JB_Incr(JB_Msg_PoorAnt(expected));
+		JB_String* _tmp272 = JB_Incr(JB_Msg_Locate(_tmp273));
+		JB_Decr(_tmp273);
+		JB_SafeDecr(_tmp272);
+		_tmp272;
 	}));
 	JB_FS_AppendString(_fs1_fs, _tmp5);
 	JB_Decr(_tmp5);
@@ -1990,11 +2005,11 @@ bool JB_CompareError(Message* expected, Message* found) {
 		FastString* _fs2_fs = JB_Incr(JB_FS__New());
 		JB_FS_AppendString(_fs2_fs, JB_str_76);
 		JB_String* _tmp6 = JB_Incr(({
-			Message* _tmp272 = JB_Incr(JB_Msg_PoorAnt(found));
-			JB_String* _tmp271 = JB_Incr(JB_Msg_Locate(_tmp272));
-			JB_Decr(_tmp272);
-			JB_SafeDecr(_tmp271);
-			_tmp271;
+			Message* _tmp276 = JB_Incr(JB_Msg_PoorAnt(found));
+			JB_String* _tmp275 = JB_Incr(JB_Msg_Locate(_tmp276));
+			JB_Decr(_tmp276);
+			JB_SafeDecr(_tmp275);
+			_tmp275;
 		}));
 		JB_FS_AppendString(_fs2_fs, _tmp6);
 		JB_Decr(_tmp6);
@@ -2060,11 +2075,11 @@ JB_String* JB_EntityTest() {
 	if (JB_Platform__linux()) {
 	}
 	JB_String* result = JB_Incr(({
-		JB_String* _tmp274 = JB_Incr(JB_Str_LowerCase(replicate));
-		JB_String* _tmp273 = JB_Incr(JB_Str_OperatorPlus(_tmp274, JB_str_80));
-		JB_Decr(_tmp274);
-		JB_SafeDecr(_tmp273);
-		_tmp273;
+		JB_String* _tmp278 = JB_Incr(JB_Str_LowerCase(replicate));
+		JB_String* _tmp277 = JB_Incr(JB_Str_OperatorPlus(_tmp278, JB_str_80));
+		JB_Decr(_tmp278);
+		JB_SafeDecr(_tmp277);
+		_tmp277;
 	}));
 	JB_Decr(replicate);
 	JB_SafeDecr(result);
@@ -2073,110 +2088,112 @@ JB_String* JB_EntityTest() {
 
 int JB_Init_() {
 	{
-		JB_SetRef(JB_str_303, JB_Str3("Binary", 6));
-		JB_SetRef(JB_str_302, JB_Str3("bin", 3));
-		JB_SetRef(JB_str_301, JB_Str3("\n{\n\t\"glossary\": {\n\t\t\"title\": \"example glossary\",\n\t\t\"GlossDiv\": {\n\t\t\t\"title\": \"S\",\n\t\t\t\"GlossList\": {\n\t\t\t\t\"GlossEntry\": {\n\t\t\t\t\t\"ID\": \"SGML\",\n\t\t\t\t\t\"SortAs\": \"SGML\",\n\t\t\t\t\t\"GlossTerm\": \"Standard \\\\Generalized Markup Language\",\n\t\t\t\t\t\"Acronym\": \"SGML\",\n\t\t\t\t\t\"Abbrev\": \"ISO 8879:1986\",\n\t\t\t\t\t\"GlossDef\": {\n\t\t\t\t\t\t\"para\": \"A meta-markup language, \\nused to create markup languages such as \\\"DocBook\\\".\",\n\t\t\t\t\t\t\"GlossSeeAlso\": [\"GML\", \"XML\"]\n\t\t\t\t\t},\n\t\t\t\t\t\"GlossSee\": \"markup\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n}\n", 484));
-		JB_SetRef(JB_str_300, JB_Str3("Typecast", 8));
-		JB_SetRef(JB_str_299, JB_Str3("type", 4));
-		JB_SetRef(JB_str_298, JB_Str3("Conjugate", 9));
-		JB_SetRef(JB_str_297, JB_Str3("cnj", 3));
-		JB_SetRef(JB_str_296, JB_Str3("Syntactic_Conjugate", 19));
-		JB_SetRef(JB_str_295, JB_Str3("scnj", 4));
-		JB_SetRef(JB_str_294, JB_Str3("Temporal_Reference", 18));
-		JB_SetRef(JB_str_293, JB_Str3("ana", 3));
-		JB_SetRef(JB_str_292, JB_Str3("Temporal_Statement", 18));
-		JB_SetRef(JB_str_291, JB_Str3("tmp", 3));
-		JB_SetRef(JB_str_290, JB_Str3("Thing", 5));
-		JB_SetRef(JB_str_289, JB_Str3("thg", 3));
-		JB_SetRef(JB_str_288, JB_Str3("Syntactic_Thing", 15));
-		JB_SetRef(JB_str_287, JB_Str3("sthg", 4));
-		JB_SetRef(JB_str_286, JB_Str3("String", 6));
-		JB_SetRef(JB_str_285, JB_Str3("str", 3));
-		JB_SetRef(JB_str_284, JB_Str3("Shebang", 7));
-		JB_SetRef(JB_str_283, JB_Str3("sheb", 4));
-		JB_SetRef(JB_str_282, JB_Str3("Syntactic_Comment", 17));
-		JB_SetRef(JB_str_281, JB_Str3("scom", 4));
-		JB_SetRef(JB_str_280, JB_Str3("Self_Dot", 8));
-		JB_SetRef(JB_str_279, JB_Str3("sdot", 4));
-		JB_SetRef(JB_str_278, JB_Str3("Temporal_Relationship", 21));
-		JB_SetRef(JB_str_277, JB_Str3("trel", 4));
-		JB_SetRef(JB_str_276, JB_Str3("Relationship", 12));
-		JB_SetRef(JB_str_275, JB_Str3("rel", 3));
-		JB_SetRef(JB_str_274, JB_Str3("Syntactic_Operator", 18));
-		JB_SetRef(JB_str_273, JB_Str3("sopp", 4));
-		JB_SetRef(JB_str_272, JB_Str3("Operator", 8));
-		JB_SetRef(JB_str_271, JB_Str3("opp", 3));
-		JB_SetRef(JB_str_270, JB_Str3("Operator_As_Thing", 17));
-		JB_SetRef(JB_str_269, JB_Str3("oat", 3));
-		JB_SetRef(JB_str_268, JB_Str3("unit", 4));
-		JB_SetRef(JB_str_267, JB_Str3("Number", 6));
-		JB_SetRef(JB_str_266, JB_Str3("num", 3));
-		JB_SetRef(JB_str_265, JB_Str3("name", 4));
-		JB_SetRef(JB_str_264, JB_Str3("item", 4));
-		JB_SetRef(JB_str_263, JB_Str3("Function", 8));
-		JB_SetRef(JB_str_262, JB_Str3("func", 4));
-		JB_SetRef(JB_str_261, JB_Str3("Equals_Relationship", 19));
-		JB_SetRef(JB_str_260, JB_Str3("erel", 4));
-		JB_SetRef(JB_str_259, JB_Str3("Embedded_Value", 14));
-		JB_SetRef(JB_str_258, JB_Str3("emb", 3));
-		JB_SetRef(JB_str_257, JB_Str3("Dot", 3));
-		JB_SetRef(JB_str_256, JB_Str3("dot", 3));
-		JB_SetRef(JB_str_255, JB_Str3("Declaration", 11));
-		JB_SetRef(JB_str_254, JB_Str3("decl", 4));
-		JB_SetRef(JB_str_253, JB_Str3("Character", 9));
-		JB_SetRef(JB_str_252, JB_Str3("Before_Relationship", 19));
-		JB_SetRef(JB_str_251, JB_Str3("brel", 4));
-		JB_SetRef(JB_str_250, JB_Str3("Bracket", 7));
-		JB_SetRef(JB_str_249, JB_Str3("bra", 3));
-		JB_SetRef(JB_str_248, JB_Str3("Super_String", 12));
-		JB_SetRef(JB_str_247, JB_Str3("sstr", 4));
-		JB_SetRef(JB_str_246, JB_Str3("Backtick", 8));
-		JB_SetRef(JB_str_245, JB_Str3("back", 4));
-		JB_SetRef(JB_str_244, JB_Str3("Array", 5));
-		JB_SetRef(JB_str_243, JB_Str3("arr", 3));
-		JB_SetRef(JB_str_242, JB_Str3("After_Relationship", 18));
-		JB_SetRef(JB_str_241, JB_Str3("arel", 4));
-		JB_SetRef(JB_str_240, JB_Str3("Adjective", 9));
-		JB_SetRef(JB_str_239, JB_Str3("adj", 3));
-		JB_SetRef(JB_str_238, JB_Str3("Access", 6));
-		JB_SetRef(JB_str_237, JB_Str3("acc", 3));
-		JB_SetRef(JB_str_236, JB_Str3("Argument", 8));
-		JB_SetRef(JB_str_235, JB_Str3("arg", 3));
-		JB_SetRef(JB_str_234, JB_Str3("AZaz€¿Âô", 8));
-		JB_SetRef(JB_str_233, JB_Str3("\n\r,", 3));
-		JB_SetRef(JB_str_232, JB_Str3(" ,:\t\n\r\\", 7));
-		JB_SetRef(JB_str_231, JB_Str3("\n\r", 2));
-		JB_SetRef(JB_str_230, JB_Str3("AZaz__€¿Âô", 10));
-		JB_SetRef(JB_str_229, JB_Str3("AZaz09__€¿Âô", 12));
-		JB_SetRef(JB_str_228, JB_Str3("\\f", 2));
-		JB_SetRef(JB_str_227, JB_Str3("", 1));
-		JB_SetRef(JB_str_226, JB_Str3("\\b", 2));
-		JB_SetRef(JB_str_225, JB_Str3("", 1));
-		JB_SetRef(JB_str_224, JB_Str3("\\&#", 3));
-		JB_SetRef(JB_str_223, JB_Str3("&#", 2));
-		JB_SetRef(JB_str_222, JB_Str3("\\\\", 2));
-		JB_SetRef(JB_str_221, JB_Str3("\\'", 2));
-		JB_SetRef(JB_str_220, JB_Str3("\\\"", 2));
-		JB_SetRef(JB_str_219, JB_Str3("\\t", 2));
-		JB_SetRef(JB_str_218, JB_Str3("\\r", 2));
-		JB_SetRef(JB_str_217, JB_Str3("\r", 1));
-		JB_SetRef(JB_str_216, JB_Str3("\0", 1));
-		JB_SetRef(JB_str_215, JB_Str3("[0;1;33m", 9));
-		JB_SetRef(JB_str_214, JB_Str3("[0;1;32m", 9));
-		JB_SetRef(JB_str_213, JB_Str3("[0;1;31m", 9));
-		JB_SetRef(JB_str_212, JB_Str3("[0;1m", 6));
-		JB_SetRef(JB_str_211, JB_Str3("[0m", 4));
-		JB_SetRef(JB_str_210, JB_Str3("@JBSave\n", 8));
-		JB_SetRef(JB_str_209, JB_Str3("unusedtype", 10));
-		JB_SetRef(JB_str_208, JB_Str3("point4", 6));
-		JB_SetRef(JB_str_207, JB_Str3("point3", 6));
-		JB_SetRef(JB_str_206, JB_Str3("point2", 6));
-		JB_SetRef(JB_str_205, JB_Str3("ipoint4", 7));
-		JB_SetRef(JB_str_204, JB_Str3("ipoint3", 7));
-		JB_SetRef(JB_str_203, JB_Str3("ipoint2", 7));
-		JB_SetRef(JB_str_202, JB_Str3("char", 4));
-		JB_SetRef(JB_str_201, JB_Str3("f16", 3));
-		JB_SetRef(JB_str_200, JB_Str3("f64", 3));
+		JB_SetRef(JB_str_305, JB_Str3("Binary", 6));
+		JB_SetRef(JB_str_304, JB_Str3("bin", 3));
+		JB_SetRef(JB_str_303, JB_Str3("\n{\n\t\"glossary\": {\n\t\t\"title\": \"example glossary\",\n\t\t\"GlossDiv\": {\n\t\t\t\"title\": \"S\",\n\t\t\t\"GlossList\": {\n\t\t\t\t\"GlossEntry\": {\n\t\t\t\t\t\"ID\": \"SGML\",\n\t\t\t\t\t\"SortAs\": \"SGML\",\n\t\t\t\t\t\"GlossTerm\": \"Standard \\\\Generalized Markup Language\",\n\t\t\t\t\t\"Acronym\": \"SGML\",\n\t\t\t\t\t\"Abbrev\": \"ISO 8879:1986\",\n\t\t\t\t\t\"GlossDef\": {\n\t\t\t\t\t\t\"para\": \"A meta-markup language, \\nused to create markup languages such as \\\"DocBook\\\".\",\n\t\t\t\t\t\t\"GlossSeeAlso\": [\"GML\", \"XML\"]\n\t\t\t\t\t},\n\t\t\t\t\t\"GlossSee\": \"markup\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n}\n", 484));
+		JB_SetRef(JB_str_302, JB_Str3("Typecast", 8));
+		JB_SetRef(JB_str_301, JB_Str3("type", 4));
+		JB_SetRef(JB_str_300, JB_Str3("Conjugate", 9));
+		JB_SetRef(JB_str_299, JB_Str3("cnj", 3));
+		JB_SetRef(JB_str_298, JB_Str3("Syntactic_Conjugate", 19));
+		JB_SetRef(JB_str_297, JB_Str3("scnj", 4));
+		JB_SetRef(JB_str_296, JB_Str3("Temporal_Reference", 18));
+		JB_SetRef(JB_str_295, JB_Str3("ana", 3));
+		JB_SetRef(JB_str_294, JB_Str3("Statement", 9));
+		JB_SetRef(JB_str_293, JB_Str3("tmp", 3));
+		JB_SetRef(JB_str_292, JB_Str3("Thing", 5));
+		JB_SetRef(JB_str_291, JB_Str3("thg", 3));
+		JB_SetRef(JB_str_290, JB_Str3("Syntactic_Thing", 15));
+		JB_SetRef(JB_str_289, JB_Str3("sthg", 4));
+		JB_SetRef(JB_str_288, JB_Str3("String", 6));
+		JB_SetRef(JB_str_287, JB_Str3("str", 3));
+		JB_SetRef(JB_str_286, JB_Str3("Shebang", 7));
+		JB_SetRef(JB_str_285, JB_Str3("sheb", 4));
+		JB_SetRef(JB_str_284, JB_Str3("Syntactic_Comment", 17));
+		JB_SetRef(JB_str_283, JB_Str3("scom", 4));
+		JB_SetRef(JB_str_282, JB_Str3("Self_Dot", 8));
+		JB_SetRef(JB_str_281, JB_Str3("sdot", 4));
+		JB_SetRef(JB_str_280, JB_Str3("Temporal_Relationship", 21));
+		JB_SetRef(JB_str_279, JB_Str3("trel", 4));
+		JB_SetRef(JB_str_278, JB_Str3("Relationship", 12));
+		JB_SetRef(JB_str_277, JB_Str3("rel", 3));
+		JB_SetRef(JB_str_276, JB_Str3("Syntactic_Operator", 18));
+		JB_SetRef(JB_str_275, JB_Str3("sopp", 4));
+		JB_SetRef(JB_str_274, JB_Str3("Operator", 8));
+		JB_SetRef(JB_str_273, JB_Str3("opp", 3));
+		JB_SetRef(JB_str_272, JB_Str3("Operator_As_Thing", 17));
+		JB_SetRef(JB_str_271, JB_Str3("oat", 3));
+		JB_SetRef(JB_str_270, JB_Str3("unit", 4));
+		JB_SetRef(JB_str_269, JB_Str3("Number", 6));
+		JB_SetRef(JB_str_268, JB_Str3("num", 3));
+		JB_SetRef(JB_str_267, JB_Str3("name", 4));
+		JB_SetRef(JB_str_266, JB_Str3("item", 4));
+		JB_SetRef(JB_str_265, JB_Str3("Function", 8));
+		JB_SetRef(JB_str_264, JB_Str3("func", 4));
+		JB_SetRef(JB_str_263, JB_Str3("Equals_Relationship", 19));
+		JB_SetRef(JB_str_262, JB_Str3("erel", 4));
+		JB_SetRef(JB_str_261, JB_Str3("Embedded_Value", 14));
+		JB_SetRef(JB_str_260, JB_Str3("emb", 3));
+		JB_SetRef(JB_str_259, JB_Str3("Dot", 3));
+		JB_SetRef(JB_str_258, JB_Str3("dot", 3));
+		JB_SetRef(JB_str_257, JB_Str3("Declaration", 11));
+		JB_SetRef(JB_str_256, JB_Str3("decl", 4));
+		JB_SetRef(JB_str_255, JB_Str3("Character", 9));
+		JB_SetRef(JB_str_254, JB_Str3("Before_Relationship", 19));
+		JB_SetRef(JB_str_253, JB_Str3("brel", 4));
+		JB_SetRef(JB_str_252, JB_Str3("Bracket", 7));
+		JB_SetRef(JB_str_251, JB_Str3("bra", 3));
+		JB_SetRef(JB_str_250, JB_Str3("Super_String", 12));
+		JB_SetRef(JB_str_249, JB_Str3("sstr", 4));
+		JB_SetRef(JB_str_248, JB_Str3("Backtick", 8));
+		JB_SetRef(JB_str_247, JB_Str3("back", 4));
+		JB_SetRef(JB_str_246, JB_Str3("Array", 5));
+		JB_SetRef(JB_str_245, JB_Str3("arr", 3));
+		JB_SetRef(JB_str_244, JB_Str3("After_Relationship", 18));
+		JB_SetRef(JB_str_243, JB_Str3("arel", 4));
+		JB_SetRef(JB_str_242, JB_Str3("Adjective", 9));
+		JB_SetRef(JB_str_241, JB_Str3("adj", 3));
+		JB_SetRef(JB_str_240, JB_Str3("Access", 6));
+		JB_SetRef(JB_str_239, JB_Str3("acc", 3));
+		JB_SetRef(JB_str_238, JB_Str3("Argument", 8));
+		JB_SetRef(JB_str_237, JB_Str3("arg", 3));
+		JB_SetRef(JB_str_236, JB_Str3("AZaz€¿Âô", 8));
+		JB_SetRef(JB_str_235, JB_Str3("\n\r,", 3));
+		JB_SetRef(JB_str_234, JB_Str3(" ,:\t\n\r\\", 7));
+		JB_SetRef(JB_str_233, JB_Str3("\n\r", 2));
+		JB_SetRef(JB_str_232, JB_Str3("AZaz__€¿Âô", 10));
+		JB_SetRef(JB_str_231, JB_Str3("AZaz09__€¿Âô", 12));
+		JB_SetRef(JB_str_230, JB_Str3("\\f", 2));
+		JB_SetRef(JB_str_229, JB_Str3("", 1));
+		JB_SetRef(JB_str_228, JB_Str3("\\b", 2));
+		JB_SetRef(JB_str_227, JB_Str3("", 1));
+		JB_SetRef(JB_str_226, JB_Str3("\\&#", 3));
+		JB_SetRef(JB_str_225, JB_Str3("&#", 2));
+		JB_SetRef(JB_str_224, JB_Str3("\\\\", 2));
+		JB_SetRef(JB_str_223, JB_Str3("\\'", 2));
+		JB_SetRef(JB_str_222, JB_Str3("\\\"", 2));
+		JB_SetRef(JB_str_221, JB_Str3("\\t", 2));
+		JB_SetRef(JB_str_220, JB_Str3("\\r", 2));
+		JB_SetRef(JB_str_219, JB_Str3("\r", 1));
+		JB_SetRef(JB_str_218, JB_Str3("\0", 1));
+		JB_SetRef(JB_str_217, JB_Str3("[0;1;33m", 9));
+		JB_SetRef(JB_str_216, JB_Str3("[0;1;32m", 9));
+		JB_SetRef(JB_str_215, JB_Str3("[0;1;31m", 9));
+		JB_SetRef(JB_str_214, JB_Str3("[0;1m", 6));
+		JB_SetRef(JB_str_213, JB_Str3("[0m", 4));
+		JB_SetRef(JB_str_212, JB_Str3("@JBSave\n", 8));
+		JB_SetRef(JB_str_211, JB_Str3("unusedtype", 10));
+		JB_SetRef(JB_str_210, JB_Str3("point4", 6));
+		JB_SetRef(JB_str_209, JB_Str3("point3", 6));
+		JB_SetRef(JB_str_208, JB_Str3("point2", 6));
+		JB_SetRef(JB_str_207, JB_Str3("ipoint4", 7));
+		JB_SetRef(JB_str_206, JB_Str3("ipoint3", 7));
+		JB_SetRef(JB_str_205, JB_Str3("ipoint2", 7));
+		JB_SetRef(JB_str_204, JB_Str3("s8", 2));
+		JB_SetRef(JB_str_203, JB_Str3("f16", 3));
+		JB_SetRef(JB_str_202, JB_Str3("f64", 3));
+		JB_SetRef(JB_str_201, JB_Str3("u64", 3));
+		JB_SetRef(JB_str_200, JB_Str3("s64", 3));
 		JB_SetRef(JB_str_199, JB_Str3("u32", 3));
 		JB_SetRef(JB_str_198, JB_Str3("uint", 4));
 		JB_SetRef(JB_str_197, JB_Str3("int", 3));
@@ -2191,8 +2208,8 @@ int JB_Init_() {
 		JB_SetRef(JB_str_188, JB_Str3("ivec4", 5));
 		JB_SetRef(JB_str_187, JB_Str3("ivec3", 5));
 		JB_SetRef(JB_str_186, JB_Str3("ivec2", 5));
-		JB_SetRef(JB_str_185, JB_Str3("u64", 3));
-		JB_SetRef(JB_str_184, JB_Str3("s64", 3));
+		JB_SetRef(JB_str_185, JB_Str3("uint64", 6));
+		JB_SetRef(JB_str_184, JB_Str3("int64", 5));
 		JB_SetRef(JB_str_183, JB_Str3("s16x4", 5));
 		JB_SetRef(JB_str_182, JB_Str3("s16x3", 5));
 		JB_SetRef(JB_str_181, JB_Str3("s16x2", 5));
@@ -2205,7 +2222,7 @@ int JB_Init_() {
 		JB_SetRef(JB_str_174, JB_Str3("byte4", 5));
 		JB_SetRef(JB_str_173, JB_Str3("byte3", 5));
 		JB_SetRef(JB_str_172, JB_Str3("byte2", 5));
-		JB_SetRef(JB_str_171, JB_Str3("s8", 2));
+		JB_SetRef(JB_str_171, JB_Str3("char", 4));
 		JB_SetRef(JB_str_170, JB_Str3("u8", 2));
 		JB_SetRef(JB_str_169, JB_Str3("').", 3));
 		JB_SetRef(JB_str_168, JB_Str3("' (found '", 10));
@@ -2378,45 +2395,44 @@ int JB_Init_() {
 		JB_SetRef(JB_str_2, JB_Str3("Compression Test: OK", 20));
 		JB_SetRef(JB_str_1, JB_Str3("abcdabcdabcdabcd", 16));
 		JB_SetRef(JB__SyxDict_, JB_Dict__New());
-		JB_SetRef(JB__FuncArray_, ((Array*)JB_Array__New0()));
-		JB_SetRef(JB_SyxArg, JB_Fn__StdNew(JB_Msg_Arg__, 0, JB_str_235, JB_str_236));
-		JB_SetRef(JB_SyxAcc, JB_Fn__StdNew(JB_Msg_Acc__, 1, JB_str_237, JB_str_238));
-		JB_SetRef(JB_SyxAdj, JB_Fn__StdNew(JB_Msg_Adj__, 2, JB_str_239, JB_str_240));
-		JB_SetRef(JB_SyxARel, JB_Fn__StdNew(JB_Msg_ARel__, 3, JB_str_241, JB_str_242));
-		JB_SetRef(JB_SyxArr, JB_Fn__StdNew(JB_Msg_Arr__, 4, JB_str_243, JB_str_244));
-		JB_SetRef(JB_SyxBack, JB_Fn__StdNew(JB_Msg_Back__, 5, JB_str_245, JB_str_246));
-		JB_SetRef(JB_SyxSStr, JB_Fn__StdNew(JB_Msg_SStr__, 6, JB_str_247, JB_str_248));
-		JB_SetRef(JB_SyxBra, JB_Fn__StdNew(JB_Msg_Bra__, 7, JB_str_249, JB_str_250));
-		JB_SetRef(JB_SyxBRel, JB_Fn__StdNew(JB_Msg_BRel__, 8, JB_str_251, JB_str_252));
-		JB_SetRef(JB_SyxChar, JB_Fn__StdNew(JB_Msg_Char__, 9, JB_str_202, JB_str_253));
-		JB_SetRef(JB_SyxDecl, JB_Fn__StdNew(JB_Msg_Decl__, 10, JB_str_254, JB_str_255));
-		JB_SetRef(JB_SyxDot, JB_Fn__StdNew(JB_Msg_Dot__, 11, JB_str_256, JB_str_257));
-		JB_SetRef(JB_SyxEmb, JB_Fn__StdNew(JB_Msg_Emb__, 12, JB_str_258, JB_str_259));
-		JB_SetRef(JB_SyxERel, JB_Fn__StdNew(JB_Msg_ERel__, 13, JB_str_260, JB_str_261));
-		JB_SetRef(JB_SyxFunc, JB_Fn__StdNew(JB_Msg_Func__, 14, JB_str_262, JB_str_263));
-		JB_SetRef(JB_SyxItem, JB_Fn__StdNew(JB_Msg_Item__, 15, JB_str_264, JB_str_0));
-		JB_SetRef(JB_SyxList, JB_Fn__StdNew(JB_Msg_List__, 16, JB_str_160, JB_str_0));
-		JB_SetRef(JB_SyxName, JB_Fn__StdNew(JB_Msg_Name__, 17, JB_str_265, JB_str_0));
-		JB_SetRef(JB_SyxNum, JB_Fn__StdNew(JB_Msg_Num__, 18, JB_str_266, JB_str_267));
-		JB_SetRef(JB_SyxUnit, JB_Fn__StdNew(JB_Msg_Unit__, 19, JB_str_268, JB_str_0));
-		JB_SetRef(JB_SyxOat, JB_Fn__StdNew(JB_Msg_Oat__, 20, JB_str_269, JB_str_270));
-		JB_SetRef(JB_SyxOpp, JB_Fn__StdNew(JB_Msg_Opp__, 21, JB_str_271, JB_str_272));
-		JB_SetRef(JB_SyxSOpp, JB_Fn__StdNew(JB_Msg_SOpp__, 22, JB_str_273, JB_str_274));
-		JB_SetRef(JB_SyxRel, JB_Fn__StdNew(JB_Msg_Rel__, 23, JB_str_275, JB_str_276));
-		JB_SetRef(JB_SyxTRel, JB_Fn__StdNew(JB_Msg_TRel__, 24, JB_str_277, JB_str_278));
-		JB_SetRef(JB_SyxSDot, JB_Fn__StdNew(JB_Msg_SDot__, 25, JB_str_279, JB_str_280));
-		JB_SetRef(JB_SyxSCom, JB_Fn__StdNew(JB_Msg_SCom__, 26, JB_str_281, JB_str_282));
-		JB_SetRef(JB_SyxSheb, JB_Fn__StdNew(JB_Msg_Sheb__, 27, JB_str_283, JB_str_284));
-		JB_SetRef(JB_SyxStr, JB_Fn__StdNew(JB_Msg_Str__, 28, JB_str_285, JB_str_286));
-		JB_SetRef(JB_SyxSThg, JB_Fn__StdNew(JB_Msg_SThg__, 29, JB_str_287, JB_str_288));
-		JB_SetRef(JB_SyxThg, JB_Fn__StdNew(JB_Msg_Thg__, 30, JB_str_289, JB_str_290));
-		JB_SetRef(JB_SyxTmp, JB_Fn__StdNew(JB_Msg_Tmp__, 31, JB_str_291, JB_str_292));
-		JB_SetRef(JB_SyxAna, JB_Fn__StdNew(JB_Msg_Ana__, 32, JB_str_293, JB_str_294));
-		JB_SetRef(JB_SyxSCnj, JB_Fn__StdNew(JB_Msg_SCnj__, 33, JB_str_295, JB_str_296));
-		JB_SetRef(JB_SyxCnj, JB_Fn__StdNew(JB_Msg_Cnj__, 34, JB_str_297, JB_str_298));
-		JB_SetRef(JB_SyxType, JB_Fn__StdNew(JB_Msg_Type__, 35, JB_str_299, JB_str_300));
-		JB_SetRef(JB_JSONTest, JB_str_301);
-		JB_SetRef(JB_SyxBin, JB_Fn__StdNew(JB_Msg_Bin__, 36, JB_str_302, JB_str_303));
+		JB_SyxArg = JB_Syntax__StdNew(JB_Msg_Arg__, JB_str_237, JB_str_238);
+		JB_SyxAcc = JB_Syntax__StdNew(JB_Msg_Acc__, JB_str_239, JB_str_240);
+		JB_SyxAdj = JB_Syntax__StdNew(JB_Msg_Adj__, JB_str_241, JB_str_242);
+		JB_SyxARel = JB_Syntax__StdNew(JB_Msg_ARel__, JB_str_243, JB_str_244);
+		JB_SyxArr = JB_Syntax__StdNew(JB_Msg_Arr__, JB_str_245, JB_str_246);
+		JB_SyxBack = JB_Syntax__StdNew(JB_Msg_Back__, JB_str_247, JB_str_248);
+		JB_SyxSStr = JB_Syntax__StdNew(JB_Msg_SStr__, JB_str_249, JB_str_250);
+		JB_SyxBra = JB_Syntax__StdNew(JB_Msg_Bra__, JB_str_251, JB_str_252);
+		JB_SyxBRel = JB_Syntax__StdNew(JB_Msg_BRel__, JB_str_253, JB_str_254);
+		JB_SyxChar = JB_Syntax__StdNew(JB_Msg_Char__, JB_str_171, JB_str_255);
+		JB_SyxDecl = JB_Syntax__StdNew(JB_Msg_Decl__, JB_str_256, JB_str_257);
+		JB_SyxDot = JB_Syntax__StdNew(JB_Msg_Dot__, JB_str_258, JB_str_259);
+		JB_SyxEmb = JB_Syntax__StdNew(JB_Msg_Emb__, JB_str_260, JB_str_261);
+		JB_SyxERel = JB_Syntax__StdNew(JB_Msg_ERel__, JB_str_262, JB_str_263);
+		JB_SyxFunc = JB_Syntax__StdNew(JB_Msg_Func__, JB_str_264, JB_str_265);
+		JB_SyxItem = JB_Syntax__StdNew(JB_Msg_Item__, JB_str_266, JB_str_0);
+		JB_SyxList = JB_Syntax__StdNew(JB_Msg_List__, JB_str_160, JB_str_0);
+		JB_SyxName = JB_Syntax__StdNew(JB_Msg_Name__, JB_str_267, JB_str_0);
+		JB_SyxNum = JB_Syntax__StdNew(JB_Msg_Num__, JB_str_268, JB_str_269);
+		JB_SyxUnit = JB_Syntax__StdNew(JB_Msg_Unit__, JB_str_270, JB_str_0);
+		JB_SyxOat = JB_Syntax__StdNew(JB_Msg_Oat__, JB_str_271, JB_str_272);
+		JB_SyxOpp = JB_Syntax__StdNew(JB_Msg_Opp__, JB_str_273, JB_str_274);
+		JB_SyxSOpp = JB_Syntax__StdNew(JB_Msg_SOpp__, JB_str_275, JB_str_276);
+		JB_SyxRel = JB_Syntax__StdNew(JB_Msg_Rel__, JB_str_277, JB_str_278);
+		JB_SyxTRel = JB_Syntax__StdNew(JB_Msg_TRel__, JB_str_279, JB_str_280);
+		JB_SyxSDot = JB_Syntax__StdNew(JB_Msg_SDot__, JB_str_281, JB_str_282);
+		JB_SyxSCom = JB_Syntax__StdNew(JB_Msg_SCom__, JB_str_283, JB_str_284);
+		JB_SyxSheb = JB_Syntax__StdNew(JB_Msg_Sheb__, JB_str_285, JB_str_286);
+		JB_SyxStr = JB_Syntax__StdNew(JB_Msg_Str__, JB_str_287, JB_str_288);
+		JB_SyxSThg = JB_Syntax__StdNew(JB_Msg_SThg__, JB_str_289, JB_str_290);
+		JB_SyxThg = JB_Syntax__StdNew(JB_Msg_Thg__, JB_str_291, JB_str_292);
+		JB_SyxTmp = JB_Syntax__StdNew(JB_Msg_Tmp__, JB_str_293, JB_str_294);
+		JB_SyxAna = JB_Syntax__StdNew(JB_Msg_Ana__, JB_str_295, JB_str_296);
+		JB_SyxSCnj = JB_Syntax__StdNew(JB_Msg_SCnj__, JB_str_297, JB_str_298);
+		JB_SyxCnj = JB_Syntax__StdNew(JB_Msg_Cnj__, JB_str_299, JB_str_300);
+		JB_SyxType = JB_Syntax__StdNew(JB_Msg_Type__, JB_str_301, JB_str_302);
+		JB_SetRef(JB_JSONTest, JB_str_303);
+		JB_SyxBin = JB_Syntax__StdNew(JB_Msg_Bin__, JB_str_304, JB_str_305);
 	};
 	//// JB_API;
 	JB_API__Init_();
@@ -2426,6 +2442,8 @@ int JB_Init_() {
 	JB_Tk__Init_();
 	//// Random;
 	JB_Random__Init_();
+	//// Syntax;
+	JB_Syntax__Init_();
 	//// FastAppender;
 	JB_FAP__Init_();
 	return 0;
@@ -2446,15 +2464,6 @@ Dictionary* JB_Dict_Reverse(Dictionary* Dict) {
 	};
 	JB_SafeDecr(result);
 	return result;
-}
-
-void JB_test_point2() {
-	MWrap* inter = JB_Incr(JB_Mrap__Object(100, 4));
-	MWrap* dataa = JB_Incr(JB_Mrap__Object(100, 8));
-	Point2 P = (((Point2*)JB_Mrap_Ptr(dataa))[0]);
-	P.X = 1;
-	JB_Decr(inter);
-	JB_Decr(dataa);
 }
 
 bool JB_TestCasting() {
@@ -2553,6 +2562,16 @@ JB_String* JB_int_RenderZeros(int self, int zeros, FastString* fs_in) {
 }
 
 
+JB_String* JB_int64_Render(int64 self, FastString* fs_in) {
+	FastString* fs = JB_Incr(JB_FS__FastNew(fs_in));
+	JB_FS_AppendS64(fs, self);
+	JB_String* _tmp = JB_Incr(JB_FS_SmartResult(fs, fs_in));
+	JB_Decr(fs);
+	JB_SafeDecr(_tmp);
+	return _tmp;
+}
+
+
 
 
 JB_String* JB_iPoint2_Render(iPoint2* self, FastString* fs_in) {
@@ -2616,11 +2635,41 @@ void JB_LLRef_SyntaxAppend(LLRef* self, JB_LinkedList* L) {
 
 
 
+void JB_MessageReadableUtil_Destructor(MessageReadableUtil* self) {
+	JB_Decr(self->Mem);
+	JB_Decr(self->Initial);
+}
+
+void JB_MessageReadableUtil_UseLayer(MessageReadableUtil* self, Message* src) {
+	if ((!(self->Initial))) {
+		JB_SetRef(self->Initial, JB_Class_CurrLayer((JB_AsClass(Message))));
+	}
+	if ((!(self->Mem))) {
+		JB_SetRef(self->Mem, JB_Dict__New());
+	}
+	JB_MemoryLayer* L = JB_Incr(({
+		JB_String* _tmp266 = JB_Incr(JB_Str_LowerCase(src->Name));
+		JB_MemoryLayer* _tmp265 = JB_Incr(((JB_MemoryLayer*)JB_Dict_SyntaxAccess(self->Mem, _tmp266)));
+		JB_Decr(_tmp266);
+		JB_SafeDecr(_tmp265);
+		_tmp265;
+	}));
+	if ((!L)) {
+		JB_SetRef(L, JB_Mem_CreateLayer((JB_AsClass(Message)), src->Name));
+		JB_String* _tmp = JB_Incr(JB_Str_LowerCase(src->Name));
+		(JB_Dict_ValueSet(self->Mem, _tmp, L));
+		JB_Decr(_tmp);
+	}
+	JB_Mem_Use(L);
+	JB_Decr(L);
+}
+
+
 bool JB_Loader_HasItem(ObjectLoader* self) {
 	return ((bool)self->CurrItem);
 }
 
-s64 JB_Loader_Int(ObjectLoader* self) {
+int64 JB_Loader_Int(ObjectLoader* self) {
 	Message* C = JB_Loader_Next(self);
 	if ((!C)) {
 		return nil;
@@ -2628,13 +2677,13 @@ s64 JB_Loader_Int(ObjectLoader* self) {
 	return JB_Str_TextIntegerValid(C->Name, C);
 }
 
-s64 JB_Loader_ItemInt(ObjectLoader* self) {
+int64 JB_Loader_ItemInt(ObjectLoader* self) {
 	Message* c = self->CurrItem;
 	if ((!c)) {
 		return nil;
 	}
 	self->CurrItem = ((Message*)JB_Ring_NextSib(c));
-	return JB_Msg_ParseInt(((Message*)JB_Ring_Last(c)));
+	return JB_Msg_Int(((Message*)JB_Ring_Last(c)));
 }
 
 bool JB_Loader_ItemIsInt(ObjectLoader* self) {
@@ -2702,7 +2751,7 @@ JB_String* JB_Loader_String(ObjectLoader* self) {
 }
 
 
-void JB_Saver_AppendInt(ObjectSaver* self, s64 i) {
+void JB_Saver_AppendInt(ObjectSaver* self, int64 i) {
 	JB_FS_AppendS64(self->Dest, i);
 	JB_FS_AppendByte(self->Dest, ',');
 }
@@ -2760,8 +2809,8 @@ Point2 JB_Point2__New(float a, float b) {
 
 
 void JB_Random_LoadProperties(Random* self, ObjectLoader* Loader) {
-	self->Fast = ((u64)JB_Loader_Int(Loader));
-	self->Adder = ((u64)JB_Loader_Int(Loader));
+	self->Fast = ((uint64)JB_Loader_Int(Loader));
+	self->Adder = ((uint64)JB_Loader_Int(Loader));
 }
 
 void JB_Random_SaveWrite(Random* self, ObjectSaver* Saver) {
@@ -2779,16 +2828,6 @@ int JB_Random__Init_() {
 	return 0;
 }
 
-
-
-JB_String* JB_s64_Render(s64 self, FastString* fs_in) {
-	FastString* fs = JB_Incr(JB_FS__FastNew(fs_in));
-	JB_FS_AppendS64(fs, self);
-	JB_String* _tmp = JB_Incr(JB_FS_SmartResult(fs, fs_in));
-	JB_Decr(fs);
-	JB_SafeDecr(_tmp);
-	return _tmp;
-}
 
 
 
@@ -2859,6 +2898,61 @@ JB_String* JB_Date_Render(Date self, FastString* fs_in) {
 	JB_Decr(fs);
 	JB_SafeDecr(_tmp);
 	return _tmp;
+}
+
+
+JB_String* JB_Syntax_LongName(Syntax self) {
+	return JB_Syntax_Obj(self)->LongName;
+}
+
+Message* JB_Syntax_Msg(Syntax self, JB_String* name) {
+	return JB_Msg__NewParser(nil, self, JB__Tk_BaseMessagePosition, name);
+}
+
+Message* JB_Syntax_MsgParent(Syntax self, Message* parent, JB_String* name) {
+	return JB_Msg__NewParser(parent, self, JB__Tk_BaseMessagePosition, name);
+}
+
+JB_String* JB_Syntax_Name(Syntax self) {
+	return JB_Syntax_Obj(self)->Name;
+}
+
+SyntaxObj* JB_Syntax_Obj(Syntax self) {
+	return JB__FuncArray_[self];
+}
+
+int JB_Syntax_Parseflags(Syntax self) {
+	if (self == JB_SyxArg) {
+		return kJB__Tk_Temporal;
+	} else {
+		return kJB__Tk_TemporalSyx;
+	}
+	return 0;
+}
+
+fpMsgRender JB_Syntax_RenderAddr(Syntax self) {
+	return JB_Syntax_Obj(self)->RenderAddr;
+}
+
+int JB_Syntax__Init_() {
+	{
+		JB__Syntax_CurrFuncID = 0;
+	};
+	return 0;
+}
+
+Syntax JB_Syntax__StdNew(fpMsgRender msg, JB_String* name, JB_String* LongName) {
+	SyntaxObj* result = JB_Incr(JB_Fn__New(msg, name, (++JB__Syntax_CurrFuncID)));
+	(JB_Dict_ValueSet(JB__SyxDict_, name, result));
+	JB_SetRef(JB__FuncArray_[JB__Syntax_CurrFuncID], result);
+	if (JB_Str_Exists(LongName)) {
+		(JB_Dict_ValueSet(JB__SyxDict_, LongName, result));
+		JB_SetRef(result->LongName, LongName);
+	} else {
+		JB_SetRef(result->LongName, name);
+	}
+	JB_Decr(result);
+	return JB__Syntax_CurrFuncID;
 }
 
 
@@ -2938,6 +3032,75 @@ void JB_Object_SyntaxExpect(JB_Object* self) {
 }
 
 
+Allocation_Behaviour InitTableMWrap_() { // Behaviour 
+	Allocation_Behaviour Result;
+	Result.__destructor__ = (void*)JB_Mrap_Destructor;
+	Result.render = (__Object_Render__)JB_ObjRender;
+	return Result;
+}
+
+Allocation_Behaviour MWrap_FuncTable_ = InitTableMWrap_();
+JBClassPlace4(MWrap, JB_AsClass(JB_Object), MWrap_FuncTable_);
+
+void JB_Mrap_Clear(MWrap* self) {
+	JB_free(JB_Mrap_Ptr(self));
+	self->_Ptr = nil;
+	self->_ItemCount = 0;
+}
+
+void JB_Mrap_Constructor(MWrap* self, int ItemCount, uint ItemSize, bool DummyParam) {
+	self->DataType = 0;
+	int Request = ItemCount * ItemSize;
+	self->_ItemSize = ItemSize;
+	self->_Length = ItemCount;
+	self->_Ptr = JB_Mrap__Zalloc(Request);
+	self->_ItemCount = ItemCount;
+	if ((!self->_Ptr)) {
+		self->_ItemCount = 0;
+	}
+}
+
+void JB_Mrap_Destructor(MWrap* self) {
+	JB_Mrap_Clear(self);
+}
+
+int* JB_Mrap_Ptr(MWrap* self) {
+	return ((int*)self->_Ptr);
+}
+
+MWrap* JB_Mrap__Alloc() {
+	return ((MWrap*)JB_New(MWrap));
+}
+
+int JB_Mrap__Init_() {
+	{
+	};
+	return 0;
+}
+
+MWrap* JB_Mrap__New(int ItemCount, uint ItemSize, bool DummyParam) {
+	MWrap* Result = JB_Mrap__Alloc();
+	if (Result) {
+		JB_Mrap_Constructor(Result, ItemCount, ItemSize, DummyParam);
+	}
+	return Result;
+}
+
+MWrap* JB_Mrap__Object(int ItemCount, int ItemSize) {
+	MWrap* Result = JB_Incr(JB_Mrap__New(ItemCount, ItemSize, false));
+	if (Result->_Ptr) {
+		JB_SafeDecr(Result);
+		return Result;
+	}
+	JB_Decr(Result);
+	return nil;
+}
+
+byte* JB_Mrap__Zalloc(int n) {
+	return ((byte*)JB_malloc(n));
+}
+
+
 Array* JB_BM_Bytes(ByteMap* self) {
 	Array* result = JB_Incr(JB_Array__New0());
 	{
@@ -2981,14 +3144,9 @@ DataTypeWrapper_Behaviour InitTableDTWrap_() { // Behaviour
 DataTypeWrapper_Behaviour DTWrap_FuncTable_ = InitTableDTWrap_();
 JBClassPlace4(DTWrap, JB_AsClass(JB_Object), DTWrap_FuncTable_);
 
-void JB_Wrap_Constructor(DTWrap* self, s64 v) {
+void JB_Wrap_Constructor(DTWrap* self, int64 v) {
 	self->DataType = kJB__DataTypeCode_s64;
 	self->_PrivValue = v;
-}
-
-void JB_Wrap_ConstructorPtr(DTWrap* self, _voidptr p) {
-	self->DataType = kJB__DataTypeCode_UnusedType;
-	self->_PrivValue = ((s64)p);
 }
 
 double JB_Wrap_FloatValue(DTWrap* self) {
@@ -3018,7 +3176,7 @@ DTWrap* JB_Wrap__Alloc() {
 	return ((DTWrap*)JB_New(DTWrap));
 }
 
-DTWrap* JB_Wrap__New(s64 v) {
+DTWrap* JB_Wrap__New(int64 v) {
 	DTWrap* Result = JB_Wrap__Alloc();
 	if (Result) {
 		JB_Wrap_Constructor(Result, v);
@@ -3070,12 +3228,12 @@ JB_String* JB_FS_Render(FastString* self, FastString* fs_in) {
 	return JB_FS_SmartResult(self, fs_in);
 }
 
-void JB_FS_AppendS64(FastString* self, s64 data) {
+void JB_FS_AppendS64(FastString* self, int64 data) {
 	JB_FS_AppendIntegerAsText(self, data, 1);
 }
 
 void JB_FS_AppendInt32AsText(FastString* self, int data) {
-	JB_FS_AppendS64(self, ((s64)data));
+	JB_FS_AppendS64(self, ((int64)data));
 }
 
 void JB_FS_AppendFloatAsText(FastString* self, float F) {
@@ -3084,7 +3242,7 @@ void JB_FS_AppendFloatAsText(FastString* self, float F) {
 
 void JB_FS_AppendMsg(FastString* self, Message* msg) {
 	if (msg) {
-		(msg->Func->RenderAddr)(msg, self);
+		(JB_Syntax_RenderAddr(msg->Func))(msg, self);
 	}
 }
 
@@ -3318,7 +3476,11 @@ Message* JB_Str_Parse(JB_String* self, Message* into) {
 	if ((!JB_Tk__CppInited())) {
 		JB_Tk__Init();
 	}
-	JB__Tk_ErrNode = JB_Fn_Msg(JB_SyxArg, JB_str_0);
+	JB__Tk_ErrNode = ({
+		Message* _tmp0 = JB_Incr((JB_Syntax_Msg(JB_SyxArg, JB_str_0)));
+		JB_SafeDecr(_tmp0);
+		_tmp0;
+	});
 	if ((!(into))) {
 		JB_SetRef(into, JB__Tk_ErrNode);
 	}
@@ -3345,11 +3507,11 @@ Message* JB_Str_ParseAs(JB_String* self, JB_String* name) {
 		return JB_Str_Parse(self, nil);
 	} else if (JB_Str_SyntaxEquals(name, JB_str_160, true)) {
 		return ({
-			Message* _tmp361 = JB_Incr(JB_Str_Parse(self, nil));
-			Message* _tmp360 = JB_Incr(JB_Msg_ParseReadable(_tmp361));
-			JB_Decr(_tmp361);
-			JB_SafeDecr(_tmp360);
-			_tmp360;
+			Message* _tmp373 = JB_Incr(JB_Str_Parse(self, nil));
+			Message* _tmp372 = JB_Incr(JB_Msg_ParseReadable(_tmp373));
+			JB_Decr(_tmp373);
+			JB_SafeDecr(_tmp372);
+			_tmp372;
 		});
 	}
 	return nil;
@@ -3441,17 +3603,17 @@ StringFields* JB_FI__New(JB_String* Source, byte Sep) {
 
 
 
-Syntax_Behaviour InitTableSyntax_() { // Behaviour 
-	Syntax_Behaviour Result;
+SyntaxObj_Behaviour InitTableSyntaxObj_() { // Behaviour 
+	SyntaxObj_Behaviour Result;
 	Result.__destructor__ = (void*)JB_Fn_Destructor;
 	Result.render = (__Object_Render__)JB_Fn_Render;
 	return Result;
 }
 
-Syntax_Behaviour Syntax_FuncTable_ = InitTableSyntax_();
-JBClassPlace4(Syntax, JB_AsClass(JB_Object), Syntax_FuncTable_);
+SyntaxObj_Behaviour SyntaxObj_FuncTable_ = InitTableSyntaxObj_();
+JBClassPlace4(SyntaxObj, JB_AsClass(JB_Object), SyntaxObj_FuncTable_);
 
-void JB_Fn_Constructor(Syntax* self, fpMsgRender msg, JB_String* name, int ID) {
+void JB_Fn_Constructor(SyntaxObj* self, fpMsgRender msg, JB_String* name, int ID) {
 	self->LongName = JB_Incr(JB_str_0);
 	self->RenderAddr = msg;
 	self->Name = JB_Incr(name);
@@ -3459,29 +3621,12 @@ void JB_Fn_Constructor(Syntax* self, fpMsgRender msg, JB_String* name, int ID) {
 	self->ExportAddr = JB_Msg_Dummy;
 }
 
-void JB_Fn_Destructor(Syntax* self) {
+void JB_Fn_Destructor(SyntaxObj* self) {
 	JB_Decr(self->Name);
 	JB_Decr(self->LongName);
 }
 
-Message* JB_Fn_Msg(Syntax* self, JB_String* name) {
-	return JB_Msg__NewParser(nil, self, JB__Tk_BaseMessagePosition, name);
-}
-
-Message* JB_Fn_MsgParent(Syntax* self, Message* parent, JB_String* name) {
-	return JB_Msg__NewParser(parent, self, JB__Tk_BaseMessagePosition, name);
-}
-
-int JB_Fn_Parseflags(Syntax* self) {
-	if (self == JB_SyxArg) {
-		return kJB__Tk_Temporal;
-	} else {
-		return kJB__Tk_TemporalSyx;
-	}
-	return 0;
-}
-
-JB_String* JB_Fn_Render(Syntax* self, FastString* fs_in) {
+JB_String* JB_Fn_Render(SyntaxObj* self, FastString* fs_in) {
 	if ((!fs_in)) {
 		return JB_Str_LowerCase(self->LongName);
 	}
@@ -3491,35 +3636,16 @@ JB_String* JB_Fn_Render(Syntax* self, FastString* fs_in) {
 	return JB_str_0;
 }
 
-Syntax* JB_Fn__Alloc() {
-	return ((Syntax*)JB_New(Syntax));
+SyntaxObj* JB_Fn__Alloc() {
+	return ((SyntaxObj*)JB_New(SyntaxObj));
 }
 
-Syntax* JB_Fn__New(fpMsgRender msg, JB_String* name, int ID) {
-	Syntax* Result = JB_Fn__Alloc();
+SyntaxObj* JB_Fn__New(fpMsgRender msg, JB_String* name, int ID) {
+	SyntaxObj* Result = JB_Fn__Alloc();
 	if (Result) {
 		JB_Fn_Constructor(Result, msg, name, ID);
 	}
 	return Result;
-}
-
-Syntax* JB_Fn__StdNew(fpMsgRender msg, int ID, JB_String* name, JB_String* LongName) {
-	Syntax* result = JB_Incr(JB_Fn__New(msg, name, ID));
-	(JB_Dict_ValueSet(JB__SyxDict_, name, result));
-	if (JB_Str_Exists(LongName)) {
-		(JB_Dict_ValueSet(JB__SyxDict_, LongName, result));
-		JB_SetRef(result->LongName, LongName);
-	} else {
-		JB_SetRef(result->LongName, name);
-	}
-	if ((!(JB_Array_Size(JB__FuncArray_) == ID))) {
-		JB_Object_SyntaxExpect(nil);
-		JB_Decr(result);
-		return nil;
-	}
-	JB_Array_AppendCount(JB__FuncArray_, result, 1);
-	JB_SafeDecr(result);
-	return result;
 }
 
 
@@ -3623,11 +3749,11 @@ void JB_Dict_SaveWrite(Dictionary* self, ObjectSaver* Saver) {
 
 JB_Object* JB_Dict_Syntax(Dictionary* self, JB_String* Key) {
 	return ({
-		JB_String* _tmp303 = JB_Incr(JB_Str_FastLower(Key));
-		JB_Object* _tmp302 = JB_Incr(JB_Dict_SyntaxAccess(self, _tmp303));
-		JB_Decr(_tmp303);
-		JB_SafeDecr(_tmp302);
-		_tmp302;
+		JB_String* _tmp307 = JB_Incr(JB_Str_FastLower(Key));
+		JB_Object* _tmp306 = JB_Incr(JB_Dict_SyntaxAccess(self, _tmp307));
+		JB_Decr(_tmp307);
+		JB_SafeDecr(_tmp306);
+		_tmp306;
 	});
 }
 
@@ -3635,12 +3761,12 @@ JB_Object* JB_Dict_SyntaxAccess(Dictionary* self, JB_String* Key) {
 	return JB_Dict_Value(self, Key, nil);
 }
 
-void JB_Dict_a4(Dictionary* self, s64 Key, JB_Object* Result) {
-	(JB_Dict_ValueSet(self, JB_s64_DictName(Key), Result));
+void JB_Dict_a4(Dictionary* self, int64 Key, JB_Object* Result) {
+	(JB_Dict_ValueSet(self, JB_int64_DictName(Key), Result));
 }
 
-JB_Object* JB_Dict_a5(Dictionary* self, s64 Key) {
-	return JB_Dict_SyntaxAccess(self, JB_s64_DictName(Key));
+JB_Object* JB_Dict_a5(Dictionary* self, int64 Key) {
+	return JB_Dict_SyntaxAccess(self, JB_int64_DictName(Key));
 }
 
 Dictionary* JB_Dict__Alloc() {
@@ -3714,6 +3840,7 @@ int JB_FAP__Init_() {
 }
 
 
+
 bool JB_LinkedList_ListSanity(JB_LinkedList* self) {
 	if (JB_IsDebug()) {
 		if ((!(self->_Next != self))) {
@@ -3742,67 +3869,6 @@ void JB_LinkedList_SaveWrite(JB_LinkedList* self, ObjectSaver* Saver) {
 }
 
 
-Memory_Behaviour InitTableMWrap_() { // Behaviour 
-	Memory_Behaviour Result;
-	Result.__destructor__ = (void*)JB_Mrap_Destructor;
-	Result.render = (__Object_Render__)JB_Wrap_Render;
-	return Result;
-}
-
-Memory_Behaviour MWrap_FuncTable_ = InitTableMWrap_();
-JBClassPlace4(MWrap, JB_AsClass(DTWrap), MWrap_FuncTable_);
-
-void JB_Mrap_Clear(MWrap* self) {
-	JB_free(JB_Mrap_Ptr(self));
-	self->_PrivValue = 0;
-	self->_ItemCount = 0;
-}
-
-void JB_Mrap_Constructor(MWrap* self, int ItemCount, u32 ItemSize, bool DummyParam) {
-	int Request = ItemCount * ItemSize;
-	JB_Wrap_ConstructorPtr(self, JB_Mrap__Zalloc(Request));
-	self->_ItemSize = ItemSize;
-	self->_ItemCount = ItemCount;
-	if ((!JB_Mrap_Ptr(self))) {
-		self->_ItemCount = 0;
-	}
-}
-
-void JB_Mrap_Destructor(MWrap* self) {
-	JB_Mrap_Clear(self);
-}
-
-byte* JB_Mrap_Ptr(MWrap* self) {
-	return ((byte*)self->_PrivValue);
-}
-
-MWrap* JB_Mrap__Alloc() {
-	return ((MWrap*)JB_New(MWrap));
-}
-
-MWrap* JB_Mrap__New(int ItemCount, u32 ItemSize, bool DummyParam) {
-	MWrap* Result = JB_Mrap__Alloc();
-	if (Result) {
-		JB_Mrap_Constructor(Result, ItemCount, ItemSize, DummyParam);
-	}
-	return Result;
-}
-
-MWrap* JB_Mrap__Object(int ItemCount, int ItemSize) {
-	MWrap* Result = JB_Incr(JB_Mrap__New(ItemCount, ItemSize, false));
-	if (Result->_PrivValue) {
-		JB_SafeDecr(Result);
-		return Result;
-	}
-	JB_Decr(Result);
-	return nil;
-}
-
-byte* JB_Mrap__Zalloc(int n) {
-	return ((byte*)JB_malloc(n));
-}
-
-
 RingTree* JB_Tree_First_(RingTree* self) {
 	if (self) {
 		return JB_Ring_First(self);
@@ -3816,6 +3882,17 @@ bool JB_Tree_HasOneChild(RingTree* self) {
 
 void JB_Tree_Remove(RingTree* self) {
 	(JB_Ring_ParentSet(self, nil));
+}
+
+RingTree* JB_Tree_SyntaxAccess(RingTree* self, int n) {
+	if ((!self)) {
+		return nil;
+	}
+	RingTree* result = JB_Ring_First(self);
+	while (((bool)result) and (n-- >= 1)) {
+		result = JB_Ring_NextSib(result);
+	};
+	return result;
 }
 
 void JB_Tree_SyntaxAppend(RingTree* self, RingTree* Last) {
@@ -4233,7 +4310,6 @@ FastAppenderChunk* JB_FAC__New() {
 }
 
 
-
 Message_Behaviour InitTableMessage_() { // Behaviour 
 	Message_Behaviour Result;
 	Result.__destructor__ = (void*)JB_Msg_Destructor;
@@ -4256,19 +4332,34 @@ void JB_Msg_Acc__(Message* self, FastString* fs) {
 	JB_Decr(_tmp1);
 }
 
-void JB_Msg_AccessErr(Message* self, Syntax* s, JB_String* name) {
+void JB_Msg_AccessErr(Message* self, Syntax s, JB_String* name) {
 	if ((!self)) {
 		JB_API__NilHandler();
 		return;
 	}
 	FastString* fs = JB_Incr(JB_FS__New());
 	JB_FS_AppendString(fs, JB_str_71);
-	JB_FS_AppendString(fs, s->LongName);
-	JB_FS_MsgErrorName(fs, name);
-	JB_String* _tmp = JB_Incr(JB_FS_GetResult(fs));
-	JB_Decr(fs);
-	JB_Rec_NewItemWithNode(JB_StdErr, self, _tmp);
+	JB_String* _tmp = JB_Incr(JB_Syntax_LongName(s));
+	JB_FS_AppendString(fs, _tmp);
 	JB_Decr(_tmp);
+	JB_FS_MsgErrorName(fs, name);
+	JB_String* _tmp1 = JB_Incr(JB_FS_GetResult(fs));
+	JB_Decr(fs);
+	JB_Rec_NewItemWithNode(JB_StdErr, self, _tmp1);
+	JB_Decr(_tmp1);
+}
+
+void JB_Msg_AccessErrInt(Message* self, int i) {
+	FastString* _fs_fs = JB_Incr(JB_FS__New());
+	JB_FS_AppendString(_fs_fs, JB_str_72);
+	JB_FS_AppendInt32AsText(_fs_fs, i);
+	JB_String* _fs_str = JB_Incr(JB_FS_SyntaxCastString(_fs_fs));
+	JB_SetRef(_fs_fs, nil);
+	JB_Decr(_fs_fs);
+	JB_String* ErrString = JB_Incr(_fs_str);
+	JB_Decr(_fs_str);
+	JB_Rec_NewItemWithNode(JB_StdErr, self, ErrString);
+	JB_Decr(ErrString);
 }
 
 void JB_Msg_Adj__(Message* self, FastString* fs) {
@@ -4363,6 +4454,8 @@ void JB_Msg_Cnj__(Message* self, FastString* fs) {
 
 void JB_Msg_ConstructorCopy(Message* self, Message* other) {
 	JB_Ring_Constructor0(self);
+	self->MoreFlags = 0;
+	self->UserFlags = 0;
 	self->Func = other->Func;
 	JB_String* _tmp = other->Name;
 	self->Name = JB_Incr(_tmp);
@@ -4370,25 +4463,21 @@ void JB_Msg_ConstructorCopy(Message* self, Message* other) {
 	self->Obj = other->Obj;
 }
 
-void JB_Msg_ConstructorFuncName(Message* self, Syntax* Func, JB_String* Name) {
+void JB_Msg_ConstructorFuncName(Message* self, Syntax Func, JB_String* Name) {
 	JB_Ring_Constructor0(self);
 	self->Obj = nil;
+	self->MoreFlags = 0;
+	self->UserFlags = 0;
 	self->Func = Func;
 	self->Name = JB_Incr(Name);
 	self->Position = JB__Tk_BaseMessagePosition;
 }
 
-void JB_Msg_ConstructorParentPos(Message* self, Message* Parent, int Position) {
+void JB_Msg_ConstructorParser(Message* self, Message* Parent, Syntax Func, int BytePos, JB_String* Name) {
 	JB_Ring_Constructor(self, Parent);
 	self->Obj = nil;
-	self->Func = nil;
-	self->Name = JB_Incr(JB_str_0);
-	self->Position = Position;
-}
-
-void JB_Msg_ConstructorParser(Message* self, Message* Parent, Syntax* Func, int BytePos, JB_String* Name) {
-	JB_Ring_Constructor(self, Parent);
-	self->Obj = nil;
+	self->MoreFlags = 0;
+	self->UserFlags = 0;
 	self->Position = BytePos;
 	self->Func = Func;
 	self->Name = JB_Incr(Name);
@@ -4482,7 +4571,7 @@ void JB_Msg_ERel__(Message* self, FastString* fs) {
 	JB_Decr(ch);
 }
 
-bool JB_Msg_Expect(Message* self, Syntax* type, JB_String* name) {
+bool JB_Msg_Expect(Message* self, Syntax type, JB_String* name) {
 	if ((!self)) {
 		return true;
 	}
@@ -4494,16 +4583,20 @@ bool JB_Msg_Expect(Message* self, Syntax* type, JB_String* name) {
 	FastString* fs = JB_Incr(JB_FS__New());
 	JB_FS_AppendString(fs, JB_str_73);
 	if (type) {
-		JB_FS_AppendString(fs, type->LongName);
+		JB_String* _tmp = JB_Incr(JB_Syntax_LongName(type));
+		JB_FS_AppendString(fs, _tmp);
+		JB_Decr(_tmp);
 	}
 	JB_FS_MsgErrorName(fs, name);
 	JB_FS_AppendString(fs, JB_str_95);
-	JB_FS_AppendString(fs, self->Func->LongName);
+	JB_String* _tmp1 = JB_Incr(JB_Syntax_LongName(self->Func));
+	JB_FS_AppendString(fs, _tmp1);
+	JB_Decr(_tmp1);
 	JB_FS_MsgErrorName(fs, self->Name);
 	if ((!false)) {
-		JB_String* _tmp = JB_Incr(JB_FS_SyntaxCastString(fs));
-		JB_Msg_Fail(self, _tmp);
-		JB_Decr(_tmp);
+		JB_String* _tmp2 = JB_Incr(JB_FS_SyntaxCastString(fs));
+		JB_Msg_Fail(self, _tmp2);
+		JB_Decr(_tmp2);
 	}
 	JB_Decr(fs);
 	return false;
@@ -4571,7 +4664,17 @@ void JB_Msg_Func__(Message* self, FastString* fs) {
 }
 
 JB_String* JB_Msg_FuncName(Message* self) {
-	return JB_Str_LowerCase(self->Func->LongName);
+	return ({
+		JB_String* _tmp261 = JB_Incr(JB_Syntax_LongName(self->Func));
+		JB_String* _tmp260 = JB_Incr(JB_Str_LowerCase(_tmp261));
+		JB_Decr(_tmp261);
+		JB_SafeDecr(_tmp260);
+		_tmp260;
+	});
+}
+
+int64 JB_Msg_Int(Message* self) {
+	return JB_Str_ParseInt(self->Name, self);
 }
 
 void JB_Msg_Item__(Message* self, FastString* fs) {
@@ -4632,35 +4735,6 @@ void JB_Msg_List__(Message* self, FastString* fs) {
 	JB_FS_AppendByte(fs, ')');
 }
 
-Message* JB_Msg_LoadNameFromList(Message* self, Message* line) {
-	Message* itm = JB_Incr(((Message*)JB_Ring_First(line)));
-	if ((!(JB_Msg_SyxOppEquals(itm, JB_SyxItem, false)))) {
-		JB_Msg_Fail(itm, nil);
-		JB_Decr(itm);
-		return nil;
-	}
-	Message* func = JB_Incr(((Message*)JB_Ring_First(itm)));
-	Syntax* _tmp = JB_Incr(JB_Msg__GetSyx(func));
-	if ((!_tmp)) {
-		JB_Decr(itm);
-		JB_Decr(func);
-		JB_Decr(_tmp);
-		return nil;
-	}
-	self->Func = _tmp;
-	JB_Decr(_tmp);
-	JB_SetRef(self->Name, ({
-		Message* _tmp257 = JB_Incr(((Message*)JB_Ring_NextSib(func)));
-		JB_String* _tmp256 = JB_Incr(JB_Msg_Nyme(_tmp257));
-		JB_Decr(_tmp257);
-		JB_SafeDecr(_tmp256);
-		_tmp256;
-	}));
-	JB_Decr(func);
-	JB_SafeDecr(itm);
-	return itm;
-}
-
 JB_String* JB_Msg_Locate(Message* self) {
 	JB_String* fname = JB_Incr(JB_str_155);
 	if ((!self)) {
@@ -4672,7 +4746,7 @@ JB_String* JB_Msg_Locate(Message* self) {
 		JB_SetRef(s, JB_Msg_Render(self, nil));
 	}
 	if (self->Func) {
-		JB_SetRef(fname, self->Func->Name);
+		JB_SetRef(fname, JB_Syntax_Name(self->Func));
 	}
 	JB_String* rs = JB_Incr(JB_str_155);
 	Message* _tmp1 = JB_Incr(((Message*)JB_Ring_Root(self)));
@@ -4705,7 +4779,9 @@ JB_String* JB_Msg_MakeReadable(Message* self, FastString* fs_in) {
 	bool PrintSelf = (((bool)JB_FreeIfDead(((Message*)JB_Ring_Parent(self)))) or (!JB_Msg_SyxOppEquals(self, JB_SyxArg, false)));
 	if (PrintSelf) {
 		JB_FS_AppendByte(fs, '(');
-		JB_FS_AppendString(fs, self->Func->Name);
+		JB_String* _tmp2 = JB_Incr(JB_Syntax_Name(self->Func));
+		JB_FS_AppendString(fs, _tmp2);
+		JB_Decr(_tmp2);
 		JB_FS_AppendString(fs, JB_str_17);
 		if (JB_Str_Exists(self->Name)) {
 			JB_FreeIfDead(JB_ObjRender(self->Name, fs));
@@ -4732,10 +4808,10 @@ JB_String* JB_Msg_MakeReadable(Message* self, FastString* fs_in) {
 	if (PrintSelf) {
 		JB_FS_AppendByte(fs, ')');
 	}
-	JB_String* _tmp2 = JB_Incr(JB_FS_SmartResult(fs, fs_in));
+	JB_String* _tmp3 = JB_Incr(JB_FS_SmartResult(fs, fs_in));
 	JB_Decr(fs);
-	JB_SafeDecr(_tmp2);
-	return _tmp2;
+	JB_SafeDecr(_tmp3);
+	return _tmp3;
 }
 
 JB_String* JB_Msg_MakeReadableSpaces(Message* self, int Spaces) {
@@ -4827,18 +4903,17 @@ JB_String* JB_Msg_OriginalParsePath(Message* self) {
 	return JB_str_0;
 }
 
-s64 JB_Msg_ParseInt(Message* self) {
-	return JB_Str_ParseInt(self->Name, self);
-}
-
 Message* JB_Msg_ParseReadable(Message* self) {
 	if ((!self)) {
 		return nil;
 	}
-	Message* Result = JB_Incr(JB_Fn_Msg(JB_SyxArg, JB_str_0));
+	MessageReadableUtil util = ((MessageReadableUtil){
+	});
+	Message* Result = JB_Incr((JB_Syntax_Msg(JB_SyxArg, JB_str_0)));
 	Message* _tmp = JB_Incr(((Message*)JB_Ring_First(self)));
-	JB_Msg_ReadableParse_(Result, _tmp);
+	JB_Msg_ReadableParse_(Result, _tmp, (&util));
 	JB_Decr(_tmp);
+	JB_MessageReadableUtil_Destructor((&util));
 	JB_SafeDecr(Result);
 	return Result;
 }
@@ -4850,28 +4925,78 @@ Message* JB_Msg_PoorAnt(Message* self) {
 	return nil;
 }
 
-void JB_Msg_ReadableParse_(Message* self, Message* Src) {
-	{
-		Message* line = JB_Incr(Src);
-		while (line) {
-			if ((!(((JB_Msg_SyxOppEquals(line, JB_SyxList, false))) or ((JB_Msg_SyxOppEquals(line, JB_SyxBra, false)))))) {
-				JB_Msg_Fail(line, nil);
-				JB_Decr(line);
-				return;
-			}
-			Message* Result = JB_Incr(JB_Msg__NewParentPos(self, line->Position));
-			Message* C0 = JB_Incr(JB_Msg_LoadNameFromList(Result, line));
-			if (C0) {
-				Message* _tmp1 = JB_Incr(((Message*)JB_Ring_NextSib(C0)));
-				JB_Msg_ReadableParse_(Result, _tmp1);
-				JB_Decr(_tmp1);
-			}
-			JB_Decr(C0);
-			JB_Decr(Result);
-			JB_SetRef(line, ((Message*)JB_Ring_NextSib(line)));
+void JB_Msg_ReadableParse_(Message* self, Message* Src, MessageReadableUtil* U) {
+	if (JB_Msg_SyxOppEquals(Src, JB_SyxNum, false)) {
+		self->Position = JB_Msg_Int(Src);
+	} else if (JB_Msg_SyxOppEquals(Src, JB_SyxStr, false)) {
+		JB_MessageReadableUtil_UseLayer(U, Src);
+	} else {
+		{
+			Message* line = JB_Incr(Src);
+			while (line) {
+				Message* MsgDesc = JB_Incr(line);
+				Message* Children = nil;
+				if (JB_Msg_SyxOppEquals(line, JB_SyxFunc, false)) {
+					JB_SetRef(MsgDesc, ((Message*)JB_Ring_First(line)));
+					JB_SetRef(Children, ({
+						Message* _tmp318 = JB_Incr(((Message*)JB_Ring_NextSib(MsgDesc)));
+						Message* _tmp317 = JB_Incr(((Message*)JB_Ring_First(_tmp318)));
+						JB_Decr(_tmp318);
+						JB_SafeDecr(_tmp317);
+						_tmp317;
+					}));
+				} else {
+					JB_SetRef(Children, ({
+						Message* _tmp320 = JB_Incr(((Message*)JB_Ring_First(MsgDesc)));
+						Message* _tmp319 = JB_Incr(((Message*)JB_Ring_NextSib(_tmp320)));
+						JB_Decr(_tmp320);
+						JB_SafeDecr(_tmp319);
+						_tmp319;
+					}));
+				}
+				if ((!JB_Msg_Expect(MsgDesc, JB_SyxList, JB_str_0))) {
+					JB_Decr(line);
+					JB_Decr(MsgDesc);
+					JB_Decr(Children);
+					return;
+				}
+				JB_Decr(MsgDesc);
+				Message* itm = JB_Incr(JB_Msg_AccessNumErr(line, JB_SyxItem, 0, true));
+				if ((!itm)) {
+					JB_Decr(line);
+					JB_Decr(Children);
+					JB_Decr(itm);
+					return;
+				}
+				Message* func = JB_Incr(((Message*)JB_Ring_First(itm)));
+				JB_Decr(itm);
+				SyntaxObj* fn = JB_Incr(JB_Msg__GetSyx(func));
+				if ((!fn)) {
+					JB_Decr(line);
+					JB_Decr(Children);
+					JB_Decr(func);
+					JB_Decr(fn);
+					return;
+				}
+				Message* Result = JB_Incr(({
+					JB_String* _tmp322 = JB_Incr(JB_Msg_Nyme(((Message*)JB_Ring_NextSib(func))));
+					Message* _tmp321 = JB_Incr(JB_Msg__NewParser(self, fn->ID, self->Position, _tmp322));
+					JB_Decr(_tmp322);
+					JB_SafeDecr(_tmp321);
+					_tmp321;
+				}));
+				JB_Decr(fn);
+				JB_Decr(func);
+				if (Children) {
+					JB_Msg_ReadableParse_(Result, Children, U);
+				}
+				JB_Decr(Result);
+				JB_Decr(Children);
+				JB_SetRef(line, ((Message*)JB_Ring_NextSib(line)));
+			};
+			JB_Decr(line);
 		};
-		JB_Decr(line);
-	};
+	}
 }
 
 void JB_Msg_Rel__(Message* self, FastString* fs) {
@@ -4983,7 +5108,11 @@ void JB_Msg_Str__(Message* self, FastString* fs) {
 	JB_FS_AppendByte(fs, '"');
 }
 
-Message* JB_Msg_AccessSyxName(Message* self, Syntax* s, JB_String* name, bool Err) {
+Message* JB_Msg_AccessAsNum(Message* self, int n) {
+	return ((Message*)JB_Tree_SyntaxAccess(((RingTree*)self), n));
+}
+
+Message* JB_Msg_AccessSyxName(Message* self, Syntax s, JB_String* name, bool Err) {
 	{
 		Message* ch = ((Message*)JB_Tree_First_(self));
 		while (ch) {
@@ -5000,11 +5129,29 @@ Message* JB_Msg_AccessSyxName(Message* self, Syntax* s, JB_String* name, bool Er
 	return nil;
 }
 
+Message* JB_Msg_AccessNumErr(Message* self, Syntax s, int i, bool Err) {
+	if ((!self)) {
+		return nil;
+	}
+	Message* ch = JB_Msg_AccessAsNum(self, i);
+	if (((bool)ch) and ((!s) or (JB_Msg_SyxOppEquals(ch, s, false)))) {
+		return ch;
+	}
+	if (Err) {
+		if (s) {
+			JB_Msg_AccessErr(self, s, nil);
+		} else {
+			JB_Msg_AccessErrInt(self, i);
+		}
+	}
+	return nil;
+}
+
 bool JB_Msg_SyntaxEquals(Message* self, JB_String* name, bool Aware) {
 	return ((bool)self) and JB_Str_Equals(self->Name, name, Aware);
 }
 
-bool JB_Msg_SyxOppEquals(Message* self, Syntax* X, bool Aware) {
+bool JB_Msg_SyxOppEquals(Message* self, Syntax X, bool Aware) {
 	return ((bool)self) and (self->Func == X);
 }
 
@@ -5154,11 +5301,9 @@ void JB_Msg_Type__(Message* self, FastString* fs) {
 	JB_FS_AppendMsg(fs, ch);
 	JB_FS_AppendByte(fs, '|');
 	JB_SetRef(ch, ((Message*)JB_Ring_NextSib(ch)));
-	if ((!ch)) {
-		JB_Decr(ch);
-		return;
+	if (ch) {
+		JB_FS_AppendMsg(fs, ch);
 	}
-	JB_FS_AppendMsg(fs, ch);
 	JB_Decr(ch);
 	JB_FS_AppendByte(fs, '|');
 }
@@ -5188,8 +5333,8 @@ Message* JB_Msg__Alloc() {
 	return ((Message*)JB_New(Message));
 }
 
-Syntax* JB_Msg__GetSyx(Message* msg) {
-	Syntax* _tmp = JB_Incr(((Syntax*)JB_Dict_Syntax(JB__SyxDict_, msg->Name)));
+SyntaxObj* JB_Msg__GetSyx(Message* msg) {
+	SyntaxObj* _tmp = JB_Incr(((SyntaxObj*)JB_Dict_Syntax(JB__SyxDict_, msg->Name)));
 	if ((!_tmp)) {
 		FastString* _fs1_fs = JB_Incr(JB_FS__New());
 		JB_FS_AppendString(_fs1_fs, JB_str_59);
@@ -5210,7 +5355,7 @@ Message* JB_Msg__LayerAlloc(JB_MemoryLayer* _L) {
 	return ((Message*)JB_LayerNew(_L, Message));
 }
 
-Message* JB_Msg__NewFuncName(Syntax* Func, JB_String* Name) {
+Message* JB_Msg__NewFuncName(Syntax Func, JB_String* Name) {
 	Message* Result = JB_Msg__Alloc();
 	if (Result) {
 		JB_Msg_ConstructorFuncName(Result, Func, Name);
@@ -5218,15 +5363,7 @@ Message* JB_Msg__NewFuncName(Syntax* Func, JB_String* Name) {
 	return Result;
 }
 
-Message* JB_Msg__NewParentPos(Message* Parent, int Position) {
-	Message* Result = JB_Msg__Alloc();
-	if (Result) {
-		JB_Msg_ConstructorParentPos(Result, Parent, Position);
-	}
-	return Result;
-}
-
-Message* JB_Msg__NewParser(Message* Parent, Syntax* Func, int BytePos, JB_String* Name) {
+Message* JB_Msg__NewParser(Message* Parent, Syntax Func, int BytePos, JB_String* Name) {
 	Message* Result = JB_Msg__Alloc();
 	if (Result) {
 		JB_Msg_ConstructorParser(Result, Parent, Func, BytePos, Name);
@@ -5248,23 +5385,23 @@ Message* JB_Msg__NewWithLayerCopy(JB_MemoryLayer* _L, Message* other) {
 
 #pragma GCC visibility push(default)
 __lib__ JB_String* jb_msg_name(Message* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return nil;
 	}
 	return self->Name;
 	return JB_str_0;
 }
 
-__lib__ Syntax* jb_msg_type(Message* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+__lib__ Syntax jb_msg_func(Message* self) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return nil;
 	}
 	return self->Func;
-	return nil;
+	return 0;
 }
 
 __lib__ int jb_msg_position(Message* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return nil;
 	}
 	return self->Position;
@@ -5272,7 +5409,7 @@ __lib__ int jb_msg_position(Message* self) {
 }
 
 __lib__ _voidptr jb_msg_tag(Message* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return nil;
 	}
 	return ((_voidptr)self->Obj);
@@ -5280,63 +5417,63 @@ __lib__ _voidptr jb_msg_tag(Message* self) {
 }
 
 __lib__ void jb_msg_nameset(Message* self, JB_String* Result) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return;
 	}
 	JB_SetRef(self->Name, Result);
 }
 
-__lib__ void jb_msg_typeset(Message* self, Syntax* Result) {
-	if ((!JB_Obj_NilCheck(self))) {
+__lib__ void jb_msg_funcset(Message* self, Syntax Result) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return;
 	}
 	self->Func = Result;
 }
 
 __lib__ void jb_msg_positionset(Message* self, int Result) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return;
 	}
 	self->Position = Result;
 }
 
 __lib__ void jb_msg_tagset(Message* self, _voidptr Result) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return;
 	}
 	self->Obj = ((JB_Object*)Result);
 }
 
 __lib__ void jb_msg_firstset(Message* self, Message* Result) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return;
 	}
 	(JB_Ring_FirstSet(self, Result));
 }
 
 __lib__ void jb_msg_lastset(Message* self, Message* Result) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return;
 	}
 	(JB_Ring_LastSet(self, Result));
 }
 
 __lib__ void jb_msg_prevset(Message* self, Message* Result) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return;
 	}
 	(JB_Ring_PrevSibSet(self, Result));
 }
 
 __lib__ void jb_msg_nextset(Message* self, Message* Result) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return;
 	}
 	(JB_Ring_NextSibSet(self, Result));
 }
 
 __lib__ Message* jb_msg_first(Message* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return nil;
 	}
 	return ((Message*)JB_Ring_First(self));
@@ -5344,7 +5481,7 @@ __lib__ Message* jb_msg_first(Message* self) {
 }
 
 __lib__ Message* jb_msg_last(Message* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return nil;
 	}
 	return ((Message*)JB_Ring_Last(self));
@@ -5352,7 +5489,7 @@ __lib__ Message* jb_msg_last(Message* self) {
 }
 
 __lib__ Message* jb_msg_prev(Message* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return nil;
 	}
 	return ((Message*)JB_Ring_PrevSib(self));
@@ -5360,7 +5497,7 @@ __lib__ Message* jb_msg_prev(Message* self) {
 }
 
 __lib__ Message* jb_msg_next(Message* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return nil;
 	}
 	return ((Message*)JB_Ring_NextSib(self));
@@ -5368,7 +5505,7 @@ __lib__ Message* jb_msg_next(Message* self) {
 }
 
 __lib__ Message* jb_msg_parent(Message* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return nil;
 	}
 	return ((Message*)JB_Ring_Parent(self));
@@ -5376,7 +5513,7 @@ __lib__ Message* jb_msg_parent(Message* self) {
 }
 
 __lib__ Message* jb_msg_flatnext(Message* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return nil;
 	}
 	return ((Message*)JB_Ring_FlatNext0(self));
@@ -5384,7 +5521,7 @@ __lib__ Message* jb_msg_flatnext(Message* self) {
 }
 
 __lib__ Message* jb_msg_flatafter(Message* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return nil;
 	}
 	return ((Message*)JB_Ring_FlatAfter(self));
@@ -5392,7 +5529,7 @@ __lib__ Message* jb_msg_flatafter(Message* self) {
 }
 
 __lib__ Message* jb_msg_root(Message* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return nil;
 	}
 	return ((Message*)JB_Ring_Root(self));
@@ -5400,14 +5537,14 @@ __lib__ Message* jb_msg_root(Message* self) {
 }
 
 __lib__ void jb_msg_remove(Message* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return;
 	}
 	JB_Tree_Remove(self);
 }
 
 __lib__ JB_String* jb_msg_render(Message* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return nil;
 	}
 	return JB_Msg_Render(self, nil);
@@ -5415,7 +5552,7 @@ __lib__ JB_String* jb_msg_render(Message* self) {
 }
 
 __lib__ JB_String* jb_msg_renderreadable(Message* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return nil;
 	}
 	return JB_Msg_MakeReadableSpaces(self, 4);
@@ -5428,29 +5565,29 @@ __lib__ Message* jb_msg_convertreadable(Message* self) {
 }
 
 __lib__ Message* jb_msg_copy(Message* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return nil;
 	}
 	return JB_Msg_Copy(self, false);
 	return nil;
 }
 
-__lib__ Message* jb_msg_create(Message* self, Syntax* Type, JB_String* Name) {
-	if ((!JB_Obj_NilCheck(Type))) {
+__lib__ Message* jb_msg_create(Message* self, Syntax Type, JB_String* Name) {
+	if ((!JB_Syx_NilCheck(Type))) {
 		return nil;
 	}
-	return JB_Fn_MsgParent(Type, self, Name);
+	return JB_Syntax_MsgParent(Type, self, Name);
 	return nil;
 }
 
 __lib__ void jb_msg_error(Message* self, JB_String* ErrorMsg) {
-	if ((!JB_Obj_NilCheck(self))) {
+	if ((!JB_Msg_NilCheck(self))) {
 		return;
 	}
 	JB_Rec_NewItemWithNode(JB_StdErr, self, ErrorMsg);
 }
 
-__lib__ Message* jb_msg_expect(Message* self, Syntax* Type, JB_String* name, Message* ErrPlace) {
+__lib__ Message* jb_msg_expect(Message* self, Syntax Type, JB_String* name, Message* ErrPlace) {
 	if (self) {
 		if (JB_Msg_Expect(self, Type, name)) {
 			return self;
@@ -5461,23 +5598,23 @@ __lib__ Message* jb_msg_expect(Message* self, Syntax* Type, JB_String* name, Mes
 	return nil;
 }
 
-__lib__ Message* jb_msg_access(Message* self, Syntax* Type, JB_String* name, bool IsError) {
+__lib__ Message* jb_msg_access(Message* self, Syntax Type, JB_String* name, bool IsError) {
 	return JB_Msg_AccessSyxName(self, Type, name, IsError);
 }
 
-__lib__ JB_String* jb_syx_name(Syntax* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+__lib__ JB_String* jb_syx_name(Syntax self) {
+	if ((!JB_Syx_NilCheck(self))) {
 		return nil;
 	}
-	return self->Name;
+	return JB_Syntax_Name(self);
 	return JB_str_0;
 }
 
-__lib__ JB_String* jb_syx_longname(Syntax* self) {
-	if ((!JB_Obj_NilCheck(self))) {
+__lib__ JB_String* jb_syx_longname(Syntax self) {
+	if ((!JB_Syx_NilCheck(self))) {
 		return nil;
 	}
-	return self->LongName;
+	return JB_Syntax_LongName(self);
 	return JB_str_0;
 }
 
@@ -5519,7 +5656,7 @@ __lib__ void jb_string_printline(JB_String* self) {
 	JB_Str_PrintLine(self);
 }
 
-__lib__ s64 jb_string_int(JB_String* self, Message* m) {
+__lib__ int64 jb_string_int(JB_String* self, Message* m) {
 	return JB_Str_TextIntegerValid(self, m);
 	return 0;
 }
@@ -5529,9 +5666,16 @@ __lib__ double jb_string_float(JB_String* self, Message* m) {
 	return 0;
 }
 
-__lib__ Syntax* jb_syntax(JB_String* name) {
-	return ((Syntax*)JB_Dict_SyntaxAccess(JB__SyxDict_, name));
-	return nil;
+__lib__ Syntax jb_syntax(JB_String* name) {
+	SyntaxObj* _tmp = JB_Incr(((SyntaxObj*)JB_Dict_SyntaxAccess(JB__SyxDict_, name)));
+	if ((!_tmp)) {
+		JB_Decr(_tmp);
+		return nil;
+	}
+	int _tmp1 = _tmp->ID;
+	JB_Decr(_tmp);
+	return _tmp1;
+	return 0;
 }
 
 __lib__ JB_String* jb_str(_cstring Str, int Length, _voidptr Release, _voidptr Tag) {
@@ -5582,7 +5726,7 @@ __lib__ int jb_shutdown() {
 }
 
 __lib__ int jb_version() {
-	return 2019090615;
+	return 2019091719;
 }
 
 __lib__ JB_String* jb_readfile(_cstring path, bool AllowMissingFile) {

@@ -22,21 +22,6 @@ extern "C" {
 
 
 
-inline bool mrealloc(Array* self, u32 N) {
-    if (N > kArrayLengthMax) {
-        JB_TooLargeAlloc("arrays", N, kArrayLengthMax);
-        return false;
-    }
-    
-    try {
-        self->Vec.resize(N);
-        return true;
-    } catch (const std::bad_alloc&) {
-        JB_OutOfUserMemory(N*sizeof(void*));
-        return false;
-    }
-}
-
 
 void JB_Array_AppendCount( Array* self, JB_Object* Value, int Count ) {
     try {
@@ -71,7 +56,16 @@ void JB_Array_SizeSet( Array* self, int NewLength ) {
             JB_Decr( *Curr++ );
         }
     }
-    mrealloc(self, NewLength);
+    
+    if (NewLength > kArrayLengthMax) {
+        JB_TooLargeAlloc("arrays", NewLength, kArrayLengthMax);
+    }
+    
+    try {
+        self->Vec.resize(NewLength);
+    } catch (const std::bad_alloc&) {
+        JB_OutOfUserMemory(NewLength*sizeof(void*));
+    }
 }
 
 
@@ -105,6 +99,10 @@ void JB_Array_Reverse( Array* self ) {
 
 void JB_Array_Remove( Array* self, int Pos ) {
     self->Vec.erase(self->Vec.begin()+Pos);
+}
+
+void JB_Array_Sort( Array* self ) {
+    // need some kinda sort func....
 }
 
 
@@ -150,7 +148,7 @@ void JB_Array_ValueSet( Array* self, int Pos, JB_Object* Value ) {
 
 
 JB_Object* JB_Array_Value( Array* self, int Pos ) {
-    if ( (u32)JB_Array_Size(self) > (u32)Pos) {
+    if ((u32)Pos < self->Vec.size()) {
         return self->Vec[ Pos ];
     }
     return 0;

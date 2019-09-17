@@ -119,7 +119,7 @@ bool HasFD (JB_File*f) {
     return (f->FileDes >= 0);
 }
 
-s64 ErrorHandleStr_(s64 MaybeErr, JB_String* self, const char* Operation) {
+int64 ErrorHandleStr_(int64 MaybeErr, JB_String* self, const char* Operation) {
     if (MaybeErr >= 0) {
         return MaybeErr;
     }
@@ -127,7 +127,7 @@ s64 ErrorHandleStr_(s64 MaybeErr, JB_String* self, const char* Operation) {
     return 0;
 }
 
-s64 ErrorHandle_(s64 MaybeErr, JB_File* self, const char* Operation) {
+int64 ErrorHandle_(int64 MaybeErr, JB_File* self, const char* Operation) {
     return ErrorHandleStr_(MaybeErr, self->Path, Operation);
 }
 
@@ -354,7 +354,7 @@ bool JB_File_EOF( JB_File* self ) {
 }
 
 
-s64 JB_File_WriteRaw_( JB_File* self, u8* Data, int N ) {
+int64 JB_File_WriteRaw_( JB_File* self, u8* Data, int N ) {
     N = InterWrite( self->FileDes, Data, N );
     return ErrorHandle_(N, self, "write to");
 }
@@ -458,16 +458,16 @@ void JB_File_Close( JB_File* self ) {
 }
 
 
-void JB_File_OffsetSet( JB_File* self, s64 NewValue ) {
+void JB_File_OffsetSet( JB_File* self, int64 NewValue ) {
     // no need to check for -1 FileDes if lseek handles it?
     ErrorHandle_(
         (int)lseek( self->FileDes, NewValue, SEEK_SET ),
         self, "set offset of");
 }
 
-s64 JB_File_Offset( JB_File* self ) {
+int64 JB_File_Offset( JB_File* self ) {
     // no need to check for -1 FileDes if lseek handles it?
-    s64 N = lseek( self->FileDes, 0, SEEK_CUR );
+    int64 N = lseek( self->FileDes, 0, SEEK_CUR );
     ErrorHandle_(N, self, "get offset of");
     return N;
 }

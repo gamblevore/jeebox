@@ -317,12 +317,6 @@ JB_MemoryLayer* JB_Mem_CreateLayer(JB_Class* Cls, JB_Object* Obj) {
     return Mem;
 }
 
-JB_MemoryLayer* JB_Mem_UseNewLayer(JB_Class* Cls, JB_Object* Obj) {
-    JB_MemoryLayer* Mem = JB_Mem_CreateLayer(Cls,Obj);
-    JB_Mem_Use(Mem);
-    return Mem;
-}
-
 
 void JB_Mem_Use( JB_MemoryLayer* self ) {
     // shouldn't we incr the layer? or not?

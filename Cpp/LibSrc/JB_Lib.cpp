@@ -62,7 +62,7 @@ JBClassPlaceSaver( Dictionary,   JB_Dict_Destructor,    JB_AsClass(Saveable),   
 JBClassPlaceSaver( Array,        JB_Array_Destructor,   JB_AsClass(Saveable),       JB_Array_Render, JB_Array_LoadProperties, JB_Array_SaveCollect, JB_Array_SaveWrite );
 JBClassPlaceSaver( Saveable,     0,                     0,                          0,               JB_Sav_LoadProperties,                       JB_Sav_SaveCollect, JB_Sav_SaveWrite );
 
-JBClassPlace( FastString,       JB_FS_Destructor,      JB_AsClass(JB_Object),      JB_Str_Render );
+JBClassPlace( FastString,       JB_FS_Destructor,      JB_AsClass(JB_Object),      JB_FS_SmartResult );
 JBClassPlace( ByteMap,          0,                     JB_AsClass(JB_Object),      JB_BM_Render );
 JBClassPlace( RingTree,         JB_Ring_Destructor,    JB_AsClass(Saveable),       0 );
 JBClassPlace( TokHan,           0,                     JB_AsClass(JB_Object),      0 );

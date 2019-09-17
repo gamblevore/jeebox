@@ -30,9 +30,9 @@ class MessageIterator;
 class Syntax {
 // no need refcount. they always exist and are never destroyed.
 public:
-    jbsyntax* _self;
-    __nodebug operator jbsyntax*() const { return _self; }
-    __nodebug Syntax (jbsyntax* s) { _self = s; }
+    jbsyntax _self;
+    __nodebug operator jbsyntax() const { return _self; }
+    __nodebug Syntax (jbsyntax s) { _self = s; }
     __nodebug String name() const;
     __nodebug String longname() const;
     __nodebug Message create (const String& Name);
@@ -122,7 +122,7 @@ public:
         return jb_msg_create(_self, X._self, Name._self);
     }
 
-    __nodebug Syntax  type () const    {return jb_msg_type(_self);}
+    __nodebug Syntax  type () const    {return jb_msg_func(_self);}
     __nodebug String  name () const    {return jb_msg_name(_self);}
     __nodebug int     position() const {return jb_msg_position(_self);}
     __nodebug void*   tag () const     {return jb_msg_tag(_self);}
@@ -152,7 +152,7 @@ __nodebug Message convertreadable()const{return jb_msg_convertreadable(_self);}
 
     __nodebug void    remove()    {return jb_msg_remove(_self);}
     
-    __nodebug void    type (const Syntax& s)   {jb_msg_typeset(_self, s._self);}
+    __nodebug void    type (const Syntax& s)   {jb_msg_funcset(_self, s._self);}
     __nodebug void    name (const String& s)   {jb_msg_nameset(_self, s._self);}
     __nodebug void    position(int s)          {jb_msg_positionset(_self, s);}
     __nodebug void    tag (void* s)            {jb_msg_tagset(_self, s);}
@@ -163,7 +163,7 @@ __nodebug Message convertreadable()const{return jb_msg_convertreadable(_self);}
         
     __nodebug void    append(const Message& s)   {last(s);}
     
-    __nodebug s64    nameint()                 {return jb_string_int(jb_msg_name(_self),_self);}
+    __nodebug int64    nameint()                 {return jb_string_int(jb_msg_name(_self),_self);}
     __nodebug double namefloat()               {return jb_string_float(jb_msg_name(_self),_self);}
 
 //   __declspec(property(get = position, put = position)) int poss;

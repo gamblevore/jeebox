@@ -896,15 +896,9 @@ JB_String* JB_Obj_DictName (JB_Object* obj) {
     return JB_DictName_Trim(D, sizeof(obj));
 }
 
-JB_String* JB_int_DictName (int obj) {
+JB_String* JB_int64_DictName (int64 obj) {
     JB_String20* D = TheDictName;
-    *((int*)D->Data) = obj;
-    return JB_DictName_Trim(D, sizeof(obj));
-}
-
-JB_String* JB_s64_DictName (s64 obj) {
-    JB_String20* D = TheDictName;
-    *((s64*)D->Data) = obj;
+    *((int64*)D->Data) = obj;
     return JB_DictName_Trim(D, sizeof(obj));
 }
 

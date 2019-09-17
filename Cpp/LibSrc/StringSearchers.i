@@ -453,7 +453,7 @@ double JB_Str_TextDouble(JB_String* self, Message* Where) {
 }
 
 
-static s64 ParseNumbers_( JB_String* self, int AsHex, Message* Where ) {
+static int64 ParseNumbers_( JB_String* self, int AsHex, Message* Where ) {
 // assumes valid input
     require (JB_Str_Length(self));
     MiniStr S = {self->Length, self->Addr};
@@ -463,7 +463,7 @@ static s64 ParseNumbers_( JB_String* self, int AsHex, Message* Where ) {
 		S.Next();
 	}
 
-	s64 Value = 0;
+	int64 Value = 0;
 
 	while ( S ) {
 		int c = S.Next();
@@ -503,19 +503,19 @@ static s64 ParseNumbers_( JB_String* self, int AsHex, Message* Where ) {
 
 
 
-s64 JB_Str_TextInteger( JB_String* self) {
+int64 JB_Str_TextInteger( JB_String* self) {
 	return ParseNumbers_( self, 0, nil );
 }
 
-s64 JB_Str_HexInteger(JB_String* self) {
+int64 JB_Str_HexInteger(JB_String* self) {
 	return ParseNumbers_( self, 1, nil );
 }
 
-s64 JB_Str_HexInteger2(JB_String* self, Message* b) {
+int64 JB_Str_HexInteger2(JB_String* self, Message* b) {
 	return ParseNumbers_( self, 2, b );
 }
 
-s64 JB_Str_TextIntegerValid(JB_String* self, Message* b) {
+int64 JB_Str_TextIntegerValid(JB_String* self, Message* b) {
 	return ParseNumbers_( self, 0, b );
 }
 

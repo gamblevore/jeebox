@@ -75,7 +75,7 @@ extern "C" {
         }
     }
     
-    u32 JB_u32_hash (u32 x) {
+    u32 JB_uint_hash (u32 x) {
         x ^= x >> 16;
         x *= UINT32_C(0x7feb352d);
         x ^= x >> 15;
@@ -84,7 +84,7 @@ extern "C" {
         return x;
     }
 
-    u32 JB_u32_unhash (u32 x) {
+    u32 JB_uint_unhash (u32 x) {
         x ^= x >> 16;
         x *= UINT32_C(0x43021123);
         x ^= x >> 15 ^ x >> 30;
@@ -93,7 +93,7 @@ extern "C" {
         return x;
     }
 
-    u64 JB_u64_hash (u64 x) {
+    u64 JB_uint64_hash (u64 x) {
         x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9ULL;
         x = (x ^ (x >> 27)) * 0x94d049bb133111ebULL;
         x = x ^ (x >> 31);
