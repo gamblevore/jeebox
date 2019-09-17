@@ -4960,8 +4960,8 @@ void JB_Msg_ReadableParse_(Message* self, Message* Src, MessageReadableUtil* U) 
 					JB_Decr(Children);
 					return;
 				}
+				Message* itm = JB_Incr(JB_Msg_AccessNumErr(MsgDesc, JB_SyxItem, 0, true));
 				JB_Decr(MsgDesc);
-				Message* itm = JB_Incr(JB_Msg_AccessNumErr(line, JB_SyxItem, 0, true));
 				if ((!itm)) {
 					JB_Decr(line);
 					JB_Decr(Children);
@@ -5726,7 +5726,7 @@ __lib__ int jb_shutdown() {
 }
 
 __lib__ int jb_version() {
-	return 2019091719;
+	return 2019091722;
 }
 
 __lib__ JB_String* jb_readfile(_cstring path, bool AllowMissingFile) {
