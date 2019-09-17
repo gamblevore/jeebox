@@ -52,7 +52,7 @@ Being open-sourced on github means that I'm not controlling the future of Jeebox
 
 The downsides to using Jeebox? Well... it is another language to learn, its an eye-opening experience but not everyone has time to learn.
 
-The other downside is that there is some kind of cultural resistance to accepting Jeebox, mostly that I'm "not part of the power-system" (I don't have friends at apple/google/intel/etc). All big popular stuff (XML/JSON) never had to "get accepted from the outside". They were created by powerful groups in the first place. So, maybe a new approach is needed?
+The other downside is that there isn't a community right now. I hope things will change in the future so that a community forms naturally.
 
 # The Future Path For Jeebox?
 
