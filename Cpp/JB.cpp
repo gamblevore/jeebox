@@ -67,7 +67,6 @@ int JB__Tk_StopBars;
 
 SyntaxObj* JB__FuncArray_[64];
 Dictionary* JB__SyxDict_;
-JB_String* JB_JSONTest;
 JB_ErrorReceiver* JB_StdErr;
 JB_String* JB_str_0;
 JB_String* JB_str_1;
@@ -299,7 +298,6 @@ JB_String* JB_str_301;
 JB_String* JB_str_302;
 JB_String* JB_str_303;
 JB_String* JB_str_304;
-JB_String* JB_str_305;
 JB_String* JB_str_31;
 JB_String* JB_str_32;
 JB_String* JB_str_33;
@@ -2088,9 +2086,8 @@ JB_String* JB_EntityTest() {
 
 int JB_Init_() {
 	{
-		JB_SetRef(JB_str_305, JB_Str3("Binary", 6));
-		JB_SetRef(JB_str_304, JB_Str3("bin", 3));
-		JB_SetRef(JB_str_303, JB_Str3("\n{\n\t\"glossary\": {\n\t\t\"title\": \"example glossary\",\n\t\t\"GlossDiv\": {\n\t\t\t\"title\": \"S\",\n\t\t\t\"GlossList\": {\n\t\t\t\t\"GlossEntry\": {\n\t\t\t\t\t\"ID\": \"SGML\",\n\t\t\t\t\t\"SortAs\": \"SGML\",\n\t\t\t\t\t\"GlossTerm\": \"Standard \\\\Generalized Markup Language\",\n\t\t\t\t\t\"Acronym\": \"SGML\",\n\t\t\t\t\t\"Abbrev\": \"ISO 8879:1986\",\n\t\t\t\t\t\"GlossDef\": {\n\t\t\t\t\t\t\"para\": \"A meta-markup language, \\nused to create markup languages such as \\\"DocBook\\\".\",\n\t\t\t\t\t\t\"GlossSeeAlso\": [\"GML\", \"XML\"]\n\t\t\t\t\t},\n\t\t\t\t\t\"GlossSee\": \"markup\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n}\n", 484));
+		JB_SetRef(JB_str_304, JB_Str3("Binary", 6));
+		JB_SetRef(JB_str_303, JB_Str3("bin", 3));
 		JB_SetRef(JB_str_302, JB_Str3("Typecast", 8));
 		JB_SetRef(JB_str_301, JB_Str3("type", 4));
 		JB_SetRef(JB_str_300, JB_Str3("Conjugate", 9));
@@ -2431,8 +2428,7 @@ int JB_Init_() {
 		JB_SyxSCnj = JB_Syntax__StdNew(JB_Msg_SCnj__, JB_str_297, JB_str_298);
 		JB_SyxCnj = JB_Syntax__StdNew(JB_Msg_Cnj__, JB_str_299, JB_str_300);
 		JB_SyxType = JB_Syntax__StdNew(JB_Msg_Type__, JB_str_301, JB_str_302);
-		JB_SetRef(JB_JSONTest, JB_str_303);
-		JB_SyxBin = JB_Syntax__StdNew(JB_Msg_Bin__, JB_str_304, JB_str_305);
+		JB_SyxBin = JB_Syntax__StdNew(JB_Msg_Bin__, JB_str_303, JB_str_304);
 	};
 	//// JB_API;
 	JB_API__Init_();
@@ -2805,7 +2801,8 @@ JB_String* JB_Point2_Render(Point2* self, FastString* fs_in) {
 }
 
 Point2 JB_Point2__New(float a, float b) {
-	Point2 result;
+	Point2 result = ((Point2){
+	});
 	result.X = a;
 	result.Y = b;
 	return result;
@@ -2927,7 +2924,7 @@ JB_String* JB_Syntax_Name(Syntax self) {
 }
 
 SyntaxObj* JB_Syntax_Obj(Syntax self) {
-	return JB__FuncArray_[self];
+	return JB__FuncArray_[((int)self)];
 }
 
 int JB_Syntax_Parseflags(Syntax self) {
@@ -2961,7 +2958,7 @@ Syntax JB_Syntax__StdNew(fpMsgRender msg, JB_String* name, JB_String* LongName) 
 		JB_SetRef(result->LongName, name);
 	}
 	JB_Decr(result);
-	return JB__Syntax_CurrFuncID;
+	return ((Syntax)JB__Syntax_CurrFuncID);
 }
 
 
@@ -3626,7 +3623,7 @@ void JB_Fn_Constructor(SyntaxObj* self, fpMsgRender msg, JB_String* name, int ID
 	self->LongName = JB_Incr(JB_str_0);
 	self->RenderAddr = msg;
 	self->Name = JB_Incr(name);
-	self->ID = ID;
+	self->ID = ((Syntax)ID);
 	self->ExportAddr = JB_Msg_Dummy;
 }
 
@@ -5406,7 +5403,7 @@ __lib__ Syntax jb_msg_func(Message* self) {
 		return nil;
 	}
 	return self->Func;
-	return 0;
+	return nil;
 }
 
 __lib__ int jb_msg_position(Message* self) {
@@ -5681,10 +5678,10 @@ __lib__ Syntax jb_syntax(JB_String* name) {
 		JB_Decr(_tmp);
 		return nil;
 	}
-	int _tmp1 = _tmp->ID;
+	Syntax _tmp1 = _tmp->ID;
 	JB_Decr(_tmp);
 	return _tmp1;
-	return 0;
+	return nil;
 }
 
 __lib__ JB_String* jb_str(_cstring Str, int Length, _voidptr Release, _voidptr Tag) {
@@ -5735,7 +5732,7 @@ __lib__ int jb_shutdown() {
 }
 
 __lib__ int jb_version() {
-	return 2019091811;
+	return 2019091820;
 }
 
 __lib__ JB_String* jb_readfile(_cstring path, bool AllowMissingFile) {

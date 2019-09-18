@@ -299,7 +299,7 @@ JBClass ( SyntaxObj , JB_Object ,
 	fpMsgRender ExportAddr;
 	JB_String* Name;
 	JB_String* LongName;
-	int ID;
+	Syntax ID;
 );
 
 struct TokenHandler_Behaviour: Object_Behaviour {
@@ -491,7 +491,6 @@ extern int JB__Tk_StopBars;
 // module: JB
 extern SyntaxObj* JB__FuncArray_[64];
 extern Dictionary* JB__SyxDict_;
-extern JB_String* JB_JSONTest;
 #define kJB_SaverEnd (JB_str_0)
 #define kJB_SaverStart1 (JB_str_212)
 extern JB_ErrorReceiver* JB_StdErr;
@@ -725,7 +724,6 @@ extern JB_String* JB_str_301;
 extern JB_String* JB_str_302;
 extern JB_String* JB_str_303;
 extern JB_String* JB_str_304;
-extern JB_String* JB_str_305;
 extern JB_String* JB_str_31;
 extern JB_String* JB_str_32;
 extern JB_String* JB_str_33;
