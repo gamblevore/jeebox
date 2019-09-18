@@ -32,6 +32,8 @@ extern "C" {
 //// HEADER AllTypes.h
 
 
+struct AstUtil;
+
 struct JB_Class;
 
 struct FreeObject;
@@ -39,8 +41,6 @@ struct FreeObject;
 struct iPoint2;
 
 struct LLRef;
-
-struct MessageReadableUtil;
 
 struct ObjectLoader;
 
@@ -182,6 +182,11 @@ typedef void (*__Saveable_SaveWrite__)(Saveable* self, ObjectSaver* Saver);
 
 //// HEADER Proj.h
 
+struct AstUtil {
+	Dictionary* Mem;
+	JB_MemoryLayer* Initial;
+};
+
 struct iPoint2 {
 	int X;
 	int Y;
@@ -189,11 +194,6 @@ struct iPoint2 {
 
 struct LLRef {
 	JB_LinkedList* First;
-};
-
-struct MessageReadableUtil {
-	Dictionary* Mem;
-	JB_MemoryLayer* Initial;
 };
 
 struct ObjectLoader {
@@ -849,6 +849,9 @@ extern Syntax JB_SyxUnit;
 // module: _voidptr_
 
 
+// module: AstUtil_
+
+
 // module: bool_
 
 
@@ -903,9 +906,6 @@ extern Syntax JB_SyxUnit;
 
 
 // module: MsgPos_
-
-
-// module: MessageReadableUtil_
 
 
 // module: Loader_
@@ -1539,6 +1539,13 @@ bool JB_TestCasting();
 // _voidptr
 
 
+// JB_AstUtil
+void JB_AstUtil_Destructor(AstUtil* self);
+
+void JB_AstUtil_UseLayer(AstUtil* self, Message* src);
+
+
+
 // bool
 
 
@@ -1618,14 +1625,9 @@ void JB_LLRef_SyntaxAppend(LLRef* self, JB_LinkedList* L);
 // JB_MessagePosition
 
 
-// JB_MessageReadableUtil
-void JB_MessageReadableUtil_Destructor(MessageReadableUtil* self);
-
-void JB_MessageReadableUtil_UseLayer(MessageReadableUtil* self, Message* src);
-
-
-
 // JB_ObjectLoader
+void JB_Loader_Destructor(ObjectLoader* self);
+
 bool JB_Loader_HasItem(ObjectLoader* self);
 
 int64 JB_Loader_Int(ObjectLoader* self);
@@ -1686,6 +1688,8 @@ int JB_Random__Init_();
 
 
 // JB_StructSaveTest
+void JB_StructSaveTest_Destructor(StructSaveTest* self);
+
 void JB_StructSaveTest_LoadProperties(StructSaveTest* self, ObjectLoader* Loader);
 
 void JB_StructSaveTest_SaveWrite(StructSaveTest* self, ObjectSaver* Saver);
@@ -2336,11 +2340,11 @@ JB_MemoryLayer* JB_Msg_OriginalParseLayer(Message* self);
 
 JB_String* JB_Msg_OriginalParsePath(Message* self);
 
-Message* JB_Msg_ParseReadable(Message* self);
+Message* JB_Msg_ParseAST(Message* self);
+
+void JB_Msg_ParseAST_(Message* self, Message* Src, AstUtil* U);
 
 Message* JB_Msg_PoorAnt(Message* self);
-
-void JB_Msg_ReadableParse_(Message* self, Message* Src, MessageReadableUtil* U);
 
 void JB_Msg_Rel__(Message* self, FastString* fs);
 
@@ -2452,9 +2456,9 @@ void jb_msg_remove(Message* self);
 
 JB_String* jb_msg_render(Message* self);
 
-JB_String* jb_msg_renderreadable(Message* self);
+JB_String* jb_msg_ast(Message* self);
 
-Message* jb_msg_convertreadable(Message* self);
+Message* jb_msg_parseast(Message* self);
 
 Message* jb_msg_copy(Message* self);
 

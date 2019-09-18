@@ -147,8 +147,8 @@ __nodebug Message match(const Syntax& Type, const String& Name=(const char*)0) c
     __nodebug Message copy() const     {return jb_msg_copy(_self);}
     __nodebug String  render() const   {return jb_msg_render(_self);}
     __nodebug Message root() const     {return jb_msg_root(_self);}
-__nodebug String  renderreadable()const {return jb_msg_renderreadable(_self);}
-__nodebug Message convertreadable()const{return jb_msg_convertreadable(_self);}
+__nodebug String  ast()const {return jb_msg_ast(_self);}
+__nodebug Message parseast()const{return jb_msg_parseast(_self);}
 
     __nodebug void    remove()    {return jb_msg_remove(_self);}
     

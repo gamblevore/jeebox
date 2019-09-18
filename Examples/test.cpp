@@ -22,7 +22,7 @@ void ExampleOfGoodJeebox (String S) {
     Message M = S.parse();
     M.render().print();
     msg("You should see a parse-tree!");
-    M.renderreadable().printline();
+    M.ast().printline();
 }
 
 
@@ -70,7 +70,7 @@ void ExampleOfModifyingJeebox (String S) {
     M.render().print();
 
     msg("Lets look at the tree of what we created", 1, 1);
-    M.renderreadable().printline();
+    M.ast().printline();
 }
 
 

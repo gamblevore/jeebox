@@ -85,7 +85,7 @@ void PrintReadable(String A, String Path) {
     } else if (Jeebox::ok()) { // could be a file-read error!
         Message s = A.parse(Path);
         if (Options.readable) {
-            s = s.convertreadable();
+            s = s.parseast();
         }
         if (!Jeebox::ok()) {
             // fall through
@@ -100,7 +100,7 @@ void PrintReadable(String A, String Path) {
                 s.render().printline();
             } else {
                 Whisper(" :: Displaying the parse tree for you! :: \n");
-                s.renderreadable().printline();
+                s.ast().printline();
             }
         }
     }

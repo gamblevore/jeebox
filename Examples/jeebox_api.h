@@ -76,8 +76,8 @@ jbmessage* jb_msg_flatafter(jbmessage* self); /* If you want to loop over all th
 jbmessage* jb_msg_root(jbmessage* self); /* Finds the top-most parent. */
 void jb_msg_remove(jbmessage* self); /* Removes the node from the tree. */
 jbstring* jb_msg_render(jbmessage* self); /* Renders the tree as a string! */
-jbstring* jb_msg_renderreadable(jbmessage* self); /* Renders the structure of the tree in a human-readable format. It's a bit like XML, except it's still Jeebox. Basically useful when you want to get an idea of what the parse-tree contains, and how it's structured. This gives you an idea of how to move across the tree using jb_msg_child/prev/parent/etc and what to look for and what to expect! */
-jbmessage* jb_msg_convertreadable(jbmessage* self); /* Takes the output of jb_msg_render_readable and converts it back into a proper Jeebox tree. You'll have to parse the string first though. So you convert a (readable) string to a (readable) tree, and then convert it into a proper (jeebox) tree. */
+jbstring* jb_msg_ast(jbmessage* self); /* Renders the structure of the tree in a human-readable format. Useful to understand the parse-tree. This gives you an idea of how to move across the tree using jb_msg_child/prev/parent/etc! */
+jbmessage* jb_msg_parseast(jbmessage* self); /* Takes the output of jb_msg_ast and converts it back into a proper Jeebox tree. Used like this: tree = jb_msg_parseast(jb_str_parse(str)). */
 jbmessage* jb_msg_copy(jbmessage* self); /* Copies the node's entire tree structure, positions, names and all. */
 jbmessage* jb_msg_create(jbmessage* self, jbsyntax Type, jbstring* Name); /* Creates a new node with the type and name provided.
     
