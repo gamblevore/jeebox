@@ -731,6 +731,8 @@ extern JB_String* JB_str_307;
 extern JB_String* JB_str_308;
 extern JB_String* JB_str_309;
 extern JB_String* JB_str_31;
+extern JB_String* JB_str_310;
+extern JB_String* JB_str_311;
 extern JB_String* JB_str_32;
 extern JB_String* JB_str_33;
 extern JB_String* JB_str_34;
@@ -811,6 +813,7 @@ extern Syntax JB_SyxAna;
 extern Syntax JB_SyxARel;
 extern Syntax JB_SyxArg;
 extern Syntax JB_SyxArr;
+extern Syntax JB_SyxAsk;
 extern Syntax JB_SyxBack;
 extern Syntax JB_SyxBin;
 extern Syntax JB_SyxBra;
@@ -1434,6 +1437,8 @@ Message* JB_Tk__fOppSyxNeq(int Start);
 Message* JB_Tk__fOppWord(int Start);
 
 Message* JB_Tk__fOppYoda(int Start);
+
+Message* JB_Tk__fQuestion(int Start);
 
 Message* JB_Tk__fSDot(int Start);
 
@@ -2274,6 +2279,8 @@ void JB_Msg_Arg__(Message* self, FastString* fs);
 
 void JB_Msg_Arr__(Message* self, FastString* fs);
 
+void JB_Msg_Ask__(Message* self, FastString* fs);
+
 void JB_Msg_Back__(Message* self, FastString* fs);
 
 void JB_Msg_Bin__(Message* self, FastString* fs);
@@ -2570,7 +2577,8 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
 #define kSyxType 35
 #define kSyxYoda 36
 #define kSyxYopp 37
-#define kSyxBin 38
+#define kSyxAsk 38
+#define kSyxBin 39
 
 
 
@@ -2612,7 +2620,8 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
  "Type = 35" ,\
  "Yoda = 36" ,\
  "Yopp = 37" ,\
- "Bin = 38" ,\
+ "Ask = 38" ,\
+ "Bin = 39" ,\
 
 
 
