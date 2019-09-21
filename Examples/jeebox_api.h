@@ -201,8 +201,12 @@ jbstring* jb_readfile(_cstring path, bool AllowMissingFile); /* Reads entire fil
 #define $cnj 35
 #define JB_SyxType 36;
 #define $type 36
-#define JB_SyxBin 37;
-#define $bin 37
+#define JB_SyxYoda 37;
+#define $yoda 37
+#define JB_SyxYopp 38;
+#define $yopp 38
+#define JB_SyxBin 39;
+#define $bin 39
 
 
 #ifdef __nodebug

@@ -28,7 +28,7 @@ void ExampleOfGoodJeebox (String S) {
 
 void ExampleOfBadJeebox (String S) {
     if (S.parse()) {
-        msg("failed to invalid input.");
+        msg("failed to catch invalid input.");
     } else for (auto Err : Jeebox::errors()) {
         msg("Successfully caught invalid input!", 1, 2);
         Err.name().printline();
@@ -90,10 +90,10 @@ void ExampleOfModifyingJeebox2 (String S) {
     for (int i = 0; i < N; i++) {
         Buff[i] = Name.address()[N-(i+1)]; // reverse string
     }
-    auto NewName = Jeebox::string_owned(Buff,N); // Jeebox will call free() on NewName, when its no longer used.
-    M.first().render().printline();
+    auto NewName = Jeebox::string_owned(Buff, N); // Jeebox will call free() on NewName, when its no longer used.
+    Tmp.render().printline();
     NameMsg.name(NewName); // Name is now reversed.
-    M.render().printline();
+    Tmp.render().printline();
 }
 
 

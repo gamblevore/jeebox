@@ -393,12 +393,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_214)
-#define kJB__ErrorColors_error (JB_str_215)
-#define kJB__ErrorColors_good (JB_str_216)
-#define kJB__ErrorColors_normal (JB_str_213)
-#define kJB__ErrorColors_underline (JB_str_216)
-#define kJB__ErrorColors_warn (JB_str_217)
+#define kJB__ErrorColors_bold (JB_str_216)
+#define kJB__ErrorColors_error (JB_str_217)
+#define kJB__ErrorColors_good (JB_str_218)
+#define kJB__ErrorColors_normal (JB_str_215)
+#define kJB__ErrorColors_underline (JB_str_218)
+#define kJB__ErrorColors_warn (JB_str_219)
 //
 
 
@@ -456,23 +456,24 @@ extern Dictionary* JB__Tk_ErrorNames;
 #define kJB__Tk_FuncAfterNormal (128)
 #define kJB__Tk_FuncAfterNoSpace (256)
 #define kJB__Tk_IllegalChar (0x80000000)
-#define kJB__Tk_notfirstsyxopp (262144)
-#define kJB__Tk_Opp (((512 | 1024) | 2048) | 4096)
+#define kJB__Tk_notfirstsyxopp (524288)
+#define kJB__Tk_Opp ((((512 | 1024) | 2048) | 4096) | 8192)
 #define kJB__Tk_OppBra (512)
 #define kJB__Tk_OppChain (4096 | 512)
 #define kJB__Tk_OppSyx (1024)
 #define kJB__Tk_OppTemporal (2048)
 #define kJB__Tk_OppWord (4096)
+#define kJB__Tk_OppYoda (8192)
 #define kJB__Tk_SyntacticComment (32)
-#define kJB__Tk_Temporal (8192 | 16384)
-#define kJB__Tk_TemporalSyx (8192)
-#define kJB__Tk_TemporalWord (16384)
-#define kJB__Tk_Thing (32768 | 65536)
-#define kJB__Tk_ThingSyx (32768)
-#define kJB__Tk_ThingWord (65536)
-#define kJB__Tk_TmpOpp (2048 | 8192)
-#define kJB__Tk_words_line (131072)
-#define kJB__Tk_LargestFlag (19)
+#define kJB__Tk_Temporal (16384 | 32768)
+#define kJB__Tk_TemporalSyx (16384)
+#define kJB__Tk_TemporalWord (32768)
+#define kJB__Tk_Thing (65536 | 131072)
+#define kJB__Tk_ThingSyx (65536)
+#define kJB__Tk_ThingWord (131072)
+#define kJB__Tk_TmpOpp (2048 | 16384)
+#define kJB__Tk_words_line (262144)
+#define kJB__Tk_LargestFlag (20)
 extern int JB__Tk_StopBars;
 //
 
@@ -492,7 +493,7 @@ extern int JB__Tk_StopBars;
 extern SyntaxObj* JB__FuncArray_[64];
 extern Dictionary* JB__SyxDict_;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_212)
+#define kJB_SaverStart1 (JB_str_214)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -724,6 +725,11 @@ extern JB_String* JB_str_301;
 extern JB_String* JB_str_302;
 extern JB_String* JB_str_303;
 extern JB_String* JB_str_304;
+extern JB_String* JB_str_305;
+extern JB_String* JB_str_306;
+extern JB_String* JB_str_307;
+extern JB_String* JB_str_308;
+extern JB_String* JB_str_309;
 extern JB_String* JB_str_31;
 extern JB_String* JB_str_32;
 extern JB_String* JB_str_33;
@@ -836,6 +842,8 @@ extern Syntax JB_SyxTmp;
 extern Syntax JB_SyxTRel;
 extern Syntax JB_SyxType;
 extern Syntax JB_SyxUnit;
+extern Syntax JB_SyxYoda;
+extern Syntax JB_SyxYopp;
 //
 
 
@@ -1425,6 +1433,8 @@ Message* JB_Tk__fOppSyxNeq(int Start);
 
 Message* JB_Tk__fOppWord(int Start);
 
+Message* JB_Tk__fOppYoda(int Start);
+
 Message* JB_Tk__fSDot(int Start);
 
 Message* JB_Tk__fShebang(int Start);
@@ -1458,6 +1468,8 @@ void JB_Tk__Init();
 int JB_Tk__Init_();
 
 Message* JB_Tk__MakeRel(Message* first, int Bits);
+
+Message* JB_Tk__MakeYoda(Message* first, int Bits, Message* Rel);
 
 int JB_Tk__MessageErrorSub(FastString* fs, int num, int ButFound);
 
@@ -1903,6 +1915,8 @@ inline bool JB_DictionaryReader_SyntaxCastBool(DictionaryReader* self);
 
 // JB_FastString
 void JB_FS_AppendEscape(FastString* self, JB_String* s);
+
+void JB_FS_AppendFastString(FastString* self, FastString* data);
 
 void JB_FS_AppendHexData1(FastString* self, JB_String* Data);
 
@@ -2398,6 +2412,10 @@ void JB_Msg_UnEmbed(Message* self);
 
 void JB_Msg_Unit__(Message* self, FastString* fs);
 
+void JB_Msg_Yoda__(Message* self, FastString* fs);
+
+void JB_Msg_Yopp__(Message* self, FastString* fs);
+
 Message* JB_Msg__Alloc();
 
 SyntaxObj* JB_Msg__GetSyx(Message* msg);
@@ -2550,7 +2568,9 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
 #define kSyxSCnj 33
 #define kSyxCnj 34
 #define kSyxType 35
-#define kSyxBin 36
+#define kSyxYoda 36
+#define kSyxYopp 37
+#define kSyxBin 38
 
 
 
@@ -2590,7 +2610,9 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
  "SCnj = 33" ,\
  "Cnj = 34" ,\
  "Type = 35" ,\
- "Bin = 36" ,\
+ "Yoda = 36" ,\
+ "Yopp = 37" ,\
+ "Bin = 38" ,\
 
 
 

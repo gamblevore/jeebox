@@ -37,6 +37,18 @@ void PrintErrors() {
 }
 
 
+void Whisper (const char* s, bool Quiet) {
+    if (!Quiet) {
+        std::cout << s;
+    }
+}
+
+
+void Whisper (const char* s) {
+    Whisper(s, Options.quiet);
+}
+
+
 void JeeboxToXML (Message M, int Depth=0) {
     for (int i = 0; i < Depth; i++) { // indent
         putchar('\t'); 
@@ -58,18 +70,6 @@ void JeeboxToXML (Message M, int Depth=0) {
     if (!Depth) {
         putchar('\n');
     }
-}
-
-
-
-void Whisper (const char* s, bool Quiet) {
-    if (!Quiet) {
-        std::cout << s;
-    }
-}
-
-void Whisper (const char* s) {
-    Whisper(s, Options.quiet);
 }
 
 

@@ -25,6 +25,7 @@ struct JB_StringExternal;
 JB_String* JB_Str_Realloc(JB_String** u, int Length);
 JB_String* JB_Str_New(int Len);
 JB_String* JB_Str_Render(JB_String* self, FastString* fs);
+JB_String* JB_FS_Render(FastString* self, FastString* fs_in);
 JB_String* JB_Str_FromCString_( const char* c );
 JB_String* JB_Str_ZeroTerm(JB_String* self);
 bool JB_Str_NeedsZeroTerm(JB_String* self);

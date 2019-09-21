@@ -9,7 +9,7 @@
 #define __JB_Str_TOKENISER__
 
 #include "JB_Umbrella.h"
-#define kTokHanSize 22
+#define kTokHanSize 23
 
 
 extern "C" {
@@ -20,7 +20,7 @@ extern "C" {
 	
 	
 	JBClass( TokHan, JB_Object,
-		fpTok			Func[kTokHanSize]; // so far it's 22... doom... doom.
+		fpTok			Func[kTokHanSize];
 		int             BitTypes;
 	);
 	
