@@ -8,19 +8,6 @@
 #include <math.h>
 
 extern "C" {
-    #ifndef AS_LIBRARY
-    int JB_Math_Rnd32() { //overkill for jeebox
-        return rand();
-    }
-    #endif
-    
-    int JB_Rand() {
-        static int CRC = 0;
-        int Result = __builtin_ia32_crc32si(CRC, 0); // random numbers
-        CRC = Result;
-        return Result;
-    }
-    
     double JB_Dlb_Max(double A, double B) {
         return fmax(A, B);
     }
@@ -99,5 +86,18 @@ extern "C" {
         x = x ^ (x >> 31);
         return x;
     }
+
+    #ifndef AS_LIBRARY
+    int JB_Math_Rnd32() { //overkill for jeebox
+        return rand();
+    }
+    #endif
+    
+    int JB_Rand() {
+        static int Value = 123;
+        Value = JB_uint_hash(Value);
+        return Value;
+    }
 }
+
 

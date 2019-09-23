@@ -392,7 +392,8 @@ Range CurrRange_(Dictionary* Found) {
             }
 
             // OK so... it's from i to Last. seems OK?
-            return { Found->Start + i, Found->Start + Last };
+            Range Result = { Found->Start + i, Found->Start + Last };
+            return Result; // cant put on one line...
         }
     }
 
@@ -644,7 +645,8 @@ JB_Object* JB_Dict_Scan_(Dictionary* self, MiniStr Data, MiniStr* Result) {
     u8* ReadEnd = Read + Data.Length;
     
     for ( ; Read < ReadEnd; Read++ ) {
-        ObjLength Found = JB_Dict_LongestKey_( self, {(int)(ReadEnd-Read), Read} );
+        MiniStr Key = {(int)(ReadEnd-Read), Read}; // cant nest this (for emcc)
+        ObjLength Found = JB_Dict_LongestKey_( self, Key );
         if ( Found.Obj ) {
             Result->Addr = Read;
             Result->Length = Found.Length;

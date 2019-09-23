@@ -508,10 +508,10 @@ int JB_Str_Scan_BadUTF8AtEnd(JB_String* u) {
 
 static const u8 EscapeTable_[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz._";
 
-void JB_FS_AppendHexSub(FastString* fs, int tVal, int RoundTo, const u8* CharMap);
+void JB_FS_AppendHexSub(FastString* fs, int64 tVal, int RoundTo, const u8* CharMap);
 void JB_FS_AppendHexData( FastString* fs, u8* Addr, int Len );
 
-void JB_FS_AppendHex(FastString* fs, int tVal, int RoundTo) {
+void JB_FS_AppendHex(FastString* fs, int64 tVal, int RoundTo) {
     JB_FS_AppendHexSub(fs, tVal, RoundTo, EscapeTable_);
 }
 

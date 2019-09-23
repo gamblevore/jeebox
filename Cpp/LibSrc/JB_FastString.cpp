@@ -221,18 +221,19 @@ void JB_FS_AppendUTF8Char(FastString* self, int Char) {
 
 // this function must be able to write hex, in varying outputs.
 
-void JB_FS_AppendHexSub(FastString* fs, int tVal, int RoundTo, u8* CharMap) {
+void JB_FS_AppendHexSub(FastString* fs, int64 tVal, int RoundTo, u8* CharMap) {
 	if (RoundTo < 1) {RoundTo = 1;}
     if (RoundTo > 8) {RoundTo = 8;} // invalid input!
 	if (!tVal) {
 		JB_FS_AppendMultiByte(fs, CharMap[0], RoundTo);
 		return;
 	}
-	u8* wp = JB_FS_WriteAlloc_(fs, 8);
 
+	u8* wp = JB_FS_WriteAlloc_(fs, 8);
 	if (wp) {
 		u8* wpStart = wp;
 		u32 Val = (u32)tVal;
+        // replace with JB_u64_Log2 later...
 		int SignificantBytes = 8;
 		while (!(Val & 0xF0000000) ) { // soon as we find the half-byte, we exit!
 			SignificantBytes--;
@@ -254,9 +255,9 @@ void JB_FS_AppendHexSub(FastString* fs, int tVal, int RoundTo, u8* CharMap) {
 			*wp++ = CharMap[currWrite];
 			Val <<= 4;
 		}
-
 		JB_FS_AdjustLength_( fs, 8, (int)(wp - wpStart) );
 	}
+    
     FS_CheckLast(fs);
 }
 
@@ -273,6 +274,7 @@ void JB_FS_AppendMultiReplace(FastString* self, JB_String* Data, Dictionary* MSR
 void JB_FS_AppendLower(FastString* fs, JB_String* Data) {
     JB_FS_AppendByteMap(fs, Data, JB_BM__Lower());
 }
+
 
 void JB_FS_AppendByteMap(FastString* fs, JB_String* Data, ByteMap* BM) {
 	if ( !BM or !Data ) {
@@ -312,6 +314,7 @@ void JB_FS_AppendHexData( FastString* fs, u8* Addr, int Len ) {
 	}
     FS_CheckLast(fs);
 }
+
 
 void JB_Str_UnHexRaw(JB_String* Str, u8* Write, int N) {
     // So... two bytes of this, become 1 of the other...
@@ -388,9 +391,11 @@ void JB_FS_AppendDate(FastString* self, Date D) {
     // maybe convert to a double and render it?
 }
 
+
 void JB_FS_AppendDoubleAsText0(FastString* self, double D) {
     JB_FS_AppendDoubleAsText(self, D, 0);
 }
+
 
 void JB_FS_AppendDoubleAsText(FastString* self, double D, u8* fmt) {
     const int Max = 64;
@@ -401,8 +406,6 @@ void JB_FS_AppendDoubleAsText(FastString* self, double D, u8* fmt) {
     int Used = snprintf((char*)wp, Max, (const char*)fmt, D);
     JB_FS_AdjustLength_( self, Max, Min(Used, Max) );
 }
-
-
 
 
 void JB_FS_AppendShort(FastString* self, int s) {

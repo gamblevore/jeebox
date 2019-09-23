@@ -3,6 +3,7 @@
 	Copyright (C) 2015 Theodore H. Smith.
 */
 
+#ifndef AS_LIBRARY
 #ifndef __JB_Vectors__
 #define __JB_Vectors__
 #include  <nmmintrin.h>
@@ -24,4 +25,4 @@ inline int  __attribute__((__always_inline__)) JB_FloatAsInt (float F) {
 }
 
 #endif
-
+#endif

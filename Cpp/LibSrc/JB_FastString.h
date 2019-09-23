@@ -73,7 +73,7 @@ void JB_FS_AppendUTF8Char(FastString* self, int Char);
 void JB_FS_AppendDoubleAsText0(FastString* self, double D);
 void JB_FS_AppendDoubleAsText(FastString* self, double D, u8* fmt);
 int JB_FS_Byte(FastString* self, int offset);
-void JB_FS_AppendHex(FastString* self, int tVal, int PadTo);
+void JB_FS_AppendHex(FastString* self, int64 tVal, int PadTo);
 void JB_FS_AppendHexData(FastString* fs, u8* Addr, int N);
 void JB_FS_AppendHex3(FastString* fs, int tVal);
 void JB_FS_AppendIntegerAsText(FastString* self, s64 LeftOver, int RoundTo);
