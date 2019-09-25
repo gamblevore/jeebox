@@ -25,6 +25,10 @@ extern "C" {
 
 
 
+void OutOfMem_(Array*self, int Count=0) {
+    JB_OutOfUserMemory(((int)(self->Vec.size())+Count)*sizeof(void*));
+}
+
 void JB_Array_AppendCount( Array* self, JB_Object* Value, int Count ) {
     try {
         while (Count-- > 0) {
@@ -32,7 +36,16 @@ void JB_Array_AppendCount( Array* self, JB_Object* Value, int Count ) {
             JB_Incr(Value);
         }
     } catch (const std::bad_alloc&) {
-        JB_OutOfUserMemory((self->Vec.size()+Count)*sizeof(void*));
+        OutOfMem_(self);
+    }
+}
+
+void JB_Array_Append( Array* self, JB_Object* Value ) {
+    try {
+        self->Vec.push_back(Value);
+        JB_Incr(Value);
+    } catch (const std::bad_alloc&) {
+        OutOfMem_(self);
     }
 }
 
@@ -41,14 +54,14 @@ void JB_Array_Insert( Array* self, int Pos, JB_Object* Value ) {
         self->Vec.insert(self->Vec.begin()+Pos, 1, Value);
         JB_Incr(Value);
     } catch (const std::bad_alloc&) {
-        JB_OutOfUserMemory((self->Vec.size()+1)*sizeof(void*));
+        OutOfMem_(self);
     }
 }
 
 
 void JB_Array_SizeSet( Array* self, int NewLength ) {
     require0(self);
-    int Length = self->Vec.size();
+    int Length = (int)(self->Vec.size());
     int Extra = NewLength - Length;
     require0(Extra); 
     if (Extra < 0) {
@@ -87,12 +100,8 @@ JB_String* JB_Array_Render(Array* self, FastString* fs_in) {
 
 
 
-void JB_Array_Append( Array* self, JB_Object* Value ) {
-    JB_Array_AppendCount(self, Value, 1);
-}
-
 void JB_Array_Reverse( Array* self ) {
-    int n = self->Vec.size();
+    int n = (int)(self->Vec.size());
     auto F = self->Vec.begin();
     for (int i = 0; i < n/2; i++) {
         F[i] = F[n-(i+1)];
@@ -115,7 +124,7 @@ void JB_Array_Destructor( Array* self ) {
 
 int JB_Array_Size( Array* self ) {
     if (self) {
-        return self->Vec.size();
+        return (int)(self->Vec.size());
     }
     return 0;
 }
@@ -123,7 +132,7 @@ int JB_Array_Size( Array* self ) {
 
 void JB_Array_Constructor( Array* self, int Length ) {
     auto Place = &self->Vec;
-    auto f = new (Place) std::vector<JB_Object*>(); 
+    new (Place) std::vector<JB_Object*>();
     if (Length >= 1) {
         JB_Array_SizeSet(self, Length);
     }
