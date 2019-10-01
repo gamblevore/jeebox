@@ -2413,6 +2413,8 @@ Message* JB_Msg_AccessSyxName(Message* self, Syntax s, JB_String* name, bool Err
 
 Message* JB_Msg_AccessNumErr(Message* self, Syntax s, int i, bool Err);
 
+Message* JB_Msg_ExpectNumErr(Message* self, Syntax s, int i);
+
 bool JB_Msg_SyntaxEquals(Message* self, JB_String* name, bool Aware);
 
 bool JB_Msg_SyxOppEquals(Message* self, Syntax X, bool Aware);
