@@ -393,12 +393,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_222)
-#define kJB__ErrorColors_error (JB_str_223)
-#define kJB__ErrorColors_good (JB_str_224)
-#define kJB__ErrorColors_normal (JB_str_221)
-#define kJB__ErrorColors_underline (JB_str_224)
-#define kJB__ErrorColors_warn (JB_str_225)
+#define kJB__ErrorColors_bold (JB_str_223)
+#define kJB__ErrorColors_error (JB_str_224)
+#define kJB__ErrorColors_good (JB_str_225)
+#define kJB__ErrorColors_normal (JB_str_222)
+#define kJB__ErrorColors_underline (JB_str_225)
+#define kJB__ErrorColors_warn (JB_str_226)
 //
 
 
@@ -444,13 +444,13 @@ extern JB_String* JB__Tk_Data;
 extern Message* JB__Tk_ErrNode;
 extern Dictionary* JB__Tk_ErrorNames;
 #define kJB__Tk_adjectiveop (1)
-#define kJB__Tk_Allow (0)
+#define kJB__Tk_Allow (false)
 #define kJB__Tk_bracketstart (2)
 #define kJB__Tk_colon (4)
 #define kJB__Tk_End ((8 | 16) | 32)
 #define kJB__Tk_EndContainer (16)
 #define kJB__Tk_EndOfLine (8)
-#define kJB__Tk_Expect (1)
+#define kJB__Tk_Expect (true)
 #define kJB__Tk_FuncAfterAny ((64 | 128) | 256)
 #define kJB__Tk_FuncAfterBar (64)
 #define kJB__Tk_FuncAfterNormal (128)
@@ -493,7 +493,7 @@ extern int JB__Tk_StopBars;
 extern SyntaxObj* JB__FuncArray_[64];
 extern Dictionary* JB__SyxDict_;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_220)
+#define kJB_SaverStart1 (JB_str_221)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -742,6 +742,7 @@ extern JB_String* JB_str_317;
 extern JB_String* JB_str_318;
 extern JB_String* JB_str_319;
 extern JB_String* JB_str_32;
+extern JB_String* JB_str_320;
 extern JB_String* JB_str_33;
 extern JB_String* JB_str_34;
 extern JB_String* JB_str_35;
@@ -1372,7 +1373,7 @@ JB_String* JB_Constants__Test();
 // Tk
 Message* JB_Tk__BarThings(int Start, Syntax Syx);
 
-Message* JB_Tk__BeforeRelSub(int Start, int Mode);
+Message* JB_Tk__BeforeRelSub(int Start, bool Mode);
 
 Message* JB_Tk__ChainTemporalRels(Message* FirstThing, Message* opp);
 
@@ -1520,7 +1521,7 @@ bool JB_Tk__ParseLoop(Message* Output, JB_String* Ender);
 
 bool JB_Tk__ParseLoopMode(Message* Output, int Flags);
 
-Message* JB_Tk__ProcessThing(int Ops, int Expect);
+Message* JB_Tk__ProcessThing(int Ops, bool Expect);
 
 Message* JB_Tk__ReRoute(Message* cnj, Message* output);
 
