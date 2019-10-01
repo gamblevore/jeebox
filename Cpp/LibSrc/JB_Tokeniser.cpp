@@ -95,11 +95,26 @@ byte JB_Tk__NextByte() {
     return 0;
 }
 
-bool JB_Tk__GetNextByte(byte b) {
-    if ((bool)(JB_Tk__NextByte() == b)) {
-        self->NextStart++;
-        return true;
+
+bool JB_Tk__EatString(JB_String* S) {
+    byte* DataAddr = JB__Tk_Data->Addr; 
+    if (DataAddr) {
+        int SLength = S->Length;
+        int DataPos = self->NextStart; 
+        if (DataPos + SLength <= JB__Tk_Data->Length) {   
+            DataAddr += DataPos; 
+
+            for (int i = 0; i < SLength; i++) {
+                if (DataAddr[i] != S->Addr[i]) {
+                    return false;
+                }
+            }
+
+            self->NextStart += SLength;
+            return true;
+        }
     }
+    
     return false;
 }
 
@@ -117,6 +132,7 @@ int JB_Tk__NextStart(  ) {
     return self->NextStart;
 }
 
+
 void JB_Tk__StartParse( JB_String* Data ) {
 	if ( ! Data ) {
 		Data = JB_Str_Empty();
@@ -127,6 +143,7 @@ void JB_Tk__StartParse( JB_String* Data ) {
 	self->NextStart = 0;
 	self->ErrorStart = -1;
 }
+
 
 void SetBits_(TokHan* T, u32 BitTypes, fpTok Func) {
     if (!Func) {
@@ -161,6 +178,7 @@ TokHan* JB_Tk__Token(JB_String* s) {
     return (TokHan*)JB_Dict_Value(self->WordDict, s, 0);
 }
 
+
 void JB_Tk__TokenSet( JB_String* TokStr, TokHan* New_ ) {
     if (!New_) {
         return;
@@ -186,7 +204,6 @@ void JB_Tk__TokenSet( JB_String* TokStr, TokHan* New_ ) {
     }
     JB_SetRef_(Place, New_);
 }
-
 
 
 inline fpTok FindBits_( TokHan* FatData, u32 AskBits ) {
@@ -289,6 +306,7 @@ bool JB_Tk__Allow( u32 AskBits ) {
 	return JB_FreeIfDead(JB_Tk__Process( AskBits, 0 ));
 }
 
+
 bool JB_Tk__Consume( u32 AskBits, int Expect ) {
 	bool FoundAny = false;
 	while ( JB_FreeIfDead(JB_Tk__Process( AskBits, Expect ) ) ) {
@@ -333,6 +351,7 @@ TokHan* JB_TH_Link(TokHan* T, u32 BitTypes, fpTok Func) {
 	SetBits_( T, BitTypes, Func );
     return T;
 }
+
     
 TokHan* JB_Tk__Handler( int BitTypes, fpTok Func ) {
     return JB_TH_Link( JB_NewEmpty( TokHan ), BitTypes, Func );

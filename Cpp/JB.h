@@ -393,12 +393,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_215)
-#define kJB__ErrorColors_error (JB_str_216)
-#define kJB__ErrorColors_good (JB_str_217)
-#define kJB__ErrorColors_normal (JB_str_214)
-#define kJB__ErrorColors_underline (JB_str_217)
-#define kJB__ErrorColors_warn (JB_str_218)
+#define kJB__ErrorColors_bold (JB_str_222)
+#define kJB__ErrorColors_error (JB_str_223)
+#define kJB__ErrorColors_good (JB_str_224)
+#define kJB__ErrorColors_normal (JB_str_221)
+#define kJB__ErrorColors_underline (JB_str_224)
+#define kJB__ErrorColors_warn (JB_str_225)
 //
 
 
@@ -493,7 +493,7 @@ extern int JB__Tk_StopBars;
 extern SyntaxObj* JB__FuncArray_[64];
 extern Dictionary* JB__SyxDict_;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_213)
+#define kJB_SaverStart1 (JB_str_220)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -732,6 +732,15 @@ extern JB_String* JB_str_308;
 extern JB_String* JB_str_309;
 extern JB_String* JB_str_31;
 extern JB_String* JB_str_310;
+extern JB_String* JB_str_311;
+extern JB_String* JB_str_312;
+extern JB_String* JB_str_313;
+extern JB_String* JB_str_314;
+extern JB_String* JB_str_315;
+extern JB_String* JB_str_316;
+extern JB_String* JB_str_317;
+extern JB_String* JB_str_318;
+extern JB_String* JB_str_319;
 extern JB_String* JB_str_32;
 extern JB_String* JB_str_33;
 extern JB_String* JB_str_34;
@@ -826,6 +835,7 @@ extern Syntax JB_SyxERel;
 extern Syntax JB_SyxFunc;
 extern Syntax JB_SyxItem;
 extern Syntax JB_SyxList;
+extern Syntax JB_SyxMsgl;
 extern Syntax JB_SyxName;
 extern Syntax JB_SyxNum;
 extern Syntax JB_SyxOat;
@@ -895,6 +905,14 @@ extern Syntax JB_SyxYopp;
 
 
 
+// module: int16_
+#define kJB__int16_max (0x7fff)
+#define kJB__int16_min (0x8000)
+//
+
+
+
+
 // module: int64_
 
 
@@ -940,14 +958,6 @@ extern Random JB__Random_Shared;
 
 
 
-// module: s16_
-#define kJB__s16_max (0x7fff)
-#define kJB__s16_min (0x8000)
-//
-
-
-
-
 // module: s8_
 #define kJB__s8_max (0x7f)
 #define kJB__s8_min (0x80)
@@ -957,14 +967,6 @@ extern Random JB__Random_Shared;
 
 
 // module: StructSaveTest_
-
-
-// module: u16_
-#define kJB__u16_max (0xffff)
-#define kJB__u16_min (0)
-//
-
-
 
 
 // module: u8_
@@ -978,6 +980,14 @@ extern Random JB__Random_Shared;
 // module: uint_
 #define kJB__uint_max (0xffffFFFF)
 #define kJB__uint_min (0)
+//
+
+
+
+
+// module: uint16_
+#define kJB__uint16_max (0xffff)
+#define kJB__uint16_min (0)
 //
 
 
@@ -1031,6 +1041,7 @@ extern Random JB__Random_Shared;
 #define kJB__DataTypeCode_Float (0 + (32 + (64 + 128)))
 #define kJB__DataTypeCode_HFloat (0 + (16 + (64 + 128)))
 #define kJB__DataTypeCode_Int (0 + (32 + (64 + 0)))
+#define kJB__DataTypeCode_int16 (0 + (16 + (64 + 0)))
 #define kJB__DataTypeCode_int64 (0 + (48 + (64 + 0)))
 #define kJB__DataTypeCode_iPoint2 (1 + (32 + (64 + 0)))
 #define kJB__DataTypeCode_iPoint3 (2 + (32 + (64 + 0)))
@@ -1043,7 +1054,7 @@ extern Random JB__Random_Shared;
 #define kJB__DataTypeCode_Point2 (1 + (32 + (64 + 128)))
 #define kJB__DataTypeCode_Point3 (2 + (32 + (64 + 128)))
 #define kJB__DataTypeCode_Point4 (3 + (32 + (64 + 128)))
-#define kJB__DataTypeCode_s16 (0 + (16 + (64 + 0)))
+#define kJB__DataTypeCode_s16 (kJB__DataTypeCode_int16)
 #define kJB__DataTypeCode_s16x2 (1 + (16 + (64 + 0)))
 #define kJB__DataTypeCode_s16x3 (2 + (16 + (64 + 0)))
 #define kJB__DataTypeCode_s16x4 (3 + (16 + (64 + 0)))
@@ -1054,11 +1065,12 @@ extern Random JB__Random_Shared;
 #define kJB__DataTypeCode_SByte3 (2 + (0 + (64 + 0)))
 #define kJB__DataTypeCode_SByte4 (3 + (0 + (64 + 0)))
 extern Dictionary* JB__DataTypeCode_Types_Dict;
-#define kJB__DataTypeCode_u16 (0 + (16 + (0 + 0)))
+#define kJB__DataTypeCode_u16 (kJB__DataTypeCode_uint16)
 #define kJB__DataTypeCode_u32 (kJB__DataTypeCode_UInt)
 #define kJB__DataTypeCode_u64 (kJB__DataTypeCode_uint64)
 #define kJB__DataTypeCode_u8 (0)
 #define kJB__DataTypeCode_UInt (0 + (32 + (0 + 0)))
+#define kJB__DataTypeCode_uint16 (0 + (16 + (0 + 0)))
 #define kJB__DataTypeCode_uint64 (0 + (48 + (0 + 0)))
 #define kJB__DataTypeCode_UnusedType (128)
 #define kJB__DataTypeCode_Vec2 (1 + (32 + (64 + 128)))
@@ -1295,6 +1307,7 @@ extern bool JB__FAP_Tested;
 
 
 // module: Rec_
+extern bool JB__Rec_BreakOnError;
 #define kJB__Rec_iswarning (1)
 #define kJB__Rec_printcount (2)
 #define kJB__Rec_LargestFlag (2)
@@ -1377,7 +1390,7 @@ void JB_Tk__ErrorEvent2(int Start, int ExpectedBits, int RealBits);
 
 void JB_Tk__ErrorLetter(int Start);
 
-bool JB_Tk__ExpectEndChar(byte s, bool Expect);
+bool JB_Tk__ExpectEndChar(JB_String* s, bool Expect);
 
 Message* JB_Tk__fAccess(int Start);
 
@@ -1422,6 +1435,8 @@ Message* JB_Tk__fError(int Start);
 Message* JB_Tk__fFuncCall(int Start);
 
 int JB_Tk__FindError(int num);
+
+Message* JB_Tk__fMsgList(int Start);
 
 Message* JB_Tk__fNumber(int Start);
 
@@ -1501,7 +1516,7 @@ void JB_Tk__Params(Message* Parent, int N);
 
 Message* JB_Tk__ParseItem(Message* ch, int TemporalFlags);
 
-bool JB_Tk__ParseLoop(Message* Output, byte Ender);
+bool JB_Tk__ParseLoop(Message* Output, JB_String* Ender);
 
 bool JB_Tk__ParseLoopMode(Message* Output, int Flags);
 
@@ -1604,6 +1619,9 @@ JB_String* JB_int_RenderZeros(int self, int zeros, FastString* fs_in);
 
 
 
+// int16
+
+
 // int64
 JB_String* JB_int64_Render(int64 self, FastString* fs_in);
 
@@ -1693,9 +1711,6 @@ int JB_Random__Init_();
 
 
 
-// s16
-
-
 // s8
 
 
@@ -1708,13 +1723,13 @@ void JB_StructSaveTest_SaveWrite(StructSaveTest* self, ObjectSaver* Saver);
 
 
 
-// u16
-
-
 // u8
 
 
 // uint
+
+
+// uint16
 
 
 // uint64
@@ -2240,6 +2255,8 @@ JB_ErrorReceiver* JB_Rec__Alloc();
 
 JB_String* JB_Rec__ErrorType(bool IsWarning);
 
+int JB_Rec__Init_();
+
 JB_ErrorReceiver* JB_Rec__New();
 
 void JB_Rec__PrintErrors();
@@ -2337,6 +2354,8 @@ JB_String* JB_Msg_Locate(Message* self);
 JB_String* JB_Msg_MakeReadable(Message* self, FastString* fs_in);
 
 JB_String* JB_Msg_MakeReadableSpaces(Message* self, int Spaces);
+
+void JB_Msg_Msgl__(Message* self, FastString* fs);
 
 void JB_Msg_Name__(Message* self, FastString* fs);
 
@@ -2577,7 +2596,8 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
 #define kSyxYoda 36
 #define kSyxYopp 37
 #define kSyxAsk 38
-#define kSyxBin 39
+#define kSyxMsgl 39
+#define kSyxBin 40
 
 
 
@@ -2620,7 +2640,8 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
  "Yoda = 36" ,\
  "Yopp = 37" ,\
  "Ask = 38" ,\
- "Bin = 39" ,\
+ "Msgl = 39" ,\
+ "Bin = 40" ,\
 
 
 

@@ -47,7 +47,8 @@ extern "C" {
 	void JB_Tk__TokenSet( JB_String* TokStr, TokHan* Stuff );
     TokHan* JB_Tk__Token(JB_String* s);
     byte JB_Tk__NextByte();
-    bool JB_Tk__GetNextByte(byte b);
+    bool JB_Tk__EatByte(byte b);
+    bool JB_Tk__EatString(JB_String* s);
     bool JB_Tk__CppInited();    
     JB_String* JB_Tk__Data();
 	void JB_Tk__StartParse( JB_String* Data );
