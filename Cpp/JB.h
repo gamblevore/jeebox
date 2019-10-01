@@ -393,12 +393,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_223)
-#define kJB__ErrorColors_error (JB_str_224)
-#define kJB__ErrorColors_good (JB_str_225)
-#define kJB__ErrorColors_normal (JB_str_222)
-#define kJB__ErrorColors_underline (JB_str_225)
-#define kJB__ErrorColors_warn (JB_str_226)
+#define kJB__ErrorColors_bold (JB_str_222)
+#define kJB__ErrorColors_error (JB_str_223)
+#define kJB__ErrorColors_good (JB_str_224)
+#define kJB__ErrorColors_normal (JB_str_221)
+#define kJB__ErrorColors_underline (JB_str_224)
+#define kJB__ErrorColors_warn (JB_str_225)
 //
 
 
@@ -466,12 +466,12 @@ extern Dictionary* JB__Tk_ErrorNames;
 #define kJB__Tk_OppYoda (8192)
 #define kJB__Tk_SyntacticComment (32)
 #define kJB__Tk_Temporal (16384 | 32768)
-#define kJB__Tk_TemporalSyx (16384)
-#define kJB__Tk_TemporalWord (32768)
+#define kJB__Tk_TemporalSyx (32768)
+#define kJB__Tk_TemporalWord (16384)
 #define kJB__Tk_Thing (65536 | 131072)
 #define kJB__Tk_ThingSyx (65536)
 #define kJB__Tk_ThingWord (131072)
-#define kJB__Tk_TmpOpp (2048 | 16384)
+#define kJB__Tk_TmpOpp (2048 | 32768)
 #define kJB__Tk_words_line (262144)
 #define kJB__Tk_LargestFlag (20)
 extern int JB__Tk_StopBars;
@@ -493,7 +493,7 @@ extern int JB__Tk_StopBars;
 extern SyntaxObj* JB__FuncArray_[64];
 extern Dictionary* JB__SyxDict_;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_221)
+#define kJB_SaverStart1 (JB_str_220)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -742,7 +742,6 @@ extern JB_String* JB_str_317;
 extern JB_String* JB_str_318;
 extern JB_String* JB_str_319;
 extern JB_String* JB_str_32;
-extern JB_String* JB_str_320;
 extern JB_String* JB_str_33;
 extern JB_String* JB_str_34;
 extern JB_String* JB_str_35;
