@@ -207,8 +207,8 @@ jbstring* jb_readfile(_cstring path, bool AllowMissingFile); /* Reads entire fil
 #define $yopp 38
 #define JB_SyxAsk 39;
 #define $ask 39
-#define JB_SyxMsgl 40;
-#define $msgl 40
+#define JB_SyxMsg 40;
+#define $msg 40
 #define JB_SyxBin 41;
 #define $bin 41
 

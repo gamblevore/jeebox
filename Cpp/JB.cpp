@@ -408,7 +408,7 @@ __lib__ Syntax JB_SyxERel;
 __lib__ Syntax JB_SyxFunc;
 __lib__ Syntax JB_SyxItem;
 __lib__ Syntax JB_SyxList;
-__lib__ Syntax JB_SyxMsgl;
+__lib__ Syntax JB_SyxMsg;
 __lib__ Syntax JB_SyxName;
 __lib__ Syntax JB_SyxNum;
 __lib__ Syntax JB_SyxOat;
@@ -1241,7 +1241,7 @@ int JB_Tk__FindError(int num) {
 }
 
 Message* JB_Tk__fMsgList(int Start) {
-	Message* Result = JB_Incr(JB_Tk__NewParent0(nil, JB_SyxMsgl, Start));
+	Message* Result = JB_Incr(JB_Tk__NewParent0(nil, JB_SyxMsg, Start));
 	JB_Tk__ParseLoop(Result, JB_str_73);
 	JB_SafeDecr(Result);
 	return Result;
@@ -2158,7 +2158,7 @@ int JB_Init_() {
 		JB_SetRef(JB_str_319, JB_Str3("Binary", 6));
 		JB_SetRef(JB_str_318, JB_Str3("bin", 3));
 		JB_SetRef(JB_str_317, JB_Str3("Message_List", 12));
-		JB_SetRef(JB_str_316, JB_Str3("msgl", 4));
+		JB_SetRef(JB_str_316, JB_Str3("msg", 3));
 		JB_SetRef(JB_str_315, JB_Str3("Question", 8));
 		JB_SetRef(JB_str_314, JB_Str3("ask", 3));
 		JB_SetRef(JB_str_313, JB_Str3("yopp", 4));
@@ -2515,7 +2515,7 @@ int JB_Init_() {
 		JB_SyxYoda = JB_Syntax__StdNew(JB_Msg_Yoda__, JB_str_311, JB_str_312);
 		JB_SyxYopp = JB_Syntax__StdNew(JB_Msg_Yopp__, JB_str_313, JB_str_0);
 		JB_SyxAsk = JB_Syntax__StdNew(JB_Msg_Ask__, JB_str_314, JB_str_315);
-		JB_SyxMsgl = JB_Syntax__StdNew(JB_Msg_Msgl__, JB_str_316, JB_str_317);
+		JB_SyxMsg = JB_Syntax__StdNew(JB_Msg_Msg__, JB_str_316, JB_str_317);
 		JB_SyxBin = JB_Syntax__StdNew(JB_Msg_Bin__, JB_str_318, JB_str_319);
 	};
 	//// JB_API;
@@ -4971,7 +4971,7 @@ JB_String* JB_Msg_MakeReadableSpaces(Message* self, int Spaces) {
 	return _tmp;
 }
 
-void JB_Msg_Msgl__(Message* self, FastString* fs) {
+void JB_Msg_Msg__(Message* self, FastString* fs) {
 	JB_FS_AppendString(fs, JB_str_72);
 	JB_Msg_FSListSep(self, fs, JB_str_59);
 	JB_FS_AppendString(fs, JB_str_73);

@@ -835,7 +835,7 @@ extern Syntax JB_SyxERel;
 extern Syntax JB_SyxFunc;
 extern Syntax JB_SyxItem;
 extern Syntax JB_SyxList;
-extern Syntax JB_SyxMsgl;
+extern Syntax JB_SyxMsg;
 extern Syntax JB_SyxName;
 extern Syntax JB_SyxNum;
 extern Syntax JB_SyxOat;
@@ -2355,7 +2355,7 @@ JB_String* JB_Msg_MakeReadable(Message* self, FastString* fs_in);
 
 JB_String* JB_Msg_MakeReadableSpaces(Message* self, int Spaces);
 
-void JB_Msg_Msgl__(Message* self, FastString* fs);
+void JB_Msg_Msg__(Message* self, FastString* fs);
 
 void JB_Msg_Name__(Message* self, FastString* fs);
 
@@ -2596,7 +2596,7 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
 #define kSyxYoda 36
 #define kSyxYopp 37
 #define kSyxAsk 38
-#define kSyxMsgl 39
+#define kSyxMsg 39
 #define kSyxBin 40
 
 
@@ -2640,7 +2640,7 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
  "Yoda = 36" ,\
  "Yopp = 37" ,\
  "Ask = 38" ,\
- "Msgl = 39" ,\
+ "Msg = 39" ,\
  "Bin = 40" ,\
 
 
