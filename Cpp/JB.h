@@ -102,6 +102,8 @@ struct DataTypeWrapper_Behaviour;
 
 struct Allocation_Behaviour;
 
+struct oof_Behaviour;
+
 struct RingTree_Behaviour;
 
 struct SaverClassInfo_Behaviour;
@@ -133,6 +135,8 @@ struct JB_File;
 struct LeakTester;
 
 struct JB_MemoryLayer;
+
+struct oof;
 
 struct Saveable;
 
@@ -274,6 +278,13 @@ JBClass ( LeakTester , JB_Object ,
 struct MemoryLayer_Behaviour: Object_Behaviour {
 };
 
+struct oof_Behaviour: Object_Behaviour {
+};
+
+JBClass ( oof , JB_Object , 
+	LLRef fuck;
+);
+
 struct Saveable_Behaviour: Object_Behaviour {
 	__Saveable_LoadProperties__ loadproperties;
 	__Saveable_SaveCollect__ savecollect;
@@ -393,12 +404,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_222)
-#define kJB__ErrorColors_error (JB_str_223)
-#define kJB__ErrorColors_good (JB_str_224)
-#define kJB__ErrorColors_normal (JB_str_221)
-#define kJB__ErrorColors_underline (JB_str_224)
-#define kJB__ErrorColors_warn (JB_str_225)
+#define kJB__ErrorColors_bold (JB_str_224)
+#define kJB__ErrorColors_error (JB_str_225)
+#define kJB__ErrorColors_good (JB_str_226)
+#define kJB__ErrorColors_normal (JB_str_223)
+#define kJB__ErrorColors_underline (JB_str_226)
+#define kJB__ErrorColors_warn (JB_str_227)
 //
 
 
@@ -493,7 +504,7 @@ extern int JB__Tk_StopBars;
 extern SyntaxObj* JB__FuncArray_[64];
 extern Dictionary* JB__SyxDict_;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_220)
+#define kJB_SaverStart1 (JB_str_222)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -742,6 +753,8 @@ extern JB_String* JB_str_317;
 extern JB_String* JB_str_318;
 extern JB_String* JB_str_319;
 extern JB_String* JB_str_32;
+extern JB_String* JB_str_320;
+extern JB_String* JB_str_321;
 extern JB_String* JB_str_33;
 extern JB_String* JB_str_34;
 extern JB_String* JB_str_35;
@@ -1136,6 +1149,9 @@ extern int JB__Syntax_CurrFuncID;
 // module: Allocation_Behaviour_
 
 
+// module: oof_Behaviour_
+
+
 // module: RingTree_Behaviour_
 
 
@@ -1202,6 +1218,9 @@ extern FastString* JB__FS_StdOutFS;
 
 
 // module: Mem_
+
+
+// module: oof_
 
 
 // module: Pipe_
@@ -1544,7 +1563,15 @@ bool JB_Platform__linux();
 
 
 // main
+void JB_BadRefCounts();
+
 void JB_BinaryEscapeTest(JB_String* AllBytes);
+
+JB_Object* JB_brc1(JB_Object* a);
+
+JB_Object* JB_brc2(JB_Object* a);
+
+JB_Object* JB_brc3(JB_Object* a);
 
 bool JB_CompareError(Message* expected, Message* found);
 
@@ -1553,6 +1580,8 @@ Dictionary* JB_Dict_Copy(Dictionary* Dict);
 JB_String* JB_EntityTest();
 
 int JB_Init_();
+
+void JB_ObjTest();
 
 void JB_Obj_PrintLine(JB_Object* o);
 
@@ -1848,6 +1877,9 @@ Syntax JB_Syntax__StdNew(fpMsgRender msg, JB_String* name, JB_String* LongName);
 // JB_Allocation_Behaviour
 
 
+// JB_oof_Behaviour
+
+
 // JB_RingTree_Behaviour
 
 
@@ -1921,6 +1953,8 @@ double JB_Wrap_FloatValue(DTWrap* self);
 
 JB_String* JB_Wrap_Render(DTWrap* self, FastString* fs_in);
 
+int64 JB_Wrap_Value(DTWrap* self);
+
 DTWrap* JB_Wrap__Alloc();
 
 DTWrap* JB_Wrap__New(int64 v);
@@ -1984,6 +2018,17 @@ LeakTester* JB_Lk__New(JB_String* name);
 
 
 // JB_MemoryLayer
+
+
+// JB_oof
+void JB_oof_Constructor(oof* self);
+
+void JB_oof_Destructor(oof* self);
+
+oof* JB_oof__Alloc();
+
+oof* JB_oof__New();
+
 
 
 // JB_Pipe

@@ -255,33 +255,12 @@ u32 JB_ObjCount();
 #define JB_ClearRef(a)      JB_ClearRef_((JB_Object**)(&a))
 #define JB_RefCount(a)      JB_RefCount_((JB_Object*)(a))
 
-
-#define JB_SafeAnd(A, B)              ({ \
-    JB_Object* _A = (A);                 \
-    JB_Object* _B = 0;                   \
-    if (_A) {                            \
-        _B = (B);                        \
-        JB_FreeIfDead(_B);               \
-    }                                    \
-    JB_FreeIfDead(_A);                   \
-    (bool)(_B)                           \
-})
-
-#define JB_SafeOr(A, B)               ({ \
+#define JB_LongObjOr(A, B)            ({ \
     JB_Object* _T = (A);                 \
     if (!_T) {                           \
         _T = (B);                        \
     }                                    \
-    JB_FreeIfDead(_T);                   \
-    (bool)(_T)                          \
-})
-
-#define JB_LongOr(A, B)               ({ \
-    JB_Object* _T = (A);                 \
-    if (!_T) {                           \
-        _T = (B);                        \
-    }                                    \
-    (_T)                                 \
+    (_T);                                \
 })
 
 
