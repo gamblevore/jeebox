@@ -41,6 +41,7 @@ Thumbs.db
 /Examples/.vscode/
 /Examples/jb_vscode.code-workspace
 stb_*.h
+JB_VM*
 *.note
 *.nogit
 *.xcodeproj
