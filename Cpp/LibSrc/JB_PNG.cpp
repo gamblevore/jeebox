@@ -12,4 +12,11 @@ extern "C" {
         return stbi_write_png_to_func(JB_File_WriteRaw_, file, w, h, 4, data, w*4);
     }
 }
+#else
+
+// stop linker errors.
+extern "C" void Stub_JB_PNG () {
+    
+}
+
 #endif

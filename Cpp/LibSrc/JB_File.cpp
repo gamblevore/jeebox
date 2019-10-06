@@ -692,6 +692,11 @@ bool JB_File_IsDir (JB_File* self) {
 
 #else 
 
+// stop linker errors
+extern "C" void Stub_JB_File() {
+
+}
+
 #endif
 
 

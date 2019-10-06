@@ -54,8 +54,15 @@ inline u64 RDTSC() {
     return tsc;
 }
 
+
 } // 
 
+#else
+
+// stop linker errors.
+extern "C" void Stub_JB_Vectors () {
+    
+}
 
 #endif
 

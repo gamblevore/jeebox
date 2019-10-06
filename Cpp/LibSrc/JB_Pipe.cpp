@@ -215,6 +215,13 @@ bool JB_IsTerminal(int FD) {
 
 }
 
+#else
+
+// stop linker errors.
+extern "C" void Stub_JBPipe () {
+    
+}
+
 #endif
 
 
