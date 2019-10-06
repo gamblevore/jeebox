@@ -284,7 +284,8 @@ int JB_Tk__CleanSpacesSub (  ) {
 		
 		return S-1;
 	}
-	
+
+    self->NextStart = N;
 	return N;
 }
 

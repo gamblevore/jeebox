@@ -779,7 +779,7 @@ JB_String* JB_Constants__Test() {
 		JB_String* _tmP1 = JB_Incr(JB_Msg_Render(root, nil));
 		JB_Msg_Test(root, _tmP1, JB_str_167);
 		JB_Decr(_tmP1);
-		JB_String* _tmP2 = JB_Incr(JB_Msg_MakeReadable(root, nil));
+		JB_String* _tmP2 = JB_Incr(JB_Msg_AST(root, nil));
 		JB_Msg_Test(root, _tmP2, JB_str_168);
 		JB_Decr(_tmP2);
 		JB_Decr(root);
@@ -4674,6 +4674,57 @@ void JB_Msg_Ask__(Message* self, FastString* fs) {
 	JB_Decr(last);
 }
 
+JB_String* JB_Msg_AST(Message* self, FastString* fs_in) {
+	FastString* fs = JB_Incr(JB_FS__FastNew(fs_in));
+	bool PrintSelf = (((bool)JB_FreeIfDead(((Message*)JB_Ring_Parent(self)))) or (!JB_Msg_SyxOppEquals(self, JB_SyxArg, false)));
+	if (PrintSelf) {
+		JB_FS_AppendByte(fs, '(');
+		JB_String* _tmP2 = JB_Incr(JB_Syntax_Name(self->Func));
+		JB_FS_AppendString(fs, _tmP2);
+		JB_Decr(_tmP2);
+		JB_FS_AppendString(fs, JB_str_17);
+		if (JB_Str_Exists(self->Name)) {
+			JB_FreeIfDead(JB_ObjRender(self->Name, fs));
+		}
+	}
+	if (JB_Ring_HasChildren(self)) {
+		fs->Indent = (fs->Indent + ((int)PrintSelf));
+		{
+			Message* ch = JB_Incr(((Message*)JB_Tree_First_(self)));
+			while (ch) {
+				Message* _N1 = JB_Incr(((Message*)JB_Ring_NextSib(ch)));
+				JB_FS_AppendByte(fs, '\n');
+				JB_FS_AppendIndent(fs);
+				JB_FreeIfDead(JB_Msg_AST(ch, fs));
+				JB_SetRef(ch, _N1);
+				JB_Decr(_N1);
+			};
+			JB_Decr(ch);
+		};
+		fs->Indent = (fs->Indent - ((int)PrintSelf));
+		JB_FS_AppendByte(fs, '\n');
+		JB_FS_AppendIndent(fs);
+	}
+	if (PrintSelf) {
+		JB_FS_AppendByte(fs, ')');
+	}
+	JB_String* _tmP3 = JB_Incr(JB_FS_SmartResult(fs, fs_in));
+	JB_Decr(fs);
+	JB_SafeDecr(_tmP3);
+	return _tmP3;
+}
+
+JB_String* JB_Msg_AST_Spaces(Message* self, int Spaces) {
+	FastString* fs = JB_Incr(JB_FS__New());
+	fs->IndentChar = ' ';
+	fs->IndentMul = Spaces;
+	JB_FreeIfDead(JB_Msg_AST(self, fs));
+	JB_String* _tmP = JB_Incr(JB_FS_SyntaxCastString(fs));
+	JB_Decr(fs);
+	JB_SafeDecr(_tmP);
+	return _tmP;
+}
+
 void JB_Msg_Back__(Message* self, FastString* fs) {
 	if (JB_int_Found(JB_Str_FindByte(self->Name, '`', 0, kJB__int_max))) {
 		JB_Msg_Str__(self, fs);
@@ -5036,57 +5087,6 @@ JB_String* JB_Msg_Locate(Message* self) {
 	JB_Decr(_fs_fs);
 	JB_SafeDecr(_fs_str);
 	return _fs_str;
-}
-
-JB_String* JB_Msg_MakeReadable(Message* self, FastString* fs_in) {
-	FastString* fs = JB_Incr(JB_FS__FastNew(fs_in));
-	bool PrintSelf = (((bool)JB_FreeIfDead(((Message*)JB_Ring_Parent(self)))) or (!JB_Msg_SyxOppEquals(self, JB_SyxArg, false)));
-	if (PrintSelf) {
-		JB_FS_AppendByte(fs, '(');
-		JB_String* _tmP2 = JB_Incr(JB_Syntax_Name(self->Func));
-		JB_FS_AppendString(fs, _tmP2);
-		JB_Decr(_tmP2);
-		JB_FS_AppendString(fs, JB_str_17);
-		if (JB_Str_Exists(self->Name)) {
-			JB_FreeIfDead(JB_ObjRender(self->Name, fs));
-		}
-	}
-	if (JB_Ring_HasChildren(self)) {
-		fs->Indent = (fs->Indent + ((int)PrintSelf));
-		{
-			Message* ch = JB_Incr(((Message*)JB_Tree_First_(self)));
-			while (ch) {
-				Message* _N1 = JB_Incr(((Message*)JB_Ring_NextSib(ch)));
-				JB_FS_AppendByte(fs, '\n');
-				JB_FS_AppendIndent(fs);
-				JB_FreeIfDead(JB_Msg_MakeReadable(ch, fs));
-				JB_SetRef(ch, _N1);
-				JB_Decr(_N1);
-			};
-			JB_Decr(ch);
-		};
-		fs->Indent = (fs->Indent - ((int)PrintSelf));
-		JB_FS_AppendByte(fs, '\n');
-		JB_FS_AppendIndent(fs);
-	}
-	if (PrintSelf) {
-		JB_FS_AppendByte(fs, ')');
-	}
-	JB_String* _tmP3 = JB_Incr(JB_FS_SmartResult(fs, fs_in));
-	JB_Decr(fs);
-	JB_SafeDecr(_tmP3);
-	return _tmP3;
-}
-
-JB_String* JB_Msg_MakeReadableSpaces(Message* self, int Spaces) {
-	FastString* fs = JB_Incr(JB_FS__New());
-	fs->IndentChar = ' ';
-	fs->IndentMul = Spaces;
-	JB_FreeIfDead(JB_Msg_MakeReadable(self, fs));
-	JB_String* _tmP = JB_Incr(JB_FS_SyntaxCastString(fs));
-	JB_Decr(fs);
-	JB_SafeDecr(_tmP);
-	return _tmP;
 }
 
 void JB_Msg_Msg__(Message* self, FastString* fs) {
@@ -5858,7 +5858,7 @@ __lib__ JB_String* jb_msg_ast(Message* self) {
 	if ((!JB_Msg_NilCheck(self))) {
 		return nil;
 	}
-	return JB_Msg_MakeReadableSpaces(self, 4);
+	return JB_Msg_AST_Spaces(self, 4);
 	return JB_str_0;
 }
 

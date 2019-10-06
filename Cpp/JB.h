@@ -2342,6 +2342,10 @@ void JB_Msg_Arr__(Message* self, FastString* fs);
 
 void JB_Msg_Ask__(Message* self, FastString* fs);
 
+JB_String* JB_Msg_AST(Message* self, FastString* fs_in);
+
+JB_String* JB_Msg_AST_Spaces(Message* self, int Spaces);
+
 void JB_Msg_Back__(Message* self, FastString* fs);
 
 void JB_Msg_Bin__(Message* self, FastString* fs);
@@ -2395,10 +2399,6 @@ Message* JB_Msg_LayerCopy(Message* self, JB_MemoryLayer* L);
 void JB_Msg_List__(Message* self, FastString* fs);
 
 JB_String* JB_Msg_Locate(Message* self);
-
-JB_String* JB_Msg_MakeReadable(Message* self, FastString* fs_in);
-
-JB_String* JB_Msg_MakeReadableSpaces(Message* self, int Spaces);
 
 void JB_Msg_Msg__(Message* self, FastString* fs);
 
