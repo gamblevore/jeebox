@@ -212,11 +212,6 @@ inline fpTok FindBits_( TokHan* FatData, u32 AskBits ) {
 }
 
 
-
-//void JB_Tk__NeedsErrorImprove() { // doesn't help
-//    self->ErrorImprove = true;
-//}
-
 Message* JB_Tk__Process( u32 AskBits, long Mode ) {
 	if_rare ( self->ErrorStart >= 0 ) {
 		return 0;
@@ -236,10 +231,6 @@ Message* JB_Tk__Process( u32 AskBits, long Mode ) {
         fpTok Func = FindBits_( FatData, MatchBits );
         Message* Result = (Message*)Func( Start );
         if ( Result ) {
-//            if_rare (self->ErrorImprove) {
-//                self->ErrorImprove = false;
-//                JB_Tk__ErrorImprove(Result);
-//            }
             return Result;
         }
         
@@ -298,6 +289,12 @@ void JB_Tk__CleanSpaces (  ) {
 	
 ////////////////////////////////////////////////////////////////////////////////
 
+
+bool JB_Tk__Running(  ) {
+	return Running_( self->NextStart );
+}
+
+
 bool JB_Tk__Expect( u32 AskBits ) {
 	return JB_FreeIfDead(JB_Tk__Process( AskBits, 1 ));
 }
@@ -325,6 +322,13 @@ bool JB_Tk__CheckEnded ( u32 AskBits ) { // has to be called with an "ender". ")
 }
 
 
+
+
+////////////////////////////////////////////////////////////////////////////////
+		// TokenHandler
+////////////////////////////////////////////////////////////////////////////////
+
+
 void JB_Tk__TokenNilSet( JB_String* Key, JB_Object* Value ) {
     JB_Object* Curr = JB_Dict_Value( self->WordDict, Key, 0 );
     if (!Curr) {
@@ -332,20 +336,6 @@ void JB_Tk__TokenNilSet( JB_String* Key, JB_Object* Value ) {
     }
 }
 
-
-
-////////////////////////////////////////////////////////////////////////////////
-
-bool JB_Tk__Running(  ) {
-	return Running_( self->NextStart );
-}
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-		// TokenHandler
-////////////////////////////////////////////////////////////////////////////////
 
 TokHan* JB_TH_Link(TokHan* T, u32 BitTypes, fpTok Func) {
 	T->BitTypes |= BitTypes;
