@@ -1,0 +1,287 @@
+
+/*
+	Jeebox internals. By Theodore H. Smith...
+*/
+
+
+
+/*
+// 
+
+// later
+	* make wordread return an int? makes sense... :)
+	* numbers should contain units, not the other way around!!! wtf m9? Makes my append-code wierder... and harder.
+	
+	* Syntactic comments should come out... Do them a different way.
+		* Treat as temporal operators: A did B #while B did C
+		  why can’t that be like a temporal operator? It SHOULD.
+		  Finding one of these on the first thing on a line can work too... just parse differently, like a temporal_statement!
+		  * MAKES SENSE!
+*/
+
+//////////////////////////////////////////////////
+
+function parser.New (|Message| Parent, |Syntax| Func, |int| Start, |int| End, |Message|) {
+	opt NoRefCounts
+	cpp_part NewParent
+	|| Name = .data[start, end]
+	|| Result = Message(Parent, func, Start, Name)
+	return Result
+}
+
+function parser.NewWord ( |Message| P, |Syntax| F, |int| Start, |int| SearchFrom, |Message|) {
+	opt NoRefCounts
+	|| after = parser.WordAfter( SearchFrom )
+	|| result = .New( P, F, SearchFrom, After )
+	result.position = start
+	return result
+}
+
+function parser.NewSkip ( |Message| P, |Syntax| F, |int| Start, |int| NameStart, |int| NameEnd, |Message|) {
+	opt NoRefCounts
+	|| result = .New( P, F, NameStart, NameEnd )
+	result.position = start
+	return result
+}
+	
+function parser.New ( |Message| Parent, |Syntax| Func, |int| Start, |Message|) {
+	cpp_part NewParent0
+	return Message(parent, func, Start, "")
+}
+
+// merge NewParent0 and NewParentName? sigh...
+// * some things require escaping... so need to pass a string
+
+function parser.New (|Message| Parent, |Syntax| Func, |int| Start, |string| name, |Message|) {
+	opt NoRefCounts
+	cpp_part NewParentName
+	return Message(parent, func, Start, name)
+}
+
+//////////////////////////////////////////////////
+
+
+function String.ParseJSON (|message| into=nil, |Message|) {
+	|| tmp = jeebox.unescapestr
+	jeebox.unescapestr = jeebox.js_unescapestr
+	|| result = .parse(into)
+	jeebox.unescapestr = tmp
+	if (result) {
+		result.ConvertJSONToJB
+	}
+	return result
+}
+
+
+function String.Parse (|message| into=nil, |Message|) {
+	if (!Parser.CppInited) {
+		Parser.Init
+	}
+
+	parser.ErrNode = (Arg:)
+	into := parser.ErrNode // make error-tracking easier
+	|| Count = StdErr.errorCount
+
+
+	parser.StartParse( self )
+	parser.StopBars = 0
+
+	parser.ParseLoop( into, "" )
+
+	parser.CleanSpaces
+	if parser.Running {
+		parser.Expect( 0 )
+	}
+	
+	parser.ErrNode = nil
+	parser.StopParse // clear error message
+	require (Count == StdErr.errorCount)
+	
+	return into
+}
+
+
+
+
+	
+function Syntax.Parseflags (|int|) {
+	if (self == @arg) {
+		return parser.kTemporal
+	} else {
+		return parser.kTemporalSyx
+	}
+}
+
+
+
+extend Parser {
+	function fError (ParseHandler) {
+		return nil // seems OK... doesn't need to do more
+	}
+
+	function ErrorAdd (|String|s, |int|Start = parser.NextStart, |bool|WasEnder = false, |Message|) {
+		// we shouldn't add multiple errors... per parse. or else it gets STUPID.
+		require .OK
+		.ErrorStart = start
+
+		|| err		  = Error.new(parser.ErrNode)
+//		err.source = nil // wait... why did we do this? surely we WANT the source?
+		err.Position	= Start
+		err.Description	= s
+		err.originaldata = .data
+		
+		stderr ~ err
+	}
+
+
+	function OK (|bool|) {
+		Return !.ErrorStart.found
+	}
+
+
+	function ErrorEvent2 (|int|Start, |int| ExpectedBits, |int| RealBits) {
+		visible true // called directly by the tokeniser... sorry :PPPP
+
+		|| Err = FastString.new
+		if !(RealBits &&& kIllegalChar) {
+			if (!ExpectedBits or !Realbits or !FindError(expectedbits)) {
+				err ~ "Unexpected "
+			} else {
+				for (5) { // 5, in case there is a bug causing infinite loop.
+					ExpectedBits = MessageErrorSub( err, ExpectedBits, Realbits )
+				} (ExpectedBits)
+				err ~ " but found "
+			}
+		}
+
+		if (RealBits == kEndOfLine) {
+			err ~ "end-of-line"
+
+		} elseif (RealBits == kSyntacticComment) {
+			err ~ "syntactic-comment"
+
+		} elseif !RealBits {
+			err ~ "end-of-data"
+
+		} else {
+			if parser.NextStart <= start {
+				parser.NextStart = start + 1
+			}
+
+			if (RealBits &&& kIllegalChar) {
+				err ~ "Found illegal-character "
+				|| illegal = parser.data[start]
+				if (illegal.CanPrintAsNormalChar) { 
+					err ~ '\''
+					err ~ parser.data[start]
+					err ~ '\''
+				} else {
+					err ~ "0x"
+					err.AppendHex( illegal )
+					err ~ ' '
+				}
+			} else {
+				err ~ '\''
+				|| N = parser.NextStart min (start + 100)
+				err ~ parser.data[ start, N ].escape
+				err ~ '\''
+			}
+		
+		}
+
+		Parser.ErrorAdd( err, start )
+	} 
+
+	function FindError (|int| num, |int|) {
+		if (num == kThing) { // code doesn't handle this case well...
+			return kThing
+		}
+		for (ErrorNames) (Key) {
+			|| i = key.parseint
+			// OK so... i is a string
+			if (num &&& i) == i {
+				return i
+			}
+		}
+	}
+
+
+	function MessageErrorSub (|FastString| fs, |int| num, |int| ButFound, |int|) {
+		if (!ErrorNames) {
+			ErrorNames = dictionary.new
+			ErrorNames[kTemporal]		   = "temporal"
+			ErrorNames[kTemporalSyx]		= "declaration"
+			ErrorNames[kTemporalWord]	   = "statement"
+			ErrorNames[kSyntacticComment]   = "syntactic-comment"
+			ErrorNames[kEndOfLine]		  = "end-of-line"
+			ErrorNames[kColon]			  = "':'"
+			ErrorNames[kOppSyx]			 = "operator"
+			ErrorNames[kOppWord]			= "operator"
+			ErrorNames[kOpp]				= "operator"
+			ErrorNames[kOppTemporal]		= "temporal-operator"
+			ErrorNames[kFuncAfterBar]	   = "'|'"
+			ErrorNames[kThing]			  = "a name"
+			ErrorNames[kThingWord]		  = "a name"
+			ErrorNames[kThingSyx]		   = "something"
+			ErrorNames[kIllegalChar]		= "illegal-character"
+		}
+		
+		if fs.length {
+			fs ~ " / "
+		} else {
+			fs ~ "Expected "
+		}
+
+		
+		|| BestValue = FindError(num)
+		if (BestValue) {
+			fs ~ ErrorNames[ BestValue ]
+			return num &&&~~~ BestValue
+		}
+		
+		fs ~ "something else"
+	}
+}
+
+
+
+struct MessagePosition {
+	cpp_part MsgPos
+	// Ideally... this should be a struct instead.
+	// we'd also need the destructors to fire at the right moment... just like objects do.
+	// no need to make this an object!
+	
+	|int|			   OldPosition
+	|MemoryLayer--|	 OldLayer // its a class....
+	
+	destructor {
+		parser.BaseMessagePosition = .OldPosition 
+		.OldLayer.use 
+	}
+	function SyntaxUsingComplete { }
+}
+
+
+function Message.SyntaxUsing (|MessagePosition|) {
+	opt norefcounts
+	|messageposition| Result = nil
+	Result.OldPosition = parser.BaseMessagePosition
+	Result.OldLayer = (message).CurrLayer
+	if (self) {
+		parser.BaseMessagePosition = .position
+		.memorylayer.use
+	} else {
+		debugger
+	}
+	return Result
+}
+
+
+function Byte.CanPrintAsNormalChar (|bool|) {
+	return (self <= 127 and self >= 32)
+}
+
+
+function Message.SyntaxUsingComplete { }
+
+

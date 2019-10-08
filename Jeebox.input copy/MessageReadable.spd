@@ -1,0 +1,78 @@
+
+
+struct AstUtil {
+	|dictionary of memorylayer| Mem
+	|MemoryLayer|			   Initial
+
+	function UseLayer (|message|src) {
+		.initial := (message).currlayer
+		.mem := dictionary.new
+		|| L = .mem[src.name.lowercase]
+		if (!L) {
+			L = (Message).CreateLayer(src.name)
+			.mem[src.name.lowercase] = L
+		}
+		L.use
+	}
+}
+
+
+extend message {
+	/*
+	(dot:"new", 109, "filename"
+		(thg:"hi", 112)
+		(list:
+			(thg:"bye")
+		)
+	)
+
+	hi.new(bye)
+
+	(dot:"new", 109, "filename")(
+		(thg:"hi", 112)
+		(list:)(
+			(thg:"bye", 115)
+		)
+	)
+	*/
+	
+
+	function ParseAST_ ( |Message| Src, |&AstUtil| U ) {
+		if (src == @num) {
+			.position = src.int
+			
+		} elseif (Src == @str) {
+			U.UseLayer(src)
+			
+		} else {
+			for (line.next : Src) {
+				|| MsgDesc = line
+				|Message| Children 
+				if (line == @func) {
+					MsgDesc = line.first
+					children = msgdesc.next.first
+				} else {
+					children = msgdesc.first.next
+				}
+				require MsgDesc.expect(@list)
+				|| itm = MsgDesc![@item, 0]$
+				|| func = itm.first
+				|| fn = Message.GetSyx(func) #require
+				|| Result = Message.new(self,  fn.id,  .position,  func.next.nyme)
+				if (Children) {
+					Result.ParseAST_(Children, U)
+				}
+			}
+		}
+	}
+	
+	
+	function ParseAST (|Message|) {
+		require self
+		|AstUtil| util
+		|| Result = (Arg:)
+		result.ParseAST_(.first, util)
+		return Result
+	}
+}
+

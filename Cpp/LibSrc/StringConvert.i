@@ -3,8 +3,6 @@
 // Released under jeebox-licence http://jeebox.org/licence.txt
 
 
-        void JB_DebugPrint(JB_Object* self);
-
 /*
  		Unicode Ranges:
 

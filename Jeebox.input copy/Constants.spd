@@ -1,0 +1,126 @@
+
+/*
+	Jeebox internals. By Theodore H. Smith...
+*/
+
+
+
+
+
+
+Module Jeebox {
+	cpp_part Constants
+	
+
+	|| EscapeStr = [
+		"\00"  : `\0` // just for escaping, unescaping already uses the numeric code thingy...
+		"\0A"  : `\n` 
+		"\0D"  : `\r` 
+		"\09"  : `\t`
+		`"`	: `\"`
+		`'`	: `\'` 
+		`\`	: `\\`
+		`&#`   : `\&#`
+	]
+	
+
+	|| JS_EscapeStr = [
+		"\08"  : `\b` 
+		"\0C"  : `\f` 
+		"\0A"  : `\n` 
+		"\0D"  : `\r` 
+		"\09"  : `\t`
+		"\""   : `\"`
+		"\\"   : `\\`
+	]
+	
+	|dictionary of string| UnEscapeStr
+	|dictionary of string| JS_UnEscapeStr
+	|dictionary of string| EscapeChr
+	|| CSWordMiddle		= 'AZaz09__\80\BF\C2\F4'
+	|| CSWordStart		= 'AZaz__\80\BF\C2\F4'
+	|| CSNum			= jeebox.CSWordMiddle
+	|| CSLine			= "\n\r".charset(false)
+	|| CSAfterTemporal	= " ,:\t\n\r\\".charset(false)
+	|| CSLineBlack		= "\n\r,".charset(false)
+	|| CSLettersOnly	= 'AZaz\80\BF\C2\F4'
+
+
+	InitConstants()
+	function InitConstants {
+		|| Dummy = array.new // needed by argv
+
+		.EscapeChr = Copy(.EscapeStr)
+
+		for (c : .CSWordStart) {
+			|| cr = c.render
+			.EscapeStr[`$` + cr] = `\$` + cr
+		}
+		.UnEscapeStr = Reverse(.EscapeStr) // unify data
+		.JS_UnEscapeStr = Reverse(.JS_EscapeStr) // unify data 
+
+		.EscapeChr[`"`] = nil|string|
+		.EscapeChr[`$`] = nil|string|
+		
+		.UnEscapeStr[`\0`] = nil|string|	 // handle normally
+		.UnEscapeStr["\\\n"] = ""			// c/js compat
+		.Unescapestr[`\`] = ""
+		.EscapeStr["'"] = nil|string|
+		
+		SetEscapeCode(.UnEscapeStr, true)
+		SetDecodeEntities(.UnEscapeStr, true)
+
+		.EscapeStr[`${`] = `$\{`
+	}
+	
+
+	Function string.JBFind (|byte|find, |int|Off, |int| After, |int|) {
+		after = after min .length
+		while (off < after) {
+			|| c = self[off++]
+			if (c == '\\') {
+				off++
+			} elseif (c == find) {
+				if (find == '$') {
+					if (off >= after) {exit}
+					|| nxt = self[off]
+					if !((nxt == '{') or (jeebox.CSWordStart.has(nxt))) {
+						continue
+					}
+				}
+				return off - 1
+			}
+		}
+		return -1
+	}
+	
+
+	function ASCII (|string|) {
+		cpp_wrapper JB_ASCII
+	}
+	
+	function Upper (|string|) {
+		cpp_wrapper JB_Upper
+	}
+	
+	function Lower (|string|) {
+		cpp_wrapper JB_Lower
+	}
+}
+
+function Byte.IsALetter (|bool|) {
+	return jeebox.CSLettersOnly.has(self)
+}
+
+function String.Unescape (|string|) {
+	return .ReplaceAll( Jeebox.UnEscapeStr )
+}
+
+function String.Escape (|string|) {
+	return .ReplaceAll( jeebox.EscapeStr )
+}
+
+function String.EscapeChr (|string|) {
+	return .ReplaceAll( jeebox.EscapeChr )
+}
+

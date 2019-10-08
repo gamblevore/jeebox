@@ -1,0 +1,219 @@
+/*
+	Jeebox internals. By Theodore H. Smith...
+*/
+
+
+
+extend Message {
+	function TreeCompare (|Message|other, |bool|) {
+		if (!self or !other) {
+			return CompareError(self, other)
+		}
+
+		if (.func != other.func) or ( .name ~!= other.name ) {
+			return CompareError(self, other)
+		}
+
+		|| o1 = other.First
+		|| m1 = .First
+		while (o1 or m1) {
+			require m1.TreeCompare( o1 )
+			o1++
+			m1++
+		}
+		return true
+	}
+}
+
+
+function Message.Locate (|string|) {
+// Would be nice if this could be called via "msg.locate".
+// Despite being a global function. This could allow "self"
+// to be nil but still be called via msg.locate.
+// just test if (self = nil)? the compiler can handle the rest...
+	|| fname = "(nil)"
+	if (!self) {
+		return fname
+	}
+	
+	|| s = .name
+	s := .Render
+	if (.func) {
+		fname = .func.name
+	}
+	
+	|| rs = "(nil)"
+	|| r = .root.obj
+	if ( r  and  r isa string ) {
+		rs = r
+	}
+
+	return "$fname: '$s' at byte: ${.Position} in $rs"
+}
+
+function message.PoorAnt (|message|) {
+	if (self) {
+		return .parent
+	}
+}
+
+function CompareError (|Message|expected, |Message| found, |bool|) {
+// I want to see it printed, for my use. Must think about my needs first!
+
+	printline "Expected ${expected.locate} but found ${found.locate}"
+	printline "parent of expected ${expected.PoorAnt.locate}"
+
+	if (found) {
+		printline "parent of found ${found.PoorAnt.locate}"
+	} else {
+		found = expected
+	}
+
+	found.SyntaxExpect // creates an error... could be better named...
+}
+
+
+function EntityTest (|string|) {
+// Should spell (ĴëêƁoⓧ)
+
+	|| raw			= "\n\(&#x134;&#xEB;\C3\AA\C6\81o&#9447;\) "
+	|| replicate	= `\n\(&#x134;&#xEB;\C3\AA\C6\81o&#9447;\) `
+
+	|dictionary of string| repl = dictionary.new
+	repl["\\n"] = "\n"
+	SetDecodeEntities(repl, true)
+	SetEscapeCode(repl, true)
+
+	|| s3 = replicate.unescape			   // inbuilt
+	replicate = replicate.ReplaceAll(repl)   // cobbled together
+
+	debugger (raw == replicate)
+	debugger (raw == s3)
+
+	if (platform.linux) {
+//		replicate = "jeebox"
+	}
+	|| result = replicate.lowercase + " loaded successfully.\n"
+	return result
+}
+
+
+function string.ParseAs (|string| name, |Message|) {
+	if (!name or name ~= "normal") {
+		return .Parse
+
+	} elseif (name ~= "list") {
+		return .parse.ParseAST
+	}
+}
+
+
+function Message.Test (|string| new_render, |string| name) {
+	if (!.TestSub(new_render, name)) {
+		print "Test $name: Failed\n\n$new_render"
+	}
+}
+
+
+function Message.TestSub (|string| new_render, |string| name, |bool|) {
+	require (new_render)
+	
+	|| LKT = leaktester.new(name)
+	{
+		|| reparse = new_render.ParseAs(name)		#require
+
+		require .TreeCompare( reparse )
+		|| self_render = self.render				#require
+		|| reparse_render = reparse.render			#require
+		require StdErr.ok
+		require (self_render == reparse_render)
+	}
+	(lkt.finaltest)
+
+	return true
+}
+
+
+function TestCasting (|bool|) {
+	|dictionary of int| d2 = dictionary.new
+	d2["abc"] += 1
+	
+	|| d = dictionary.new
+	|| str = "\0\0\0\0\0\0"
+	expect !str[0] and !str[1] and !str[2] and !str[3] and str.length == 6
+	d[str] = str
+
+	require !'\0'
+	|| x = Message
+	|| y = Message(nil, @bra, 0, "")
+	y.Name = "abc "
+	|Object| yy
+	yy = y
+	|| arr = [nil] // whatever...
+	if (yy isa Message) {
+		debugger (yy.name = "abc ")
+	}
+
+	return (y isa x)
+}
+
+
+function Jeebox.Test (|string|) {
+	|| fs = FastString.new
+	for (c : 256) {
+		fs ~ c|byte|
+	}
+	|| str = fs.getresult
+	expect (str.escape.unescape == str)
+	
+	BinaryEscapeTest(str)
+	require stderr.ok
+
+//	cpp_name JB_TestJeebox
+	|| natural_input = __SELF_TEST_NATURAL__
+	|| list_input	= __SELF_TEST_LIST__
+	// Parse, render, re-parse, compare tree, compare re-render
+	
+	debugger (TestCasting())
+	|| x = "normal".uppercase
+	|| LKT = leaktester.new("entities")
+		EntityTest()
+	LKT.FinalTest
+	
+	require stderr.ok
+
+	if (list_input) {
+		|| root = natural_input.parse #require
+		root.TreeCompare( root.copy )
+		|| list = list_input.parse.ParseAST
+		root.TreeCompare( list )
+		root.Test( root.Render,	   "normal" )
+		root.Test( root.ast, "list"   )
+	} else {
+		|| root = natural_input.parse #require
+		|| R = root.render
+		root.Test( R, "normal" )
+		print "Manual inspection:\n\n"
+		print R
+	}
+	
+	require StdErr.ok
+	return EntityTest()
+}
+
+
+
+function brc1 (|object| a = nil, |object|) {}
+
+function brc2 (|object| a = nil, |object|) {}
+
+function brc3 (|object| a = nil, |object|) {}
+
+function BadRefCounts {
+	visible
+	// still not fixed even after temp-vars!
+	brc1()
+	brc2(brc2())
+	brc3(brc3(brc3())) // too complex, cant handle it :(
+}
+

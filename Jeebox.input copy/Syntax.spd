@@ -1,0 +1,120 @@
+
+/*
+	Jeebox internals. By Theodore H. Smith...
+*/
+
+
+prototype fpMsgRender (|Message|self, |FastString| fs)
+
+datatype Syntax (u8) {
+	linkage {
+		numeric false // disallow implicit (syntax <--> int) conversion
+	}
+	
+	function ID (|int|) {
+		return self|int|
+	}
+	
+	render {
+		if (Self) {
+			.obj.render(fs)
+		}
+	}
+	
+	function Name (|string|) {
+		opt norefcounts
+		return .obj.name
+	}
+	
+	function LongName (|string|) {
+		opt norefcounts
+		return .obj.longname
+	}
+	
+	function Obj (|syntaxobj|) {
+		return _FuncArray_[self|int|]
+	}
+	
+	function Msg ( |string| name, |Message| ) {
+		return Message( nil, self, parser.BaseMessagePosition, name )
+	}
+	
+	function Msg ( |int| name, |Message| ) {
+		cpp_part MsgInt
+		return .msg(name.render)
+	}
+
+	function Msg ( |message| parent, |string| name, |Message| ) {
+// Don't allow default name! causes bugs with (thg:msg) being allowed into msgparent
+		cpp_part MsgParent
+		return Message( parent, self, parser.BaseMessagePosition, name )
+	}
+	
+	function ExportAddr (assigns:|fpMsgRender|) {
+		opt norefcounts
+		.obj.exportaddr = result
+	}
+	
+	function ExportAddr (|fpMsgRender|) {
+		opt norefcounts
+		return .obj.exportaddr
+	}
+	function RenderAddr (assigns:|fpMsgRender|) {
+		opt norefcounts
+		.obj.renderaddr = result
+	}
+	
+	function RenderAddr (|fpMsgRender|) {
+		opt norefcounts
+		return .obj.renderaddr
+	}
+	
+	module {
+		|int| CurrFuncID
+		
+		function StdNew (|fpMsgRender|msg, |string|name, |String| LongName, |Syntax|) {
+		// called by the compiler via "syx" syntax.
+			|| result = Syntaxobj.new(msg, name, ++.CurrFuncID)
+			_syxdict_[name] = result
+			_Funcarray_[.CurrFuncID] = result
+			if (LongName) {
+				_syxdict_[LongName] = result
+				result.LongName = LongName
+			} else {
+				result.LongName = Name
+			}
+
+			return .CurrFuncID|syntax|
+		}
+	}
+}
+
+
+
+class SyntaxObj {
+	cpp_part Fn
+	visible			true
+
+	|fpMsgRender|		RenderAddr
+	|fpMsgRender|		ExportAddr
+	|String|			Name
+	|String|			LongName
+	|Syntax|			ID
+
+
+	constructor (|fpMsgRender| msg, |string| name, |int| ID) {
+		.RenderAddr = msg
+		.Name = Name
+		.ID = ID|syntax|
+		.ExportAddr = Message.Dummy
+	}
+	
+	render {
+		if (!fs_in) {
+			return .LongName.lowercase
+		}
+		
+		fs_in ~ .LongName.LowerCase
+	}
+}
+

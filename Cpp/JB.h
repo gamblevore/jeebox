@@ -404,12 +404,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_223)
-#define kJB__ErrorColors_error (JB_str_224)
-#define kJB__ErrorColors_good (JB_str_225)
-#define kJB__ErrorColors_normal (JB_str_222)
-#define kJB__ErrorColors_underline (JB_str_225)
-#define kJB__ErrorColors_warn (JB_str_226)
+#define kJB__ErrorColors_bold (JB_str_224)
+#define kJB__ErrorColors_error (JB_str_225)
+#define kJB__ErrorColors_good (JB_str_226)
+#define kJB__ErrorColors_normal (JB_str_223)
+#define kJB__ErrorColors_underline (JB_str_226)
+#define kJB__ErrorColors_warn (JB_str_227)
 //
 
 
@@ -452,38 +452,39 @@ extern Dictionary* JB__Constants_UnEscapeStr;
 // module: Tk
 extern int JB__Tk_BaseMessagePosition;
 extern JB_String* JB__Tk_Data;
+extern Message* JB__Tk_EndOfLineMarker;
 extern Message* JB__Tk_ErrNode;
 extern Dictionary* JB__Tk_ErrorNames;
 #define kJB__Tk_adjectiveop (1)
 #define kJB__Tk_Allow (false)
 #define kJB__Tk_bracketstart (2)
 #define kJB__Tk_colon (4)
-#define kJB__Tk_End ((8 | 16) | 32)
-#define kJB__Tk_EndContainer (16)
+#define kJB__Tk_Comma (16)
+#define kJB__Tk_End (((8 | 16) | 32) | 64)
+#define kJB__Tk_EndContainer (32)
 #define kJB__Tk_EndOfLine (8)
 #define kJB__Tk_Expect (true)
-#define kJB__Tk_FuncAfterAny ((64 | 128) | 256)
-#define kJB__Tk_FuncAfterBar (64)
-#define kJB__Tk_FuncAfterNormal (128)
-#define kJB__Tk_FuncAfterNoSpace (256)
+#define kJB__Tk_FuncAfterAny ((128 | 256) | 512)
+#define kJB__Tk_FuncAfterBar (128)
+#define kJB__Tk_FuncAfterNormal (256)
+#define kJB__Tk_FuncAfterNoSpace (512)
 #define kJB__Tk_IllegalChar (0x80000000)
-#define kJB__Tk_notfirstsyxopp (524288)
-#define kJB__Tk_Opp ((((512 | 1024) | 2048) | 4096) | 8192)
-#define kJB__Tk_OppBra (512)
-#define kJB__Tk_OppChain (4096 | 512)
-#define kJB__Tk_OppSyx (1024)
-#define kJB__Tk_OppTemporal (2048)
-#define kJB__Tk_OppWord (4096)
-#define kJB__Tk_OppYoda (8192)
-#define kJB__Tk_SyntacticComment (32)
-#define kJB__Tk_Temporal (16384 | 32768)
-#define kJB__Tk_TemporalSyx (32768)
-#define kJB__Tk_TemporalWord (16384)
-#define kJB__Tk_Thing (65536 | 131072)
-#define kJB__Tk_ThingSyx (65536)
-#define kJB__Tk_ThingWord (131072)
-#define kJB__Tk_TmpOpp (2048 | 32768)
-#define kJB__Tk_words_line (262144)
+#define kJB__Tk_Opp ((((1024 | 2048) | 4096) | 8192) | 16384)
+#define kJB__Tk_OppBra (1024)
+#define kJB__Tk_OppChain (8192 | 1024)
+#define kJB__Tk_OppSyx (2048)
+#define kJB__Tk_OppTemporal (4096)
+#define kJB__Tk_OppWord (8192)
+#define kJB__Tk_OppYoda (16384)
+#define kJB__Tk_SyntacticComment (64)
+#define kJB__Tk_Temporal (32768 | 65536)
+#define kJB__Tk_TemporalSyx (65536)
+#define kJB__Tk_TemporalWord (32768)
+#define kJB__Tk_Thing (131072 | 262144)
+#define kJB__Tk_ThingSyx (131072)
+#define kJB__Tk_ThingWord (262144)
+#define kJB__Tk_TmpOpp (4096 | 65536)
+#define kJB__Tk_words_line (524288)
 #define kJB__Tk_LargestFlag (20)
 extern int JB__Tk_StopBars;
 //
@@ -505,7 +506,7 @@ extern SyntaxObj* JB__FuncArray_[64];
 extern u8 JB__FuncParent_[64];
 extern Dictionary* JB__SyxDict_;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_221)
+#define kJB_SaverStart1 (JB_str_222)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -757,6 +758,7 @@ extern JB_String* JB_str_32;
 extern JB_String* JB_str_320;
 extern JB_String* JB_str_321;
 extern JB_String* JB_str_322;
+extern JB_String* JB_str_323;
 extern JB_String* JB_str_33;
 extern JB_String* JB_str_34;
 extern JB_String* JB_str_35;
@@ -848,7 +850,6 @@ extern Syntax JB_SyxDot;
 extern Syntax JB_SyxEmb;
 extern Syntax JB_SyxERel;
 extern Syntax JB_SyxFunc;
-extern Syntax JB_SyxIndt;
 extern Syntax JB_SyxItem;
 extern Syntax JB_SyxList;
 extern Syntax JB_SyxMsg;
@@ -867,6 +868,7 @@ extern Syntax JB_SyxSThg;
 extern Syntax JB_SyxStr;
 extern Syntax JB_SyxThg;
 extern Syntax JB_SyxTmp;
+extern Syntax JB_SyxTodo;
 extern Syntax JB_SyxTRel;
 extern Syntax JB_SyxType;
 extern Syntax JB_SyxUnit;
@@ -1392,21 +1394,23 @@ JB_String* JB_Constants__Test();
 
 
 // Tk
+Message* JB_Tk__Avoid();
+
 Message* JB_Tk__BarThings(int Start, Syntax Syx);
 
 Message* JB_Tk__BeforeRelSub(int Start, bool Mode);
 
 Message* JB_Tk__ChainTemporalRels(Message* FirstThing, Message* opp);
 
-bool JB_Tk__ConsumeLines(Message* output, Message* msg);
+bool JB_Tk__ConsumeLines(Message* output, Message* msg, Syntax syx);
 
 Message* JB_Tk__DotSub(Syntax fn, int Start);
 
-int JB_Tk__EmbeddedArg(JB_String* close, Message* result, Syntax Mode);
+int JB_Tk__EmbeddedArg(JB_String* close, Message* result, Syntax Syx);
 
-int JB_Tk__EmbeddedCode(JB_String* close, Message* dest, int Mode);
+int JB_Tk__EmbeddedCode(JB_String* close, Message* dest, Syntax Syx);
 
-Message* JB_Tk__ErrorAdd(JB_String* s, int Start, bool WasEnder);
+Message* JB_Tk__ErrorAdd(JB_String* s, int Start);
 
 void JB_Tk__ErrorEvent2(int Start, int ExpectedBits, int RealBits);
 
@@ -1423,6 +1427,8 @@ Message* JB_Tk__fAdjectiveThing(int Start);
 Message* JB_Tk__fAfterRel(int Start);
 
 Message* JB_Tk__fAnaphoricReference(int Start);
+
+Message* JB_Tk__fArgOpen(int Start);
 
 Message* JB_Tk__fArray(int Start);
 
@@ -1452,9 +1458,13 @@ Message* JB_Tk__fDecl(int Start);
 
 Message* JB_Tk__fDot(int Start);
 
+Message* JB_Tk__fEndOfLine(int Start);
+
 Message* JB_Tk__fError(int Start);
 
 Message* JB_Tk__fFuncCall(int Start);
+
+Message* JB_Tk__fIndentError(int Start);
 
 int JB_Tk__FindError(int num);
 
@@ -1479,8 +1489,6 @@ Message* JB_Tk__fQuestion(int Start);
 Message* JB_Tk__fSDot(int Start);
 
 Message* JB_Tk__fShebang(int Start);
-
-Message* JB_Tk__fStatementOpen(int Start);
 
 Message* JB_Tk__fString2(int Start);
 
@@ -1540,7 +1548,7 @@ Message* JB_Tk__ParseItem(Message* ch, int TemporalFlags);
 
 bool JB_Tk__ParseLoop(Message* Output, JB_String* Ender);
 
-bool JB_Tk__ParseLoopMode(Message* Output, int Flags);
+bool JB_Tk__ParseLoopMode(Message* Output, Syntax Syx);
 
 Message* JB_Tk__ProcessThing(int Ops, bool Expect);
 
@@ -1566,15 +1574,7 @@ bool JB_Platform__linux();
 
 
 // main
-void JB_BadRefCounts();
-
 void JB_BinaryEscapeTest(JB_String* AllBytes);
-
-JB_Object* JB_brc1(JB_Object* a);
-
-JB_Object* JB_brc2(JB_Object* a);
-
-JB_Object* JB_brc3(JB_Object* a);
 
 bool JB_CompareError(Message* expected, Message* found);
 
@@ -1820,6 +1820,8 @@ JB_String* JB_Date_Render(Date self, FastString* fs_in);
 
 
 // Syntax
+int JB_Syntax_Lineflags(Syntax self);
+
 JB_String* JB_Syntax_LongName(Syntax self);
 
 Message* JB_Syntax_Msg(Syntax self, JB_String* name);
@@ -1905,7 +1907,7 @@ Syntax JB_Syntax__StdNew(fpMsgRender msg, JB_String* name, JB_String* LongName);
 
 
 // JB_Object
-void JB_DebugPrint(JB_Object* self);
+void jdb(JB_Object* self);
 
 bool JB_Object_FastIsa(JB_Object* self, JB_Class* x);
 
@@ -2101,6 +2103,8 @@ bool JB_Str_SyntaxEquals(JB_String* self, JB_String* Other, bool Aware);
 void JB_Str_SyntaxExpect(JB_String* self);
 
 JB_String* JB_Str_Unescape(JB_String* self);
+
+Array* JB_Str_Words(JB_String* self);
 
 
 
@@ -2393,8 +2397,6 @@ void JB_Msg_Func__(Message* self, FastString* fs);
 
 JB_String* JB_Msg_FuncName(Message* self);
 
-void JB_Msg_Indt__(Message* self, FastString* fs);
-
 int64 JB_Msg_Int(Message* self);
 
 void JB_Msg_Item__(Message* self, FastString* fs);
@@ -2437,8 +2439,6 @@ void JB_Msg_Rel__(Message* self, FastString* fs);
 
 JB_String* JB_Msg_Render(Message* self, FastString* fs_in);
 
-void JB_Msg_RenderIndent(Message* self, FastString* fs, bool arg);
-
 void JB_Msg_RenderPrm(Message* self, FastString* fs, byte b1, byte b2);
 
 void JB_Msg_RenderWithSpaces(Message* self, FastString* fs, Message* ch);
@@ -2480,6 +2480,8 @@ bool JB_Msg_TestSub(Message* self, JB_String* new_render, JB_String* name);
 void JB_Msg_Thg__(Message* self, FastString* fs);
 
 void JB_Msg_Tmp__(Message* self, FastString* fs);
+
+void JB_Msg_Todo__(Message* self, FastString* fs);
 
 bool JB_Msg_TreeCompare(Message* self, Message* other);
 
@@ -2612,91 +2614,91 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
 
 //// HEADER SyntaxConstants.h
 #define kSyxArg 0
-#define kSyxIndt 1
-#define kSyxAcc 2
-#define kSyxAdj 3
-#define kSyxARel 4
-#define kSyxArr 5
-#define kSyxBack 6
-#define kSyxSStr 7
-#define kSyxBra 8
-#define kSyxBRel 9
-#define kSyxChar 10
-#define kSyxDecl 11
-#define kSyxDot 12
-#define kSyxEmb 13
-#define kSyxERel 14
-#define kSyxFunc 15
-#define kSyxItem 16
-#define kSyxList 17
-#define kSyxName 18
-#define kSyxNum 19
-#define kSyxUnit 20
-#define kSyxOat 21
-#define kSyxOpp 22
-#define kSyxSOpp 23
-#define kSyxRel 24
-#define kSyxTRel 25
-#define kSyxSDot 26
-#define kSyxSCom 27
-#define kSyxSheb 28
-#define kSyxStr 29
-#define kSyxSThg 30
-#define kSyxThg 31
-#define kSyxTmp 32
-#define kSyxAna 33
-#define kSyxSCnj 34
-#define kSyxCnj 35
-#define kSyxType 36
-#define kSyxYoda 37
-#define kSyxYopp 38
-#define kSyxAsk 39
-#define kSyxMsg 40
+#define kSyxAcc 1
+#define kSyxAdj 2
+#define kSyxARel 3
+#define kSyxArr 4
+#define kSyxBack 5
+#define kSyxSStr 6
+#define kSyxBra 7
+#define kSyxBRel 8
+#define kSyxChar 9
+#define kSyxDecl 10
+#define kSyxDot 11
+#define kSyxEmb 12
+#define kSyxERel 13
+#define kSyxFunc 14
+#define kSyxItem 15
+#define kSyxList 16
+#define kSyxName 17
+#define kSyxNum 18
+#define kSyxUnit 19
+#define kSyxOat 20
+#define kSyxOpp 21
+#define kSyxSOpp 22
+#define kSyxRel 23
+#define kSyxTRel 24
+#define kSyxSDot 25
+#define kSyxSCom 26
+#define kSyxSheb 27
+#define kSyxStr 28
+#define kSyxSThg 29
+#define kSyxThg 30
+#define kSyxTmp 31
+#define kSyxAna 32
+#define kSyxSCnj 33
+#define kSyxCnj 34
+#define kSyxType 35
+#define kSyxYoda 36
+#define kSyxYopp 37
+#define kSyxAsk 38
+#define kSyxMsg 39
+#define kSyxTodo 40
 #define kSyxBin 41
 
 
 
 #define JB_RB_Constants  "Arg = 0" ,\
- "Indt = 1" ,\
- "Acc = 2" ,\
- "Adj = 3" ,\
- "ARel = 4" ,\
- "Arr = 5" ,\
- "Back = 6" ,\
- "SStr = 7" ,\
- "Bra = 8" ,\
- "BRel = 9" ,\
- "Char = 10" ,\
- "Decl = 11" ,\
- "Dot = 12" ,\
- "Emb = 13" ,\
- "ERel = 14" ,\
- "Func = 15" ,\
- "Item = 16" ,\
- "List = 17" ,\
- "Name = 18" ,\
- "Num = 19" ,\
- "Unit = 20" ,\
- "Oat = 21" ,\
- "Opp = 22" ,\
- "SOpp = 23" ,\
- "Rel = 24" ,\
- "TRel = 25" ,\
- "SDot = 26" ,\
- "SCom = 27" ,\
- "Sheb = 28" ,\
- "Str = 29" ,\
- "SThg = 30" ,\
- "Thg = 31" ,\
- "Tmp = 32" ,\
- "Ana = 33" ,\
- "SCnj = 34" ,\
- "Cnj = 35" ,\
- "Type = 36" ,\
- "Yoda = 37" ,\
- "Yopp = 38" ,\
- "Ask = 39" ,\
- "Msg = 40" ,\
+ "Acc = 1" ,\
+ "Adj = 2" ,\
+ "ARel = 3" ,\
+ "Arr = 4" ,\
+ "Back = 5" ,\
+ "SStr = 6" ,\
+ "Bra = 7" ,\
+ "BRel = 8" ,\
+ "Char = 9" ,\
+ "Decl = 10" ,\
+ "Dot = 11" ,\
+ "Emb = 12" ,\
+ "ERel = 13" ,\
+ "Func = 14" ,\
+ "Item = 15" ,\
+ "List = 16" ,\
+ "Name = 17" ,\
+ "Num = 18" ,\
+ "Unit = 19" ,\
+ "Oat = 20" ,\
+ "Opp = 21" ,\
+ "SOpp = 22" ,\
+ "Rel = 23" ,\
+ "TRel = 24" ,\
+ "SDot = 25" ,\
+ "SCom = 26" ,\
+ "Sheb = 27" ,\
+ "Str = 28" ,\
+ "SThg = 29" ,\
+ "Thg = 30" ,\
+ "Tmp = 31" ,\
+ "Ana = 32" ,\
+ "SCnj = 33" ,\
+ "Cnj = 34" ,\
+ "Type = 35" ,\
+ "Yoda = 36" ,\
+ "Yopp = 37" ,\
+ "Ask = 38" ,\
+ "Msg = 39" ,\
+ "Todo = 40" ,\
  "Bin = 41" ,\
 
 

@@ -68,8 +68,6 @@ extern "C" {
     JB_String* JB_Tk__Data ();
     void JB_Tk__DataSet (JB_String* Data);
     void JB_Tk__ErrorEventSet (TokErrorEvent fp);
-    struct Message;
-    Message* JB_Tk__Avoid();
 
     TokHan* JB_TH_Link(TokHan* self, u32 BitTypes, fpTok FuncName);
     

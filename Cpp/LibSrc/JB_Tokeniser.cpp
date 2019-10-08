@@ -20,10 +20,6 @@ Tokeniser OurModule;
 #define self (&OurModule)
 ////////////////////////////////////////////////////////////////////////////////
 
-JB_Object* DummyTokHan_( int TokenAfter ) {
-    return self; // right???
-}
-
 int JB_Tk__ErrorStart () {
     return self->ErrorStart;
 }
@@ -31,10 +27,6 @@ int JB_Tk__ErrorStart () {
 extern JB_String* JB__Tk_Data;
 void JB_Tk__ErrorStartSet (int Start) {
     self->ErrorStart = Start;
-}
-
-Message* JB_Tk__Avoid () {
-    return (Message*)(&OurModule);
 }
 
 /// stuff
@@ -144,11 +136,12 @@ void JB_Tk__StartParse( JB_String* Data ) {
 	self->ErrorStart = -1;
 }
 
+JB_Object* DummyTokHan_( int TokenAfter );
+
 
 void SetBits_(TokHan* T, u32 BitTypes, fpTok Func) {
-    if (!Func) {
-        Func = (fpTok)DummyTokHan_;
-    }
+	dbgexpect(Func)
+	dbgexpect(BitTypes == -1 or BitTypes < 1<<kTokHanSize);
 	for (u32 i = 0; i < kTokHanSize; i++) {
 		u32 x = (1 << i);
 		if (BitTypes & x) {
@@ -258,7 +251,6 @@ int JB_Tk__CleanSpacesSub (  ) {
 	
 	while (S < N) {
 		int C = A[S++];
-		
 		if (C==' ' || C=='\t') {
 			continue;
 		}

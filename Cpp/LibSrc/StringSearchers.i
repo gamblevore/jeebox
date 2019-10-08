@@ -308,17 +308,20 @@ int JB_Str_InStr( JB_String* self, JB_String* f, int BeginOff, int AfterOff, boo
 
 
 int JB_Str_Byte( JB_String* self, int StartOff, int AfterOff, int SearchChar, bool Find ) {
-    MiniStr S = ReadAddrs_( self, StartOff, AfterOff );
-    int Dir = S.Dir();
-    
-    while (	S ) {
-        if ((S.Move(Dir) == SearchChar) == Find) {
-            return ResultFix_(S, self, Dir);
-        }
-    }
+	if (self) {
+		MiniStr S = ReadAddrs_( self, StartOff, AfterOff );
+		int Dir = S.Dir();
+		
+		while (	S ) {
+			if ((S.Move(Dir) == SearchChar) == Find) {
+				return ResultFix_(S, self, Dir);
+			}
+		}
+	}
     
     return -1;
 }
+
 
 int JB_Str_InByte( JB_String* self, int StartOff, int AfterOff, int SearchChar ) {
     return JB_Str_Byte( self, StartOff, AfterOff, SearchChar, true );

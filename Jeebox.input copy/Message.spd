@@ -1,0 +1,912 @@
+
+/*
+	Jeebox internals. By Theodore H. Smith...
+*/
+
+
+|Dictionary of SyntaxObj|   _SyxDict_ = Dictionary.New // needs to be in this file, and at root. compiler limitation... init order.
+|SyntaxObj[64]|			 _FuncArray_
+|u8[64]|					_FuncParent_   // bra->list, indt->arg
+
+
+
+class Message (RingTree) {
+	contains		Message
+	cpp_part		Msg
+	visible			true
+	
+////////////////
+	|string|		Name
+	|Object(tag)|   Obj // Allow users to attach interesting information.
+	|int|   		Position
+	|uint16|		MoreFlags
+	|Syntax|		Func
+	|u8|			UserFlags
+////////////////
+
+	constructor  (|Message| other) {
+		cpp_part ConstructorCopy
+		super.constructor
+		
+		.func = other.func
+		.Name = other.Name
+		.Position = other.Position
+		.Obj = other.Obj
+	}
+
+	constructor (|Syntax| Func, |string| Name) {
+		cpp_part ConstructorFuncName
+		super.constructor
+		.func = Func
+		.Name = Name
+		.Position = parser.BaseMessagePosition
+	}
+	
+	constructor (|Message| Parent, |Syntax| Func) {
+		cpp_part ConstructorParentFunc
+		super.constructor(Parent)
+		.Func = Func
+		.Position = parser.BaseMessagePosition
+	}
+
+	constructor (|Message| Parent, |Syntax| Func, |String| Name ) {
+		cpp_part ConstructorParentFuncName
+		super.constructor(Parent)
+		.Name = Name
+		.Func = Func
+		.Position = parser.BaseMessagePosition
+	}
+	
+	constructor (|Message| Parent, |Syntax| Func, |int| BytePos, |String| Name ) {
+		cpp_part ConstructorParser
+		super.constructor(Parent)
+		
+		.Position = BytePos
+		.Func = Func
+		.Name = Name
+	}
+	
+///////////////////////////////////////////////////////////////////////////////
+
+	function LayerCopy (|MemoryLayer| L, |Message|) {
+		|| Result = Message.NewWithLayer(L, self) // looks better
+		for (v : self) {
+			Result ~ v.LayerCopy(L)
+		}
+		return result
+	}
+	
+	function NormalCopy (|Message|) {
+		|| Result = Message(.Func, .name)
+		for (v : self) {
+			Result ~ v.NormalCopy
+		}
+		return result
+	}
+	
+	function Copy (|bool| DefaultLayer=false, |Message|) {
+		if (defaultlayer) {
+			return .NormalCopy
+		} else {
+			return .LayerCopy(.memorylayer)
+		}
+	}
+		
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+	function RenderIndent (|faststring| fs, |bool| arg) { opt norefcounts
+		|| P = .parent
+		if P {
+			if (Arg) {
+				fs ~ '{'
+			}
+			fs ~ '\n'
+			fs.indent++
+		}
+		
+		.FSListArg( fs )
+		
+		if (P) {
+			fs.indent--
+			fs.appendindent
+			if (Arg) {
+				fs ~ '}'
+			}
+		}
+	}
+	
+	
+	syx Arg (Argument) {
+		.renderindent(fs, true)
+	}
+	
+	
+	syx Indt (Indentation) {
+		.renderindent(fs, false)
+	}
+	
+	
+	function RenderPrm (|FastString|fs, |byte|b1, |byte|b2) {
+		fs ~ b1
+		.FSListSep( fs, ", " )
+		fs ~ b2
+	}
+	
+	syx Acc (Access) {
+// 						  		b[2]
+		fs ~ .First
+		.Last.RenderPrm(fs, '[', ']')
+	}
+	
+	
+	syx Adj (Adjective) {
+		fs ~ .First
+		fs ~ '~'
+		fs ~ .Last
+	}
+	
+	
+//	syx App (Append) {
+//								a ~~ b ~~ c ~~ d
+//		.FSListSep( fs, " ~~ " )
+//	}
+	
+	syx ARel (After_Relationship) {
+		fs ~ .First
+		fs ~ .Name
+	}
+	
+	syx Arr (Array) {
+//							  [b, c]
+		fs ~ '['
+		.FSListSep( fs, ", " )
+		fs ~ ']'
+	}
+	
+	syx Back (Backtick) {
+//				  `abc`
+		if (.name.find('`').found) {
+			.str__(fs) //  `abc`def` --> "abc`def"
+		} else {
+			fs ~ '`'
+			fs ~ .Name
+			fs ~ '`'
+		}
+	}
+
+	syx SStr (Super_String) {
+//				  <(`abc`)>
+		if (.name.find("`)>").found) {
+			.str__(fs)
+		} else {
+			fs ~ "<(`"
+			fs ~ .Name
+			fs ~ "`)>"
+		} 
+	}
+	
+
+	
+	syx Bra (Bracket) {
+//								(a + b)
+		fs ~ '('
+		fs ~ .First
+		fs ~ ')'
+	}
+	
+	syx BRel (Before_Relationship) {
+		fs ~ .name
+		fs ~ .First
+	}
+	
+	syx Char (Character) {
+//							   'x'
+		fs ~ '\''
+		fs ~ .Name.EscapeChr
+		fs ~ '\''
+	}
+	
+	syx Decl (Declaration) {
+//							   |x| a = b
+
+		|| ch = .First			#require
+		
+		fs ~ '|'
+		fs ~ ch
+		fs ~ '|'
+
+		ch++
+		while (ch) {
+			fs ~ ' '
+			fs ~ ch
+			ch++
+		}
+	}
+	
+	syx Dot (Dot) {
+//								x.fn(a)
+		|| ch = .First					#require
+		fs ~ ch
+		fs ~ '.'
+		fs ~ .Name
+		fs ~ ch.Next
+	}
+	
+	syx Emb (Embedded_Value) {
+		fs ~ .Name
+
+		require .HasChildren
+		.RenderWithSpaces(fs)
+	}
+	
+	syx ERel (Equals_Relationship) {
+		|| ch = .First					#require
+		fs ~ ch
+		fs ~ ' '
+		
+		++ch							#require
+		fs ~ ch
+		fs ~ "= "
+
+		++ch
+		fs ~ ch$
+	}
+	
+	syx Func (Function) {
+//								 fn(a)
+		|| ch = .First				  #require
+		fs ~ ch
+		fs ~ ch.Next
+	}
+	
+	syx Item {
+//								   a: b
+		|| ch = .First#require
+		fs ~ ch
+		fs ~ ": "
+		fs ~ ch.Next
+	}
+	
+	syx List { opt norefcounts
+		fs ~ '('
+
+		|| count = 0
+		for (ch : self) {
+			count++
+			if (count > 1) {
+				fs ~ ", "
+			} elseif (ch == @Item) or (ch == @Decl) {
+				count = 2
+			}
+			fs ~ ch
+		}
+		
+		if (Count == 1) {
+			if (!.next and ((.parent==@dot) or (.parent==@func))) {
+				//
+			} else {
+				fs ~ ','
+			}
+		}
+		
+		fs ~ ')'
+	}
+
+	syx Name {
+		|| ch = .First
+		if (ch) {
+			fs ~ .Name	  // sonic
+			fs ~ " @ "			
+			fs ~ ch		 // the~hedgehog
+		} else {
+			fs ~ '@'
+			fs ~ .Name
+		}
+	}
+	
+	
+	syx Num (Number) { opt norefcounts
+		fs ~ .Name // 123
+	}
+
+	
+	syx Unit {
+		|| num = .first.name
+		fs ~ num // 20cm
+		if (num.ishexlike) and (num.last != '_') {	   // 0xFF
+			fs ~ '_'
+		}
+		fs ~ .name  // 20cm, 0xFF_cm
+	}
+	
+	
+	syx Oat (Operator_As_Thing) {
+		fs ~ '%'
+		.renderwithspaces(fs)
+	}
+	
+	
+	syx Opp (Operator) {
+		fs ~ .Name
+	}
+	
+	
+	syx SOpp (Syntactic_Operator) {
+		fs ~ .Name
+	}
+
+////////////////////////////////////////////////////////////////////////////////		
+	
+	function RenderWithSpaces (|FastString| fs, |Message|ch=nil) { opt norefcounts
+		ch := .First
+
+		while (ch) {
+			fs ~ ch
+			ch = ch.next #require
+			fs ~ ' '
+		}
+	}
+
+	syx Rel (Relationship) {
+		.RenderWithSpaces(fs)
+	}
+	
+	syx TRel (Temporal_Relationship) {
+		.RenderWithSpaces(fs)
+	}
+	
+
+	syx SDot (Self_Dot) {
+		// .fn
+		// .fn(a)
+
+		fs ~ '.'
+		fs ~ .name
+		fs ~ .First
+	}
+	
+	syx SCom (Syntactic_Comment) {
+	// blazing living magic rage
+		|| ch = .first
+
+		fs ~ ch.next
+		
+		fs ~ " /# "
+		if ch.HasOneChild {
+			fs ~ ch.First
+		} else {
+			fs ~ '\n'
+			ch.FSListArg( fs )
+		}
+		fs ~ " #/"
+	// that burns...
+	// it's what I want. It's what I need.
+	}
+	
+	syx Sheb (Shebang) {
+	// i need it.
+		fs ~ "#!"
+		fs ~ .Name
+	}
+	
+	syx Str (String) {
+		fs ~ '"'
+		fs.appendescape(.name)
+
+		for (ch : self) {
+			if (ch == @Emb) {
+				fs.appendescape(ch.Name)
+			} else {
+				fs ~ '$'
+				fs ~ '{'
+				fs ~ ch
+				fs ~ '}'
+			}
+		}
+		fs ~ '"'
+	}
+
+	syx SThg (Syntactic_Thing) {
+		fs ~ .Name
+	}
+
+	syx Thg (Thing) {
+		fs ~ .Name
+	}
+	
+	syx Tmp (Statement) { opt norefcounts
+//		 							return x
+		if (.parent != @arg) and (.prev != @arg) {
+			fs ~ "::"
+		}
+		fs ~ .name
+
+		require .HasChildren
+		fs ~ ' '
+		.RenderWithSpaces(fs)
+	}
+	
+	syx Ana (Temporal_Reference) {
+		fs ~ "–"
+		fs ~ .Name
+	}
+
+	syx SCnj (Syntactic_Conjugate) {
+//								  a - b --> b + -a
+		fs ~ .Name
+	}
+
+	syx Cnj (Conjugate) {
+//								  I eat cheese #when I feel hungry
+		fs ~ '#'
+		fs ~ .Name
+	}
+	
+	syx Type (Typecast) {
+//									 a|x|
+		|| ch = .First			#require
+		fs ~ ch
+		fs ~ '|'
+		ch++
+		if (ch) {
+			fs ~ ch
+		}
+		fs ~ '|'
+	}
+
+	syx Yoda (Yoda_Relationship) {
+		// thing, thing, op, always three!
+		// you have~become powerful == powerful ¬ you have~become
+		fs ~ .last
+		fs ~ " ¬ "
+		fs ~ .first
+		fs ~ ' '
+		fs ~ .first.next
+	}
+
+	syx Yopp {} // yoda opp
+
+
+	syx Ask (Question) {
+		|| first = .first
+		|| op = first.next
+		fs ~ "∆"
+		fs ~ op
+		fs ~ ' '
+		fs ~ first
+
+		|| last = op.next
+		if (last) {
+			fs ~ ' '
+			fs ~ last
+		}
+	}
+
+
+	syx Msg (Message_List) {
+		fs ~ "«"
+		.FSListSep(fs, " ")
+		fs ~ " »"
+	}
+
+
+	function Dummy (fpMsgRender) {
+		// Dummy function used by .ExportAddr. Stops crashes if someone calls export but hasn't set his own function yet.
+	}
+
+	
+	function Message.ConvertJSONToJB { opt norefcounts
+		for (m:self) {
+			if (m == @item) {
+				|| Tmp = m.first // a string
+				m.prev = Tmp
+				Tmp.Func = @tmp // dangerous. need to fix. {"a b c ":"d"} gives a tmp of "a b c"
+								// maybe ::"name" is a valid tmp?
+				|| value = m.first
+				Tmp ~ value
+				m.remove
+				value.ConvertJSONToJB
+			} else {
+				m.ConvertJSONToJB
+			}
+		}
+	}
+
+	render {
+		fs ~ self
+	}
+
+
+	function AST_Spaces (|int| Spaces=4, |string|) { // for "jb" tool
+		cpp_part AST_Spaces
+		|| fs = faststring.new
+		fs.indentchar = ' '
+		fs.indentmul = spaces
+		.ast(fs)
+		return fs
+	}
+	
+	render AST {
+		|| PrintSelf = (.parent or self!=@arg) 
+		if (PrintSelf) {
+			fs ~ '('
+			fs ~ .Func.name
+			fs ~ ": "
+			if (.name) {
+				.name.render(fs)
+			}
+		}
+		if (.HasChildren) {
+			fs.indent += printself|int|
+			for (ch : self) {
+				fs ~ '\n'
+				fs.appendindent
+				ch.ast(fs)
+			}
+			fs.indent -= printself|int|
+			fs ~ '\n'
+			fs.appendindent
+		}
+		if (PrintSelf) {
+			fs ~ ')'
+		}
+	}
+	
+	
+	function UnEmbed {
+		|| s1 = .First
+		if ((s1 == @Emb) and !s1.Next) {
+			s1.Remove
+			.Name = s1.Name
+		}
+	}
+
+
+	function FSListSep (|FastString| fs, |String| sep) {
+		for (ch : self) {
+			fs ~ sep
+		start
+			fs ~ ch
+		}
+	}
+
+	function FSListArg (|FastString| fs) {
+		for (ch : self) {
+			fs.AppendIndent
+			fs ~ ch
+			fs ~ '\n'
+		}
+	}
+
+	function FuncName (|string|) {
+		return .Func.LongName.lowercase
+	}
+
+
+	function Ancestor (|Syntax| Func, ||) {
+		for (curr.up : .parent) {
+			if (curr == Func) {
+				return curr//#wawawa
+			}
+		}
+	}
+
+
+	function FixTRels (|Message| Last, |Message|) {
+		if (!Last) {
+			//
+
+		} elseif !(Last == @Trel) {
+			self ~ Last
+
+		} else { // I think this works!
+			self ~ Last.First
+			Last.First = self
+			self = Last
+		}
+		return self
+	
+//	(a loves b) #while (b hates c #then a hates c)
+//	(a loves b #while b hates c) #then a hates c
+	}
+
+
+	function ReplaceWithCopy (|| msg, ||) {
+		|| result = msg.Copy
+		.ReplaceWith(result)
+		return result
+	}
+
+
+
+
+	function Nyme (|string|) {
+		// this function won't be necessary in the future!
+		if (self) {
+			return .Name 
+		}
+	}
+
+	function Parent (|Syntax| f, |Message|) { opt norefcounts
+		cpp_part ParentSyx
+		for (ch.Up : self.parent) {
+			if (ch.Func == f) {
+				return ch
+			}
+		}
+	}
+	
+	function Find (|syntax| f, |string| name, |bool|Err = false, |Message|) { opt norefcounts
+		for (ch.flat : self) {
+			if (ch == f) and (ch ~= name) {
+				return ch
+			}
+		}
+		if (err) {
+			.accesserr(f, name)
+		}
+	}
+
+	function FastString.MsgErrorName (|string| name) {
+		if (name) {
+			self ~ " '"
+			self ~ name
+			self ~ "' "
+		}
+	}
+	
+	function AccessErr (|syntax|s, |string| name=nil) {
+		if (!self) {
+			jb_api.NilHandler
+			return
+		}
+		|| fs = faststring.new
+		fs ~ "Missing "
+		fs ~ s.longname
+		fs.MsgErrorName(name)
+		StdErr.NewError( self, fs.getresult )
+	}
+
+	function AccessErr (|int| i) {
+		cpp_part AccessErrInt
+		|| ErrString = "Missing child $i"
+		StdErr.NewError( self, ErrString )
+	}
+
+	
+	function Message.ExpectLast (|string| err="", |bool|) {
+		if (!self) {return false}
+		|| N = .next
+		if (!N) {
+			return true
+		}
+		N.syntaxexpect(err)
+	}
+	
+	function Message.Expect (|syntax| type, |string| name="", |bool|) {
+		if (!self) {
+			return true
+		} 
+		if (.Func == type) or !type {
+			if (!name or (.name ~= name)) {
+				return true
+			}
+		}
+		
+		|| fs = faststring.new
+		fs ~ "Expected "
+		if (type) {
+			fs ~ Type.longname
+		}
+		fs.msgerrorname(name)
+		fs ~ ", but found "
+		fs ~ .Func.longname
+		fs.msgerrorname(.name)
+		error (self, fs)
+		return false
+	}
+	
+	
+	syntax Access (|int| n, ||)  {
+		cpp_part AccessAsNum
+		return self|ringtree|[n]|...|
+	}
+
+
+	Syntax Access (|int| n, |syntax|s, |message|) {
+		cpp_part AccessNumSyxErr, opt norefcounts
+		|| C = self$[n]
+		if (c and c.Func == s) {
+			return c
+		}
+
+		if (!c) {
+			error (self, "Missing " + s.longname)
+		} else {
+			error (c, "Expected ${s.longname} but found ${c.Func.longname}") 
+		}
+	}
+
+
+	syntax access (|Syntax| s, |string| name, |bool|Err=false, |Message|) {
+		opt norefcounts, cpp_part AccessSyxName
+		
+		for (ch : self) {
+			if (ch == s) and (ch == name) {
+				return ch
+			}
+		}
+		if (Err) {
+			.accesserr(s, name)
+		}
+	}
+	
+	
+	syntax access (|Syntax| s, |Message|) { opt norefcounts
+		cpp_part AccessSyx
+		for (ch : self) {
+			if (ch == s) {
+				return ch
+			}
+		}
+	}
+
+/*		
+	syntax access (Syntax s, Message) , opt norefcounts, cpp_part AccessSyx
+		for (ch : self)
+			if (ch == s)
+				return ch
+*/
+	
+	syntax access (|Syntax| s, |bool| Err, |Message|) { opt norefcounts
+		cpp_part AccessSyxErr
+		for (ch : self) {
+			if (ch == s) {
+				return ch
+			}
+		}
+		if (Err) {
+			.accesserr(s)
+		}
+	}
+	
+	syntax access (|syntax|s, |int| i, |bool| Err, |Message|) { opt norefcounts
+		cpp_part AccessNumErr
+		require self
+		|| ch = self[i]
+		if (ch and (!s or ch==s)) {return ch}
+		if (Err) {
+			if (s) {
+				.accesserr(s)
+			} else {
+				.accesserr(i)
+			}
+		}
+	}
+	
+	syntax accessexpect (|syntax|s, |Message|) { opt norefcounts
+		cpp_part ExpectSyx
+		return self[s, true]
+	}
+	
+	syntax accessexpect (|syntax| s, |string| name, |Message|) { opt norefcounts
+		cpp_part ExpectSyxName
+		return self[s, name, true]
+	}
+	
+	syntax accessexpect (|syntax|s, |int| i, |Message|) { opt norefcounts
+		cpp_part ExpectNumErr
+		return self[s, i, true]
+	}
+	
+	function Next (|syntax|s, |Message|) { opt norefcounts
+		|| ch = .next
+		if (ch==s) {return ch}
+		ch.accesserr(s)
+	}
+	
+	operator is (|syntax| other, |bool|) {
+		return self and (self.Func == other)
+	}
+
+	syntax Compare (|string| Other, |bool|Aware, |int|) {
+		return .name.Compare(other, Aware)
+	}
+
+	syntax equals (|string| name, |bool|Aware, |bool|) {
+		return self and .name.equals( name, aware )
+	}
+
+	syntax equals (|Syntax| X, |bool|Aware, |bool|) {
+		cpp_part SyxOppEquals
+		return self and (.Func == X)
+	}
+	
+
+	module {
+		function Dictionary.Syntax (|string| Key, ||)				  { return self[key.SyntaxLower] }
+
+		function String.SyntaxLower (|string|) {
+			cpp_wrapper JB_Str_FastLower
+		}
+
+		function GetSyx (|Message| msg, |Syntaxobj|) {
+			return _syxdict_.Syntax( msg.name )   #expect (msg, "Can’t find syntax: ${msg.name}")
+		}
+	}
+	
+
+}
+
+
+
+////\\\\////\\\\////\\\\////\\\\////\\\\////\\\\////\\\\////\\\\////\\\\////\\\\
+
+
+
+extend Message {
+	function ClearPosition {
+		.Position = -1
+	}
+
+	function HasPosition (|bool|) {
+		return .Position >= 0
+	}
+
+	function Export (|FastString| fs) {
+		(.Func.ExportAddr)( self, fs )
+	}
+
+	function SyntaxExpect ( |string| Error = nil ) {
+		cpp_part Fail
+
+		if (Error) {
+			// 
+		} elseif (self) {
+			Error = "Unexpected syntax. Found ${.FuncName} “${.Render}”"
+		} else {
+			debugger
+			Error = "Internal error."
+		}
+		StdErr.NewError( self, Error )
+	}
+	
+	function SyntaxWarn ( |string| Error = nil ) {
+		cpp_part Warn
+
+		Error := "Unexpected syntax. Found ${.FuncName} “${.Render}”"
+		StdErr.NewWarning( self, Error )
+	}
+	
+	function SyntaxAppend (|syntax| Fn, |string|name="") {
+		fn.msg(self, name)
+	}
+	
+	function SyntaxAppend (|int| Num) {
+		cpp_Part AppendNum
+		@num.msg(self, num.render)
+	}
+}
+
+
+
+function message.Int (|int64|) {
+	return .name.parseint(self)
+}
+
+function message.Float (|f64|) {
+	return .name.parsefloat(self)
+}
+
+
+
+function FastString.SyntaxAppend (|Message| msg) {
+	cpp_part AppendMsg
+	if (msg) {
+		(msg.Func.RenderAddr)( msg, self )
+	}
+}
+
+

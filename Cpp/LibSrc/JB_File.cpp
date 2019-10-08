@@ -417,6 +417,7 @@ JB_String* JB_File_PathFix_(JB_String* S) {
 
 
 void JB_File_Constructor( JB_File* self, JB_String* Path ) {
+	if (!Path) {Path = JB_Str_Empty();}
 	self->Path = JB_File_PathFix_(Path);
     JB_Incr(self->Path);
     self->FileDes = -1;

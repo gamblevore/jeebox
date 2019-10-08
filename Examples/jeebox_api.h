@@ -21,7 +21,7 @@
 */
 
 
-        // API
+		// API
 
 
 extern "C" {
@@ -31,13 +31,13 @@ extern "C" {
 typedef const char* _cstring;
 typedef void* _voidptr;
 #ifndef u8
-    typedef unsigned char  u8; 
+	typedef unsigned char  u8; 
 #endif
 #ifndef int64
-    typedef long long  int64; 
+	typedef long long  int64; 
 #endif
 #ifndef uint64
-    typedef unsigned long long  uint64; 
+	typedef unsigned long long  uint64; 
 #endif
 
 struct jbobject {int RefCount;};
@@ -67,11 +67,11 @@ jbmessage* jb_msg_next(jbmessage* self); /* Gets the next-sibling, if it exists.
 jbmessage* jb_msg_parent(jbmessage* self); /* Gets the parent of this node, if it exists. */
 jbmessage* jb_msg_flatnext(jbmessage* self); /* Lists over the tree as if it were one-dimensional! A kind of 'stateless-tree-traversal'! */
 jbmessage* jb_msg_flatafter(jbmessage* self); /* If you want to loop over all the nested-children (descendants) of one node, but that node is contained in a tree (it's not the root), you'll need to call this function first. Returned node is the 'end-marker'. Once you reach it, you stop. Example:
-    Message* SearchMe = TheMsgYouWantToSearch();
-    Message* LoopEnd = jb_msg_flatafter(SearchMe);
-    for (Message* LoopCurr = SearchMe;  LoopCurr!=LoopEnd;  LoopCurr = jb_msg_flatnext(LoopCurr)) {
-        DoSomethingTo(LoopCurr); // every descendant of SearchMe comes here!
-    }
+	Message* SearchMe = TheMsgYouWantToSearch();
+	Message* LoopEnd = jb_msg_flatafter(SearchMe);
+	for (Message* LoopCurr = SearchMe;  LoopCurr!=LoopEnd;  LoopCurr = jb_msg_flatnext(LoopCurr)) {
+		DoSomethingTo(LoopCurr); // every descendant of SearchMe comes here!
+	}
  */
 jbmessage* jb_msg_root(jbmessage* self); /* Finds the top-most parent. */
 void jb_msg_remove(jbmessage* self); /* Removes the node from the tree. */
@@ -80,7 +80,7 @@ jbstring* jb_msg_ast(jbmessage* self); /* Renders the structure of the tree in a
 jbmessage* jb_msg_parseast(jbmessage* self); /* Takes the output of jb_msg_ast and converts it back into a proper Jeebox tree. Used like this: tree = jb_msg_parseast(jb_str_parse(str)). */
 jbmessage* jb_msg_copy(jbmessage* self); /* Copies the node's entire tree structure, positions, names and all. */
 jbmessage* jb_msg_create(jbmessage* self, jbsyntax Type, jbstring* Name); /* Creates a new node with the type and name provided.
-    
+	
 The node is created as the last child of 'self'. If 'self' is nil... the node is created with no parent (this is fine). */
 void jb_msg_error(jbmessage* self, jbstring* ErrorMsg); /* Lets you add your own error messages to the tree. */
 jbmessage* jb_msg_expect(jbmessage* self, jbsyntax Type, jbstring* name, jbmessage* ErrPlace); /* Test the name and type, (or existance) of a message node. */
@@ -118,105 +118,105 @@ jbmessage* jb_errors(); /* Returns a list of errors as children of the returned 
 bool jb_ok(); /* Returns if any errors were detected. Doesn't change anything. Call jb_errors to actually get the error-list and remove them. */
 void jb_debug(jbobject* o); /* Prints a description of this object, useful for debugging. */
 int jb_init(int Flags); /* Inits Jeebox. Call this before any other Jeebox functions. Pass 1 to succeed silently, or else a message is printed. Returns zero for success.
-    
+	
 If jb_init fails it will try print a debug message. If jb_init returns 0x10000 that means an out-of-memory error occurred. You can free memory and try again. */
 int jb_shutdown(); /* Frees all memory used by jeebox! */
 int jb_version();
 jbstring* jb_readfile(_cstring path, bool AllowMissingFile); /* Reads entire file at this path. Relative paths are allowed. Will create jeebox-errors if the file can’t be read for any reason (missing file, out of memory, disk-error, etc).
-    
-    If AllowMissingFile is true then it's OK for the file to not exist, no error is created in that case. This helps make your code is a bit less pedantic. */
+	
+	If AllowMissingFile is true then it's OK for the file to not exist, no error is created in that case. This helps make your code is a bit less pedantic. */
 
 
 		// Jeebox Syntax
 
 #define JB_SyxArg 1;
 #define $arg 1
-#define JB_SyxIndt 2;
-#define $indt 2
-#define JB_SyxAcc 3;
-#define $acc 3
-#define JB_SyxAdj 4;
-#define $adj 4
-#define JB_SyxARel 5;
-#define $arel 5
-#define JB_SyxArr 6;
-#define $arr 6
-#define JB_SyxBack 7;
-#define $back 7
-#define JB_SyxSStr 8;
-#define $sstr 8
-#define JB_SyxBra 9;
-#define $bra 9
-#define JB_SyxBRel 10;
-#define $brel 10
-#define JB_SyxChar 11;
-#define $char 11
-#define JB_SyxDecl 12;
-#define $decl 12
-#define JB_SyxDot 13;
-#define $dot 13
-#define JB_SyxEmb 14;
-#define $emb 14
-#define JB_SyxERel 15;
-#define $erel 15
-#define JB_SyxFunc 16;
-#define $func 16
-#define JB_SyxItem 17;
-#define $item 17
-#define JB_SyxList 18;
-#define $list 18
-#define JB_SyxName 19;
-#define $name 19
-#define JB_SyxNum 20;
-#define $num 20
-#define JB_SyxUnit 21;
-#define $unit 21
-#define JB_SyxOat 22;
-#define $oat 22
-#define JB_SyxOpp 23;
-#define $opp 23
-#define JB_SyxSOpp 24;
-#define $sopp 24
-#define JB_SyxRel 25;
-#define $rel 25
-#define JB_SyxTRel 26;
-#define $trel 26
-#define JB_SyxSDot 27;
-#define $sdot 27
-#define JB_SyxSCom 28;
-#define $scom 28
-#define JB_SyxSheb 29;
-#define $sheb 29
-#define JB_SyxStr 30;
-#define $str 30
-#define JB_SyxSThg 31;
-#define $sthg 31
-#define JB_SyxThg 32;
-#define $thg 32
-#define JB_SyxTmp 33;
-#define $tmp 33
-#define JB_SyxAna 34;
-#define $ana 34
-#define JB_SyxSCnj 35;
-#define $scnj 35
-#define JB_SyxCnj 36;
-#define $cnj 36
-#define JB_SyxType 37;
-#define $type 37
-#define JB_SyxYoda 38;
-#define $yoda 38
-#define JB_SyxYopp 39;
-#define $yopp 39
-#define JB_SyxAsk 40;
-#define $ask 40
-#define JB_SyxMsg 41;
-#define $msg 41
+#define JB_SyxAcc 2;
+#define $acc 2
+#define JB_SyxAdj 3;
+#define $adj 3
+#define JB_SyxARel 4;
+#define $arel 4
+#define JB_SyxArr 5;
+#define $arr 5
+#define JB_SyxBack 6;
+#define $back 6
+#define JB_SyxSStr 7;
+#define $sstr 7
+#define JB_SyxBra 8;
+#define $bra 8
+#define JB_SyxBRel 9;
+#define $brel 9
+#define JB_SyxChar 10;
+#define $char 10
+#define JB_SyxDecl 11;
+#define $decl 11
+#define JB_SyxDot 12;
+#define $dot 12
+#define JB_SyxEmb 13;
+#define $emb 13
+#define JB_SyxERel 14;
+#define $erel 14
+#define JB_SyxFunc 15;
+#define $func 15
+#define JB_SyxItem 16;
+#define $item 16
+#define JB_SyxList 17;
+#define $list 17
+#define JB_SyxName 18;
+#define $name 18
+#define JB_SyxNum 19;
+#define $num 19
+#define JB_SyxUnit 20;
+#define $unit 20
+#define JB_SyxOat 21;
+#define $oat 21
+#define JB_SyxOpp 22;
+#define $opp 22
+#define JB_SyxSOpp 23;
+#define $sopp 23
+#define JB_SyxRel 24;
+#define $rel 24
+#define JB_SyxTRel 25;
+#define $trel 25
+#define JB_SyxSDot 26;
+#define $sdot 26
+#define JB_SyxSCom 27;
+#define $scom 27
+#define JB_SyxSheb 28;
+#define $sheb 28
+#define JB_SyxStr 29;
+#define $str 29
+#define JB_SyxSThg 30;
+#define $sthg 30
+#define JB_SyxThg 31;
+#define $thg 31
+#define JB_SyxTmp 32;
+#define $tmp 32
+#define JB_SyxAna 33;
+#define $ana 33
+#define JB_SyxSCnj 34;
+#define $scnj 34
+#define JB_SyxCnj 35;
+#define $cnj 35
+#define JB_SyxType 36;
+#define $type 36
+#define JB_SyxYoda 37;
+#define $yoda 37
+#define JB_SyxYopp 38;
+#define $yopp 38
+#define JB_SyxAsk 39;
+#define $ask 39
+#define JB_SyxMsg 40;
+#define $msg 40
+#define JB_SyxTodo 41;
+#define $todo 41
 #define JB_SyxBin 42;
 #define $bin 42
 
 
 #ifdef __nodebug
-    #undef __nodebug
+	#undef __nodebug
 #endif
 #if defined(__linux__)
 #define __nodebug inline __attribute__((__always_inline__)) // __nodebug__ doesn't exist on linux?
@@ -224,11 +224,11 @@ jbstring* jb_readfile(_cstring path, bool AllowMissingFile); /* Reads entire fil
 #define __nodebug inline __attribute__((__always_inline__, __nodebug__))
 #endif
 __nodebug void jb_incr(jbobject* s) {
-    if (s) {s->RefCount++;}
+	if (s) {s->RefCount++;}
 }
 
 __nodebug void jb_decr(jbobject* s) {
-    if (s) { if (--s->RefCount <= 0) {jb_delete_(s);} }
+	if (s) { if (--s->RefCount <= 0) {jb_delete_(s);} }
 }
 
 } // end-extern
