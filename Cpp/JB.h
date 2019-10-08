@@ -404,12 +404,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_224)
-#define kJB__ErrorColors_error (JB_str_225)
-#define kJB__ErrorColors_good (JB_str_226)
-#define kJB__ErrorColors_normal (JB_str_223)
-#define kJB__ErrorColors_underline (JB_str_226)
-#define kJB__ErrorColors_warn (JB_str_227)
+#define kJB__ErrorColors_bold (JB_str_223)
+#define kJB__ErrorColors_error (JB_str_224)
+#define kJB__ErrorColors_good (JB_str_225)
+#define kJB__ErrorColors_normal (JB_str_222)
+#define kJB__ErrorColors_underline (JB_str_225)
+#define kJB__ErrorColors_warn (JB_str_226)
 //
 
 
@@ -502,9 +502,10 @@ extern int JB__Tk_StopBars;
 
 // module: JB
 extern SyntaxObj* JB__FuncArray_[64];
+extern u8 JB__FuncParent_[64];
 extern Dictionary* JB__SyxDict_;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_222)
+#define kJB_SaverStart1 (JB_str_221)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -755,6 +756,7 @@ extern JB_String* JB_str_319;
 extern JB_String* JB_str_32;
 extern JB_String* JB_str_320;
 extern JB_String* JB_str_321;
+extern JB_String* JB_str_322;
 extern JB_String* JB_str_33;
 extern JB_String* JB_str_34;
 extern JB_String* JB_str_35;
@@ -846,6 +848,7 @@ extern Syntax JB_SyxDot;
 extern Syntax JB_SyxEmb;
 extern Syntax JB_SyxERel;
 extern Syntax JB_SyxFunc;
+extern Syntax JB_SyxIndt;
 extern Syntax JB_SyxItem;
 extern Syntax JB_SyxList;
 extern Syntax JB_SyxMsg;
@@ -2390,6 +2393,8 @@ void JB_Msg_Func__(Message* self, FastString* fs);
 
 JB_String* JB_Msg_FuncName(Message* self);
 
+void JB_Msg_Indt__(Message* self, FastString* fs);
+
 int64 JB_Msg_Int(Message* self);
 
 void JB_Msg_Item__(Message* self, FastString* fs);
@@ -2431,6 +2436,8 @@ Message* JB_Msg_PoorAnt(Message* self);
 void JB_Msg_Rel__(Message* self, FastString* fs);
 
 JB_String* JB_Msg_Render(Message* self, FastString* fs_in);
+
+void JB_Msg_RenderIndent(Message* self, FastString* fs, bool arg);
 
 void JB_Msg_RenderPrm(Message* self, FastString* fs, byte b1, byte b2);
 
@@ -2605,90 +2612,92 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
 
 //// HEADER SyntaxConstants.h
 #define kSyxArg 0
-#define kSyxAcc 1
-#define kSyxAdj 2
-#define kSyxARel 3
-#define kSyxArr 4
-#define kSyxBack 5
-#define kSyxSStr 6
-#define kSyxBra 7
-#define kSyxBRel 8
-#define kSyxChar 9
-#define kSyxDecl 10
-#define kSyxDot 11
-#define kSyxEmb 12
-#define kSyxERel 13
-#define kSyxFunc 14
-#define kSyxItem 15
-#define kSyxList 16
-#define kSyxName 17
-#define kSyxNum 18
-#define kSyxUnit 19
-#define kSyxOat 20
-#define kSyxOpp 21
-#define kSyxSOpp 22
-#define kSyxRel 23
-#define kSyxTRel 24
-#define kSyxSDot 25
-#define kSyxSCom 26
-#define kSyxSheb 27
-#define kSyxStr 28
-#define kSyxSThg 29
-#define kSyxThg 30
-#define kSyxTmp 31
-#define kSyxAna 32
-#define kSyxSCnj 33
-#define kSyxCnj 34
-#define kSyxType 35
-#define kSyxYoda 36
-#define kSyxYopp 37
-#define kSyxAsk 38
-#define kSyxMsg 39
-#define kSyxBin 40
+#define kSyxIndt 1
+#define kSyxAcc 2
+#define kSyxAdj 3
+#define kSyxARel 4
+#define kSyxArr 5
+#define kSyxBack 6
+#define kSyxSStr 7
+#define kSyxBra 8
+#define kSyxBRel 9
+#define kSyxChar 10
+#define kSyxDecl 11
+#define kSyxDot 12
+#define kSyxEmb 13
+#define kSyxERel 14
+#define kSyxFunc 15
+#define kSyxItem 16
+#define kSyxList 17
+#define kSyxName 18
+#define kSyxNum 19
+#define kSyxUnit 20
+#define kSyxOat 21
+#define kSyxOpp 22
+#define kSyxSOpp 23
+#define kSyxRel 24
+#define kSyxTRel 25
+#define kSyxSDot 26
+#define kSyxSCom 27
+#define kSyxSheb 28
+#define kSyxStr 29
+#define kSyxSThg 30
+#define kSyxThg 31
+#define kSyxTmp 32
+#define kSyxAna 33
+#define kSyxSCnj 34
+#define kSyxCnj 35
+#define kSyxType 36
+#define kSyxYoda 37
+#define kSyxYopp 38
+#define kSyxAsk 39
+#define kSyxMsg 40
+#define kSyxBin 41
 
 
 
 #define JB_RB_Constants  "Arg = 0" ,\
- "Acc = 1" ,\
- "Adj = 2" ,\
- "ARel = 3" ,\
- "Arr = 4" ,\
- "Back = 5" ,\
- "SStr = 6" ,\
- "Bra = 7" ,\
- "BRel = 8" ,\
- "Char = 9" ,\
- "Decl = 10" ,\
- "Dot = 11" ,\
- "Emb = 12" ,\
- "ERel = 13" ,\
- "Func = 14" ,\
- "Item = 15" ,\
- "List = 16" ,\
- "Name = 17" ,\
- "Num = 18" ,\
- "Unit = 19" ,\
- "Oat = 20" ,\
- "Opp = 21" ,\
- "SOpp = 22" ,\
- "Rel = 23" ,\
- "TRel = 24" ,\
- "SDot = 25" ,\
- "SCom = 26" ,\
- "Sheb = 27" ,\
- "Str = 28" ,\
- "SThg = 29" ,\
- "Thg = 30" ,\
- "Tmp = 31" ,\
- "Ana = 32" ,\
- "SCnj = 33" ,\
- "Cnj = 34" ,\
- "Type = 35" ,\
- "Yoda = 36" ,\
- "Yopp = 37" ,\
- "Ask = 38" ,\
- "Msg = 39" ,\
- "Bin = 40" ,\
+ "Indt = 1" ,\
+ "Acc = 2" ,\
+ "Adj = 3" ,\
+ "ARel = 4" ,\
+ "Arr = 5" ,\
+ "Back = 6" ,\
+ "SStr = 7" ,\
+ "Bra = 8" ,\
+ "BRel = 9" ,\
+ "Char = 10" ,\
+ "Decl = 11" ,\
+ "Dot = 12" ,\
+ "Emb = 13" ,\
+ "ERel = 14" ,\
+ "Func = 15" ,\
+ "Item = 16" ,\
+ "List = 17" ,\
+ "Name = 18" ,\
+ "Num = 19" ,\
+ "Unit = 20" ,\
+ "Oat = 21" ,\
+ "Opp = 22" ,\
+ "SOpp = 23" ,\
+ "Rel = 24" ,\
+ "TRel = 25" ,\
+ "SDot = 26" ,\
+ "SCom = 27" ,\
+ "Sheb = 28" ,\
+ "Str = 29" ,\
+ "SThg = 30" ,\
+ "Thg = 31" ,\
+ "Tmp = 32" ,\
+ "Ana = 33" ,\
+ "SCnj = 34" ,\
+ "Cnj = 35" ,\
+ "Type = 36" ,\
+ "Yoda = 37" ,\
+ "Yopp = 38" ,\
+ "Ask = 39" ,\
+ "Msg = 40" ,\
+ "Bin = 41" ,\
 
 
 

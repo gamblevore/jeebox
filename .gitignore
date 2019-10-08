@@ -42,6 +42,7 @@ Thumbs.db
 /Examples/jb_vscode.code-workspace
 stb_*.h
 JB_VM*
+/Cpp/LibSrc/InstructionList.h
 *.note
 *.nogit
 *.xcodeproj

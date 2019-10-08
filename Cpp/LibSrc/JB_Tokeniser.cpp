@@ -261,18 +261,7 @@ int JB_Tk__CleanSpacesSub (  ) {
 		
 		if (C==' ' || C=='\t') {
 			continue;
-			
-		} else if (C == '\\') {
-			C = A[S];
-			if (C=='\n' || C=='\r') {
-				S++;
-				if (C=='\n' && A[S]=='\r') {
-					S++;
-				}
-				continue;
-			}
 		}
-		
 		return S-1;
 	}
 
