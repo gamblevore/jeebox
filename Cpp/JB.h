@@ -1394,8 +1394,6 @@ JB_String* JB_Constants__Test();
 
 
 // Tk
-Message* JB_Tk__Avoid();
-
 Message* JB_Tk__BarThings(int Start, Syntax Syx);
 
 Message* JB_Tk__BeforeRelSub(int Start, bool Mode);
@@ -2655,54 +2653,6 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
 #define kSyxMsg 39
 #define kSyxTodo 40
 #define kSyxBin 41
-
-
-
-#define JB_RB_Constants  "Arg = 0" ,\
- "Acc = 1" ,\
- "Adj = 2" ,\
- "ARel = 3" ,\
- "Arr = 4" ,\
- "Back = 5" ,\
- "SStr = 6" ,\
- "Bra = 7" ,\
- "BRel = 8" ,\
- "Char = 9" ,\
- "Decl = 10" ,\
- "Dot = 11" ,\
- "Emb = 12" ,\
- "ERel = 13" ,\
- "Func = 14" ,\
- "Item = 15" ,\
- "List = 16" ,\
- "Name = 17" ,\
- "Num = 18" ,\
- "Unit = 19" ,\
- "Oat = 20" ,\
- "Opp = 21" ,\
- "SOpp = 22" ,\
- "Rel = 23" ,\
- "TRel = 24" ,\
- "SDot = 25" ,\
- "SCom = 26" ,\
- "Sheb = 27" ,\
- "Str = 28" ,\
- "SThg = 29" ,\
- "Thg = 30" ,\
- "Tmp = 31" ,\
- "Ana = 32" ,\
- "SCnj = 33" ,\
- "Cnj = 34" ,\
- "Type = 35" ,\
- "Yoda = 36" ,\
- "Yopp = 37" ,\
- "Ask = 38" ,\
- "Msg = 39" ,\
- "Todo = 40" ,\
- "Bin = 41" ,\
-
-
-
 
 
 }

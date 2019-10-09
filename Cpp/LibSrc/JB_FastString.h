@@ -24,7 +24,7 @@ JBClass( FastString, JB_Object,
     u8              IndentMul;
 
     JB_String*      Result;
-    int 			Reserved;  // actual size of buffer.
+    int 			Reserved;  // actual size of buffer. here for speeeed.
 
     JB_File*        File;
 );
