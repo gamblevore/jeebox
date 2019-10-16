@@ -125,6 +125,7 @@ struct JB_Object {
     u32 RefCount;
 };
 
+
 struct JB_MemoryLayer : JB_Object  { // is actually a JBObject... but a clang bug won't let me use "JBClass(JB_MemoryLayer..."
     u16                 HiddenRefCount;
     bool                IsActive;
@@ -136,6 +137,7 @@ struct JB_MemoryLayer : JB_Object  { // is actually a JBObject... but a clang bu
     
     JB_Object*          Obj;
     JB_Object*          Obj2;
+	FreeObject*			Disabled;
     DummyBlock          Dummy;
 }; 
 JBStructData (JB_MemoryLayer);
@@ -171,6 +173,7 @@ struct JB_MemoryWorld {
     float               SpareTrigger; // number of objects free in a block after which the block becomes "spare"...
 };
 
+
 struct JBObject_Behaviour {
 	const void* __destructor__;
 	const void* render;
@@ -193,6 +196,7 @@ JBStructData(JB_Object);
 JB_MemoryWorld* JB_MemStandardWorld();
 JB_MemoryLayer* JB_Mem__New( JB_Class* Cls );
 JB_MemoryLayer* JB_Mem__NewObj(JB_Class* Cls, JB_Object* Obj);
+void JB_Mem_EnabledSet( JB_MemoryLayer* self, bool Enabled );
 void JB_Mem_Use( JB_MemoryLayer* self );
 void JB_Mem_OwnedSet(JB_MemoryLayer* Mem, bool b);
 bool JB_ObjIsOwned(JB_Object* Obj);
@@ -205,6 +209,7 @@ JB_MemoryLayer* JB_ObjLayer( JB_Object* Obj );
 int JB_ObjID( JB_Object* Obj );
 void JB_ObjDestroy( JB_Object* Obj );
 JB_MemoryLayer* JB_Class_DefaultLayer( JB_Class* Cls );
+JB_MemoryLayer* JB_Class_Layer( JB_Class* Cls );
 JB_MemoryLayer* JB_Class_CurrLayer( JB_Class* Cls );
 JB_Object* JB_Class_AllocZeroed( JB_Class* Cls );
 void JB_Class_Add( JB_Class* Cls, const char* s );

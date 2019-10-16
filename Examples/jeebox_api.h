@@ -209,19 +209,21 @@ jbstring* jb_readfile(_cstring path, bool AllowMissingFile); /* Reads entire fil
 #define $ask 39
 #define JB_SyxMsg 40;
 #define $msg 40
-#define JB_SyxTodo 41;
-#define $todo 41
-#define JB_SyxBin 42;
-#define $bin 42
+#define JB_SyxBnch 41;
+#define $bnch 41
+#define JB_SyxTodo 42;
+#define $todo 42
+#define JB_SyxBin 43;
+#define $bin 43
 
 
 #ifdef __nodebug
 	#undef __nodebug
 #endif
 #if defined(__linux__)
-#define __nodebug inline __attribute__((__always_inline__)) // __nodebug__ doesn't exist on linux?
+	#define __nodebug inline __attribute__((__always_inline__)) // __nodebug__ doesn't exist on linux?
 #else
-#define __nodebug inline __attribute__((__always_inline__, __nodebug__))
+	#define __nodebug inline __attribute__((__always_inline__, __nodebug__))
 #endif
 __nodebug void jb_incr(jbobject* s) {
 	if (s) {s->RefCount++;}

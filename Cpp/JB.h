@@ -102,8 +102,6 @@ struct DataTypeWrapper_Behaviour;
 
 struct Allocation_Behaviour;
 
-struct oof_Behaviour;
-
 struct RingTree_Behaviour;
 
 struct SaverClassInfo_Behaviour;
@@ -135,8 +133,6 @@ struct JB_File;
 struct LeakTester;
 
 struct JB_MemoryLayer;
-
-struct oof;
 
 struct Saveable;
 
@@ -278,13 +274,6 @@ JBClass ( LeakTester , JB_Object ,
 struct MemoryLayer_Behaviour: Object_Behaviour {
 };
 
-struct oof_Behaviour: Object_Behaviour {
-};
-
-JBClass ( oof , JB_Object , 
-	LLRef fuck;
-);
-
 struct Saveable_Behaviour: Object_Behaviour {
 	__Saveable_LoadProperties__ loadproperties;
 	__Saveable_SaveCollect__ savecollect;
@@ -385,9 +374,9 @@ JBClass ( Message , RingTree ,
 	JB_String* Name;
 	JB_Object* Obj;
 	int Position;
-	u16 MoreFlags;
 	Syntax Func;
 	u8 UserFlags;
+	u16 MoreFlags;
 );
 
 
@@ -404,12 +393,12 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_224)
-#define kJB__ErrorColors_error (JB_str_225)
-#define kJB__ErrorColors_good (JB_str_226)
-#define kJB__ErrorColors_normal (JB_str_223)
-#define kJB__ErrorColors_underline (JB_str_226)
-#define kJB__ErrorColors_warn (JB_str_227)
+#define kJB__ErrorColors_bold (JB_str_225)
+#define kJB__ErrorColors_error (JB_str_226)
+#define kJB__ErrorColors_good (JB_str_227)
+#define kJB__ErrorColors_normal (JB_str_224)
+#define kJB__ErrorColors_underline (JB_str_227)
+#define kJB__ErrorColors_warn (JB_str_228)
 //
 
 
@@ -450,7 +439,6 @@ extern Dictionary* JB__Constants_UnEscapeStr;
 
 
 // module: Tk
-extern int JB__Tk_BaseMessagePosition;
 extern JB_String* JB__Tk_Data;
 extern Message* JB__Tk_EndOfLineMarker;
 extern Message* JB__Tk_ErrNode;
@@ -487,6 +475,7 @@ extern Dictionary* JB__Tk_ErrorNames;
 #define kJB__Tk_words_line (524288)
 #define kJB__Tk_LargestFlag (20)
 extern int JB__Tk_StopBars;
+extern int JB__Tk_UsingPos;
 //
 
 
@@ -506,7 +495,7 @@ extern SyntaxObj* JB__FuncArray_[64];
 extern u8 JB__FuncParent_[64];
 extern Dictionary* JB__SyxDict_;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_222)
+#define kJB_SaverStart1 (JB_str_223)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -543,7 +532,6 @@ extern JB_String* JB_str_126;
 extern JB_String* JB_str_127;
 extern JB_String* JB_str_128;
 extern JB_String* JB_str_129;
-extern JB_String* JB_str_13;
 extern JB_String* JB_str_130;
 extern JB_String* JB_str_131;
 extern JB_String* JB_str_132;
@@ -759,6 +747,9 @@ extern JB_String* JB_str_320;
 extern JB_String* JB_str_321;
 extern JB_String* JB_str_322;
 extern JB_String* JB_str_323;
+extern JB_String* JB_str_324;
+extern JB_String* JB_str_325;
+extern JB_String* JB_str_326;
 extern JB_String* JB_str_33;
 extern JB_String* JB_str_34;
 extern JB_String* JB_str_35;
@@ -841,6 +832,7 @@ extern Syntax JB_SyxArr;
 extern Syntax JB_SyxAsk;
 extern Syntax JB_SyxBack;
 extern Syntax JB_SyxBin;
+extern Syntax JB_SyxBnch;
 extern Syntax JB_SyxBra;
 extern Syntax JB_SyxBRel;
 extern Syntax JB_SyxChar;
@@ -1154,9 +1146,6 @@ extern int JB__Syntax_CurrFuncID;
 // module: Allocation_Behaviour_
 
 
-// module: oof_Behaviour_
-
-
 // module: RingTree_Behaviour_
 
 
@@ -1223,9 +1212,6 @@ extern FastString* JB__FS_StdOutFS;
 
 
 // module: Mem_
-
-
-// module: oof_
 
 
 // module: Pipe_
@@ -1446,6 +1432,8 @@ Message* JB_Tk__fBinary(int Start);
 
 Message* JB_Tk__fBracket(int Start);
 
+Message* JB_Tk__fBunchOfThings(int Start);
+
 Message* JB_Tk__fChr(int Start);
 
 Message* JB_Tk__fComment(int Start);
@@ -1582,8 +1570,6 @@ JB_String* JB_EntityTest();
 
 int JB_Init_();
 
-void JB_ObjTest();
-
 void JB_Obj_PrintLine(JB_Object* o);
 
 Dictionary* JB_Dict_Reverse(Dictionary* Dict);
@@ -1609,6 +1595,8 @@ void JB_AstUtil_UseLayer(AstUtil* self, Message* src);
 
 
 // JB_ClassData
+JB_MemoryLayer* JB_ClassData_CurrLayer(JB_Class* self);
+
 void JB_ClassData_Restore(JB_Class* self);
 
 
@@ -1880,9 +1868,6 @@ Syntax JB_Syntax__StdNew(fpMsgRender msg, JB_String* name, JB_String* LongName);
 // JB_Allocation_Behaviour
 
 
-// JB_oof_Behaviour
-
-
 // JB_RingTree_Behaviour
 
 
@@ -2021,17 +2006,6 @@ LeakTester* JB_Lk__New(JB_String* name);
 
 
 // JB_MemoryLayer
-
-
-// JB_oof
-void JB_oof_Constructor(oof* self);
-
-void JB_oof_Destructor(oof* self);
-
-oof* JB_oof__Alloc();
-
-oof* JB_oof__New();
-
 
 
 // JB_Pipe
@@ -2349,11 +2323,11 @@ void JB_Msg_Ask__(Message* self, FastString* fs);
 
 JB_String* JB_Msg_AST(Message* self, FastString* fs_in);
 
-JB_String* JB_Msg_AST_Spaces(Message* self, int Spaces);
-
 void JB_Msg_Back__(Message* self, FastString* fs);
 
 void JB_Msg_Bin__(Message* self, FastString* fs);
+
+void JB_Msg_Bnch__(Message* self, FastString* fs);
 
 void JB_Msg_Bra__(Message* self, FastString* fs);
 
@@ -2429,7 +2403,7 @@ JB_String* JB_Msg_OriginalParsePath(Message* self);
 
 Message* JB_Msg_ParseAST(Message* self);
 
-void JB_Msg_ParseAST_(Message* self, Message* Src, AstUtil* U);
+void JB_Msg_ParseAST_(Message* self, Message* Src, AstUtil* Util);
 
 Message* JB_Msg_PoorAnt(Message* self);
 
@@ -2500,6 +2474,8 @@ Message* JB_Msg__Alloc();
 SyntaxObj* JB_Msg__GetSyx(Message* msg);
 
 Message* JB_Msg__LayerAlloc(JB_MemoryLayer* _L);
+
+Message* JB_Msg__NewCopy(Message* other);
 
 Message* JB_Msg__NewFuncName(Syntax Func, JB_String* Name);
 
@@ -2651,8 +2627,9 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
 #define kSyxYopp 37
 #define kSyxAsk 38
 #define kSyxMsg 39
-#define kSyxTodo 40
-#define kSyxBin 41
+#define kSyxBnch 40
+#define kSyxTodo 41
+#define kSyxBin 42
 
 
 }

@@ -31,7 +31,7 @@ struct LinkHelper {
 };
 
 struct SuperBlock {
-    JB_MemoryWorld*            World;
+    JB_MemoryWorld*         World;
     AllocationBlock*        FirstBlock;
     SuperBlock*             Next;
     SuperBlock*             Prev;
@@ -318,6 +318,25 @@ JB_MemoryLayer* JB_Mem_CreateLayer(JB_Class* Cls, JB_Object* Obj) {
 }
 
 
+void JB_Mem_EnabledSet( JB_MemoryLayer* self, bool Enabled ) {
+	bool Dis = !Enabled;
+	require0 (self->DontAlloc != Dis);
+	
+	self->DontAlloc = Dis;
+	if (Dis) {
+		self->Disabled = self->CurrBlock->FirstFree; 
+		self->CurrBlock->FirstFree = 0;
+	} else {
+		self->CurrBlock->FirstFree = self->Disabled;
+		self->Disabled = 0;
+	}
+	
+    // Allow disable of a memory-layer! an error now to allocate from it!
+	// The object would never exist, right? I mean... obj and obj2, for a disabled layer?
+	// Basically no. i'm using it for message, and the default message has no default source or path.
+}
+
+
 void JB_Mem_Use( JB_MemoryLayer* self ) {
     // shouldn't we incr the layer? or not?
     if (self->IsActive) { // save time...
@@ -364,6 +383,7 @@ static void SelfLink_(LinkHelper* New) {
     New->Prev = New;
 }
 
+
 static void AddLink_(LinkHelper* Old, LinkHelper* New) {
     if (Old) {
         LinkHelper* P = Old->Prev;
@@ -375,6 +395,7 @@ static void AddLink_(LinkHelper* Old, LinkHelper* New) {
         SelfLink_(New);
     }
 }
+
 
 static void Unlink_(LinkHelper* Curr) {
     LinkHelper* N = Curr->Next;
@@ -390,9 +411,14 @@ static void Unlink_(LinkHelper* Curr) {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////
 
-JB_MemoryLayer* JB_Class_CurrLayer( JB_Class* Cls ) {
+JB_MemoryLayer* JB_Class_Layer( JB_Class* Cls ) {
     return Cls->DefaultBlock->Owner;
 }
+
+JB_MemoryLayer* JB_Class_CurrLayer( JB_Class* Cls ) {
+    return JB_Class_Layer(Cls);
+}
+
 
 JB_Object* JB_Class_AllocZeroed( JB_Class* Cls ) {
     JB_Object* Result = JB_Alloc2(Cls->DefaultBlock);
@@ -402,9 +428,11 @@ JB_Object* JB_Class_AllocZeroed( JB_Class* Cls ) {
     return Result;
 }
 
+
 JB_MemoryLayer* JB_Class_DefaultLayer( JB_Class* Cls ) {
     return &Cls->Memory;
 }
+
 
 JB_MemoryLayer* JB_ObjLayer( JB_Object* Obj ) {
     if (Obj) {
@@ -413,6 +441,7 @@ JB_MemoryLayer* JB_ObjLayer( JB_Object* Obj ) {
     }
     return 0;
 }
+
 
 int JB_ObjID( JB_Object* Obj ) {
     AllocationBlock* Block = ObjBlock_(Obj);
@@ -753,6 +782,7 @@ FreeObject* JB_NewBlock( AllocationBlock* CurrBlock ) {
 
     JB_MemoryLayer* Mem = CurrBlock->Owner;
     if (Mem->DontAlloc) {
+		debugger;
         return 0;
     }
     JB_MemoryWorld* World = Mem->World;
@@ -959,7 +989,6 @@ __hot JB_Object* JB_Alloc2( AllocationBlock* CurrBlock ) {
 }
 
 
-
 __hot JB_Object* JB_Alloc( JB_MemoryLayer* Mem ) {
     AllocationBlock* CurrBlock = Mem->CurrBlock;
     FreeObject* Obj = CurrBlock->FirstFree;
@@ -970,7 +999,6 @@ __hot JB_Object* JB_Alloc( JB_MemoryLayer* Mem ) {
     }
     return Trap_(JB_NewBlock( CurrBlock ));
 }
-
 
 
 JB_MemoryWorld* JB_MemStandardWorld() {
