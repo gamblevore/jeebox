@@ -2216,8 +2216,6 @@ bool JB_Tree_HasOneChild(RingTree* self);
 
 void JB_Tree_Remove(RingTree* self);
 
-RingTree* JB_Tree_SyntaxAccess(RingTree* self, int n);
-
 void JB_Tree_SyntaxAppend(RingTree* self, RingTree* Last);
 
 
@@ -2306,8 +2304,6 @@ FastAppenderChunk* JB_FAC__New();
 void JB_Msg_Acc__(Message* self, FastString* fs);
 
 void JB_Msg_AccessErr(Message* self, Syntax s, JB_String* name);
-
-void JB_Msg_AccessErrInt(Message* self, int i);
 
 void JB_Msg_Adj__(Message* self, FastString* fs);
 
@@ -2431,13 +2427,9 @@ void JB_Msg_SThg__(Message* self, FastString* fs);
 
 void JB_Msg_Str__(Message* self, FastString* fs);
 
-Message* JB_Msg_AccessAsNum(Message* self, int n);
-
 Message* JB_Msg_AccessSyxName(Message* self, Syntax s, JB_String* name, bool Err);
 
-Message* JB_Msg_AccessNumErr(Message* self, Syntax s, int i, bool Err);
-
-Message* JB_Msg_ExpectNumErr(Message* self, Syntax s, int i);
+Message* JB_Msg_AccessSyxErr(Message* self, Syntax s, bool Err);
 
 bool JB_Msg_SyntaxEquals(Message* self, JB_String* name, bool Aware);
 

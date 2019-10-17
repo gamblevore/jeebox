@@ -1154,9 +1154,7 @@ Message* JB_Tk__fBinary(int Start) {
 Message* JB_Tk__fBracket(int Start) {
 	Message* Result = JB_Tk__NewParent0(nil, JB_SyxList, Start);
 	if (JB_Tk__ParseLoop(Result, JB_str_132)) {
-		if ((!JB_Msg_SyxOppEquals(((Message*)JB_Ring_First(Result)), JB_SyxItem, false))) {
-			Result->Func = JB_SyxBra;
-		}
+		Result->Func = JB_SyxBra;
 	}
 	return Result;
 }
@@ -1393,7 +1391,8 @@ Message* JB_Tk__fQuestion(int Start) {
 
 Message* JB_Tk__fSDot(int Start) {
 	if (Start > 0) {
-		if (JB_BM_HasChar(JB__Constants_CSWordMiddle, JB_Str_SyntaxAccess(JB__Tk_Data, Start - 1))) {
+		byte c = JB_Str_SyntaxAccess(JB__Tk_Data, Start - 1);
+		if (JB_BM_HasChar(JB__Constants_CSWordMiddle, c)) {
 			return nil;
 		}
 	}
@@ -1895,7 +1894,6 @@ void JB_Tk__Params(Message* Parent, int N) {
 
 Message* JB_Tk__ParseItem(Message* ch, int TemporalFlags) {
 	Message* Result = JB_Incr(JB_Tk__NewParent0(nil, JB_SyxItem, JB_Tk__NextStart() - 1));
-	JB_Tree_SyntaxAppend(Result, ch);
 	Message* ch2 = JB_Incr(JB_Tk__Process(TemporalFlags, false));
 	if ((!(ch2))) {
 		JB_SetRef(ch2, JB_Tk__ProcessThing(kJB__Tk_Opp, false));
@@ -1903,6 +1901,7 @@ Message* JB_Tk__ParseItem(Message* ch, int TemporalFlags) {
 	if ((!(ch2))) {
 		JB_SetRef(ch2, JB_Tk__NewParent0(nil, JB_SyxEmb, Result->Position));
 	}
+	JB_Tree_SyntaxAppend(Result, ch);
 	JB_Tree_SyntaxAppend(Result, ch2);
 	JB_Decr(ch2);
 	JB_SafeDecr(Result);
@@ -1929,6 +1928,7 @@ bool JB_Tk__ParseLoopMode(Message* Output, Syntax Syx) {
 			JB_SetRef(Item, JB_Tk__ProcessThing(kJB__Tk_Opp, false));
 			if (((bool)Item) and JB_Tk__Allow(kJB__Tk_colon)) {
 				JB_SetRef(Item, JB_Tk__ParseItem(Item, Flags));
+				result = (result + 2);
 			}
 		} else {
 			Syntax f = Item->Func;
@@ -1963,7 +1963,7 @@ Message* JB_Tk__ProcessThing(int Ops, bool Expect) {
 		return result;
 	}
 	int NotTemp = Ops & (~kJB__Tk_OppTemporal);
-	if (((bool)NotTemp) and (!(JB_Msg_SyxOppEquals(result, JB_SyxArg, false)))) {
+	if (((bool)NotTemp) and (!JB_Msg_SyxOppEquals(result, JB_SyxArg, false))) {
 		JB_SetRef(result, JB_Tk__MakeRel(result, NotTemp));
 	}
 	if (((bool)(Ops & kJB__Tk_OppTemporal))) {
@@ -1980,9 +1980,8 @@ Message* JB_Tk__ProcessThing(int Ops, bool Expect) {
 Message* JB_Tk__ReRoute(Message* cnj, Message* output) {
 	Message* f = JB_Incr(((Message*)JB_Ring_Last(output)));
 	if ((!f)) {
-		JB_FreeIfDead(JB_Tk__ErrorAdd(JB_str_144, JB_Tk__NextStart()));
 		JB_Decr(f);
-		return nil;
+		return JB_Tk__ErrorAdd(JB_str_144, JB_Tk__NextStart());
 	}
 	Message* Result = JB_Incr(JB_Tk__ChainTemporalRels(f, cnj));
 	JB_Decr(f);
@@ -4102,17 +4101,6 @@ void JB_Tree_Remove(RingTree* self) {
 	(JB_Ring_ParentSet(self, nil));
 }
 
-RingTree* JB_Tree_SyntaxAccess(RingTree* self, int n) {
-	if ((!self)) {
-		return nil;
-	}
-	RingTree* result = JB_Ring_First(self);
-	while (((bool)result) and (n-- >= 1)) {
-		result = JB_Ring_NextSib(result);
-	};
-	return result;
-}
-
 void JB_Tree_SyntaxAppend(RingTree* self, RingTree* Last) {
 	(JB_Ring_LastSet(self, Last));
 }
@@ -4579,23 +4567,6 @@ void JB_Msg_AccessErr(Message* self, Syntax s, JB_String* name) {
 	JB_Decr(_tmP1);
 }
 
-void JB_Msg_AccessErrInt(Message* self, int i) {
-	JB_String* errnum = JB_Incr(JB_str_0);
-	if (i) {
-		JB_SetRef(errnum, ({
-			JB_String* _tmP276 = JB_Incr(JB_int_Render(i, nil));
-			JB_String* _tmP275 = JB_Incr(JB_Str_OperatorPlus(JB_str_14, _tmP276));
-			JB_Decr(_tmP276);
-			JB_SafeDecr(_tmP275);
-			 _tmP275;
-		}));
-	}
-	JB_String* _tmP = JB_Incr(JB_Str_OperatorPlus(JB_str_75, errnum));
-	JB_Decr(errnum);
-	JB_Rec_NewItemWithNode(JB_StdErr, self, _tmP);
-	JB_Decr(_tmP);
-}
-
 void JB_Msg_Adj__(Message* self, FastString* fs) {
 	Message* _tmP = JB_Incr(((Message*)JB_Ring_First(self)));
 	JB_FS_AppendMsg(fs, _tmP);
@@ -5018,7 +4989,7 @@ void JB_Msg_List__(Message* self, FastString* fs) {
 			count++;
 			if (count > 1) {
 				JB_FS_AppendString(fs, JB_str_60);
-			} else if (((JB_Msg_SyxOppEquals(ch, JB_SyxItem, false))) or ((JB_Msg_SyxOppEquals(ch, JB_SyxDecl, false)))) {
+			} else if ((JB_Msg_SyxOppEquals(ch, JB_SyxItem, false)) or (JB_Msg_SyxOppEquals(ch, JB_SyxDecl, false))) {
 				count = 2;
 			}
 			JB_FS_AppendMsg(fs, ch);
@@ -5195,7 +5166,7 @@ void JB_Msg_ParseAST_(Message* self, Message* Src, AstUtil* Util) {
 					JB_Decr(children);
 					return;
 				}
-				Message* itm = JB_Incr(JB_Msg_ExpectNumErr((MsgDesc), JB_SyxItem, 0));
+				Message* itm = JB_Incr(JB_Msg_AccessSyxErr(MsgDesc, JB_SyxItem, ((bool)0)));
 				JB_Decr(MsgDesc);
 				if ((!itm)) {
 					JB_Decr(line);
@@ -5356,10 +5327,6 @@ void JB_Msg_Str__(Message* self, FastString* fs) {
 	JB_FS_AppendByte(fs, '"');
 }
 
-Message* JB_Msg_AccessAsNum(Message* self, int n) {
-	return ((Message*)JB_Tree_SyntaxAccess(((RingTree*)self), n));
-}
-
 Message* JB_Msg_AccessSyxName(Message* self, Syntax s, JB_String* name, bool Err) {
 	{
 		Message* ch = ((Message*)JB_Tree_First_(self));
@@ -5377,26 +5344,21 @@ Message* JB_Msg_AccessSyxName(Message* self, Syntax s, JB_String* name, bool Err
 	return nil;
 }
 
-Message* JB_Msg_AccessNumErr(Message* self, Syntax s, int i, bool Err) {
-	if ((!self)) {
-		return nil;
-	}
-	Message* ch = JB_Msg_AccessAsNum(self, i);
-	if (((bool)ch) and ((!s) or (JB_Msg_SyxOppEquals(ch, s, false)))) {
-		return ch;
-	}
+Message* JB_Msg_AccessSyxErr(Message* self, Syntax s, bool Err) {
+	{
+		Message* ch = ((Message*)JB_Tree_First_(self));
+		while (ch) {
+			Message* _N1 = ((Message*)JB_Ring_NextSib(ch));
+			if (JB_Msg_SyxOppEquals(ch, s, false)) {
+				return ch;
+			}
+			ch = _N1;
+		};
+	};
 	if (Err) {
-		if (s) {
-			JB_Msg_AccessErr(self, s, nil);
-		} else {
-			JB_Msg_AccessErrInt(self, i);
-		}
+		JB_Msg_AccessErr(self, s, nil);
 	}
 	return nil;
-}
-
-Message* JB_Msg_ExpectNumErr(Message* self, Syntax s, int i) {
-	return JB_Msg_AccessNumErr(self, s, i, true);
 }
 
 bool JB_Msg_SyntaxEquals(Message* self, JB_String* name, bool Aware) {
@@ -5481,13 +5443,7 @@ bool JB_Msg_TestSub(Message* self, JB_String* new_render, JB_String* name) {
 			JB_Decr(reparse_render);
 			return nil;
 		}
-		if ((!JB_Rec_OK(JB_StdErr))) {
-			JB_Decr(LKT);
-			JB_Decr(self_render);
-			JB_Decr(reparse_render);
-			return nil;
-		}
-		if ((!(JB_Str_SyntaxEquals(self_render, reparse_render, false)))) {
+		if ((!(JB_Rec_OK(JB_StdErr) and ((JB_Str_SyntaxEquals(self_render, reparse_render, false)))))) {
 			JB_Decr(LKT);
 			JB_Decr(self_render);
 			JB_Decr(reparse_render);
@@ -6016,7 +5972,7 @@ __lib__ int jb_shutdown() {
 }
 
 __lib__ int jb_version() {
-	return (2019101615);
+	return (2019101714);
 }
 
 __lib__ JB_String* jb_readfile(_cstring path, bool AllowMissingFile) {
@@ -6029,4 +5985,4 @@ __lib__ JB_String* jb_readfile(_cstring path, bool AllowMissingFile) {
 //// API END! ////
 }
 
-// 3490376491474110898 8243569972669032653
+// 3490376491474110898 -1754361664807848085
