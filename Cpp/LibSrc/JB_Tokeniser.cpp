@@ -303,6 +303,14 @@ bool JB_Tk__CheckEnded ( u32 AskBits ) { // has to be called with an "ender". ")
 }
 
 
+int JB_Tk__Indentation ( u32 Start ) { // has to be called with an "ender". ") } > ]", "CR/LF", ","
+	auto S = Mini(JB__Tk_Data);
+	S = S + (int)Start;
+	
+	return 0;
+}
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
