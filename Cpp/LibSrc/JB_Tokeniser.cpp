@@ -309,46 +309,45 @@ int spacing_error(u8* Place) {
 }
 
 
-int JB_Tk__Indentation ( u32 Start ) { // has to be called with an "ender". ") } > ]", "CR/LF", ","
-	auto S = Mini(JB__Tk_Data);
-	S = S + (int)Start;
-	u8* Place = S.Addr + Start;
-	u8* After = S.Addr + S.Length; 
+int dark_error(u8* Place) {
+	debugger;
+	return -1;// internal error.
+}
 
-// TABS
-	int Spaces = 0;
-	while (Place < After) {
-		if (*Place++ == '\t') {
-			Spaces += 4;
-		} else {
-			Place--; break;
-		}
-	}
-	
+
+int JB_Tk__MessageIndent ( u32 N ) {
+	return -1;
+	if_rare (JB__Tk_Data->Length <= N) {
+		debugger;
+		return -1; // what?
+	} 
+
+	u8* Start = JB__Tk_Data->Addr;
+	u8* Place = Start + N - 1;
+
+
 // SPACES
-	while (Place < After) {
-		if (*Place++ == ' ') {
+	uint Tabs = 0;
+	uint Spaces = 0;
+	while (Place >= Start) {
+		int c = *Place--; 
+		if (c == ' ') {
 			Spaces++;
+			if_rare (Tabs) {
+				return spacing_error(Place);
+			}
+		} else if (c == '\t') {
+			Tabs++;
+
+		} else if (c == '\n' or c == '\r') {
+			break; // end of line;
+
 		} else {
-			Place--; break;
+			return dark_error(Place);
 		}
 	}
 
-// DARK
-	if (Place < After) {
-		auto c = *Place; 
-		if (c == '/' or c == '\n' or c == '\r') {
-			return -1; // end of line
-
-		} else if (c=='\t') {
-			return spacing_error(Place);
-			
-		} else {
-			return Spaces;
-		}
-	}
-
-	return 0;
+	return Spaces + Tabs * 4;
 }
 
 

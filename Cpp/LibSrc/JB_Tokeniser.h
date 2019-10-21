@@ -60,6 +60,7 @@ extern "C" {
 	bool JB_Tk__Allow( u32 BitTypes );
 	bool JB_Tk__Consume( u32 AskBits, int f );
 	bool JB_Tk__CheckEnded( u32 AskBits );
+	int JB_Tk__MessageIndent ( u32 N );
     TokHan* JB_Tk__Handler( int BitTypes, fpTok FuncName );
 
     int JB_Tk__NextStart(  );
