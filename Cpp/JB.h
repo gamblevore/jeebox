@@ -447,8 +447,8 @@ extern Dictionary* JB__Tk_ErrorNames;
 extern bool JB__Tk_IndentationAware;
 #define kJB__Tk_adjectiveop (1)
 #define kJB__Tk_Allow (false)
-#define kJB__Tk_bracketstart (2)
-#define kJB__Tk_colon (4)
+#define kJB__Tk_colon (2)
+#define kJB__Tk_colonarg (4)
 #define kJB__Tk_Comma (16)
 #define kJB__Tk_End ((8 | 16) | 32)
 #define kJB__Tk_EndContainer (32)
@@ -473,8 +473,7 @@ extern bool JB__Tk_IndentationAware;
 #define kJB__Tk_ThingSyx (65536)
 #define kJB__Tk_ThingWord (131072)
 #define kJB__Tk_TmpOpp (2048 | 32768)
-#define kJB__Tk_words_line (262144)
-#define kJB__Tk_LargestFlag (19)
+#define kJB__Tk_LargestFlag (18)
 extern int JB__Tk_StopBars;
 extern int JB__Tk_UsingPos;
 //
@@ -750,6 +749,8 @@ extern JB_String* JB_str_322;
 extern JB_String* JB_str_323;
 extern JB_String* JB_str_324;
 extern JB_String* JB_str_325;
+extern JB_String* JB_str_326;
+extern JB_String* JB_str_327;
 extern JB_String* JB_str_33;
 extern JB_String* JB_str_34;
 extern JB_String* JB_str_35;
@@ -837,6 +838,7 @@ extern Syntax JB_SyxBra;
 extern Syntax JB_SyxBRel;
 extern Syntax JB_SyxChar;
 extern Syntax JB_SyxCnj;
+extern Syntax JB_SyxCol;
 extern Syntax JB_SyxDecl;
 extern Syntax JB_SyxDot;
 extern Syntax JB_SyxEmb;
@@ -1412,6 +1414,8 @@ Message* JB_Tk__fAfterRel(int Start);
 
 Message* JB_Tk__fAnaphoricReference(int Start);
 
+Message* JB_Tk__fArgColon(int Start);
+
 Message* JB_Tk__fArgOpen(int Start);
 
 Message* JB_Tk__fArray(int Start);
@@ -1481,8 +1485,6 @@ Message* JB_Tk__fString(int Start);
 Message* JB_Tk__fStrSub(int Start, JB_String* Ender, Syntax syx);
 
 Message* JB_Tk__fSuperStr(int Start);
-
-Message* JB_Tk__fTemporalAsThing(int Start);
 
 Message* JB_Tk__fTemporalRel(int Start);
 
@@ -2335,6 +2337,8 @@ void JB_Msg_Char__(Message* self, FastString* fs);
 
 void JB_Msg_Cnj__(Message* self, FastString* fs);
 
+void JB_Msg_Col__(Message* self, FastString* fs);
+
 void JB_Msg_ConstructorCopy(Message* self, Message* other);
 
 void JB_Msg_Constructor$syntaxstr$syntaxstr(Message* self, Syntax Func, JB_String* Name);
@@ -2581,49 +2585,50 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
 
 
 //// HEADER SyntaxConstants.h
-#define kSyxArg 0
-#define kSyxAcc 1
-#define kSyxAdj 2
-#define kSyxARel 3
-#define kSyxArr 4
-#define kSyxBack 5
-#define kSyxSStr 6
-#define kSyxBra 7
-#define kSyxBRel 8
-#define kSyxChar 9
-#define kSyxDecl 10
-#define kSyxDot 11
-#define kSyxEmb 12
-#define kSyxERel 13
-#define kSyxFunc 14
-#define kSyxItem 15
-#define kSyxList 16
-#define kSyxName 17
-#define kSyxNum 18
-#define kSyxUnit 19
-#define kSyxOat 20
-#define kSyxOpp 21
-#define kSyxSOpp 22
-#define kSyxRel 23
-#define kSyxTRel 24
-#define kSyxSDot 25
-#define kSyxSCom 26
-#define kSyxSheb 27
-#define kSyxStr 28
-#define kSyxSThg 29
-#define kSyxThg 30
-#define kSyxTmp 31
-#define kSyxAna 32
-#define kSyxSCnj 33
-#define kSyxCnj 34
-#define kSyxType 35
-#define kSyxYoda 36
-#define kSyxYopp 37
-#define kSyxAsk 38
-#define kSyxMsg 39
-#define kSyxBnch 40
-#define kSyxTodo 41
-#define kSyxBin 42
+#define kSyxCol 0
+#define kSyxArg 1
+#define kSyxAcc 2
+#define kSyxAdj 3
+#define kSyxARel 4
+#define kSyxArr 5
+#define kSyxBack 6
+#define kSyxSStr 7
+#define kSyxBra 8
+#define kSyxBRel 9
+#define kSyxChar 10
+#define kSyxDecl 11
+#define kSyxDot 12
+#define kSyxEmb 13
+#define kSyxERel 14
+#define kSyxFunc 15
+#define kSyxItem 16
+#define kSyxList 17
+#define kSyxName 18
+#define kSyxNum 19
+#define kSyxUnit 20
+#define kSyxOat 21
+#define kSyxOpp 22
+#define kSyxSOpp 23
+#define kSyxRel 24
+#define kSyxTRel 25
+#define kSyxSDot 26
+#define kSyxSCom 27
+#define kSyxSheb 28
+#define kSyxStr 29
+#define kSyxSThg 30
+#define kSyxThg 31
+#define kSyxTmp 32
+#define kSyxAna 33
+#define kSyxSCnj 34
+#define kSyxCnj 35
+#define kSyxType 36
+#define kSyxYoda 37
+#define kSyxYopp 38
+#define kSyxAsk 39
+#define kSyxMsg 40
+#define kSyxBnch 41
+#define kSyxTodo 42
+#define kSyxBin 43
 
 
 }
