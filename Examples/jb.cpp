@@ -127,6 +127,7 @@ void ParseStdIn() {
 			while (true) {
 				auto input_line = getline();
 				if (!input_line.size()) {break;}
+				buff += "\n";
 				buff += input_line;
 			}
 			PrintReadable(String(buff), "");
