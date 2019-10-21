@@ -109,16 +109,29 @@ void PrintReadable(String A, String Path) {
 }
 
 
+std::string getline() {
+	std::string input_line;
+	std::getline(std::cin, input_line);
+	return input_line;
+}
+
 void ParseStdIn() {
     if (!Options.GotAny) {
         bool Quiet = Options.quiet; 
         Whisper(" :: Type lines of Jeebox, type empty line when you are done :: \n\n");
         Options.quiet = true; // stupid otherwise.
-        std::string input_line;
-        while (std::getline(std::cin, input_line) and input_line.size()) {
-            PrintReadable(String(input_line), "");
-            Whisper(" :: Enter next line :: \n\n", Quiet);
-        }
+
+		while (true) {
+			auto buff = getline();
+			if (!buff.size()) {break;}
+			while (true) {
+				auto input_line = getline();
+				if (!input_line.size()) {break;}
+				buff += input_line;
+			}
+			PrintReadable(String(buff), "");
+			Whisper(" :: Enter more Jeebox :: \n\n", Quiet);
+		}
     } else {
         Whisper(" :: Type some jeebox and press control-D once you are done! :: \n\n");
         std::string std_string(std::istreambuf_iterator<char>(std::cin), {}); // C++ is so baaad

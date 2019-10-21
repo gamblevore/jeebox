@@ -303,10 +303,51 @@ bool JB_Tk__CheckEnded ( u32 AskBits ) { // has to be called with an "ender". ")
 }
 
 
+int spacing_error(u8* Place) {
+	JB_Tk__ErrorEvent2( Place - JB__Tk_Data->Addr, 0, 0 );
+	return -1;// error: inconsistant spacing.
+}
+
+
 int JB_Tk__Indentation ( u32 Start ) { // has to be called with an "ender". ") } > ]", "CR/LF", ","
 	auto S = Mini(JB__Tk_Data);
 	S = S + (int)Start;
+	u8* Place = S.Addr + Start;
+	u8* After = S.Addr + S.Length; 
+
+// TABS
+	int Spaces = 0;
+	while (Place < After) {
+		if (*Place++ == '\t') {
+			Spaces += 4;
+		} else {
+			Place--; break;
+		}
+	}
 	
+// SPACES
+	while (Place < After) {
+		if (*Place++ == ' ') {
+			Spaces++;
+		} else {
+			Place--; break;
+		}
+	}
+
+// DARK
+	if (Place < After) {
+		auto c = *Place; 
+		if (c == '/' or c == '\n' or c == '\r') {
+			return -1; // end of line
+
+		} else if (c=='\t') {
+			return spacing_error(Place);
+			
+		} else {
+			return Spaces;
+		}
+	}
+
 	return 0;
 }
 
