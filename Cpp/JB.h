@@ -750,8 +750,6 @@ extern JB_String* JB_str_323;
 extern JB_String* JB_str_324;
 extern JB_String* JB_str_325;
 extern JB_String* JB_str_326;
-extern JB_String* JB_str_327;
-extern JB_String* JB_str_328;
 extern JB_String* JB_str_33;
 extern JB_String* JB_str_34;
 extern JB_String* JB_str_35;
@@ -839,7 +837,6 @@ extern Syntax JB_SyxBra;
 extern Syntax JB_SyxBRel;
 extern Syntax JB_SyxChar;
 extern Syntax JB_SyxCnj;
-extern Syntax JB_SyxCol;
 extern Syntax JB_SyxDecl;
 extern Syntax JB_SyxDot;
 extern Syntax JB_SyxEmb;
@@ -1813,9 +1810,9 @@ int JB_Syntax_Lineflags(Syntax self);
 
 JB_String* JB_Syntax_LongName(Syntax self);
 
-Message* JB_Syntax_MsgªStrªStr(Syntax self, JB_String* name);
+Message* JB_Syntax_MsgªStr(Syntax self, JB_String* name);
 
-Message* JB_Syntax_MsgªMsgStr(Syntax self, Message* parent, JB_String* name);
+Message* JB_Syntax_Msg(Syntax self, Message* parent, JB_String* name);
 
 JB_String* JB_Syntax_Name(Syntax self);
 
@@ -2059,7 +2056,7 @@ byte JB_Str_Last(JB_String* self);
 
 int JB_Str_LineCount(JB_String* self);
 
-bool JB_Str_OperatorContainsªStrªStr(JB_String* self, JB_String* s);
+bool JB_Str_OperatorContainsªStr(JB_String* self, JB_String* s);
 
 int JB_Str_OutCharSet(JB_String* self, ByteMap* cs, int Start, int After);
 
@@ -2070,8 +2067,6 @@ Message* JB_Str_ParseAs(JB_String* self, JB_String* name);
 int JB_Str_ParseInt(JB_String* self, Message* Where);
 
 Array* JB_Str_Split(JB_String* self, byte sep);
-
-byte JB_Str_SyntaxAccess(JB_String* self, int index);
 
 bool JB_Str_SyntaxEquals(JB_String* self, JB_String* Other, bool Aware);
 
@@ -2084,6 +2079,8 @@ JB_String* JB_Str_Unescape(JB_String* self);
 ByteMap* JB_Str_UniCS(JB_String* self);
 
 Array* JB_Str_Words(JB_String* self);
+
+JB_String* JB_Str__SyntaxAccess(int b);
 
 
 
@@ -2344,11 +2341,9 @@ void JB_Msg_Char__(Message* self, FastString* fs);
 
 void JB_Msg_Cnj__(Message* self, FastString* fs);
 
-void JB_Msg_Col__(Message* self, FastString* fs);
-
 void JB_Msg_ConstructorCopy(Message* self, Message* other);
 
-void JB_Msg_ConstructorªSyntaxStrªSyntaxStr(Message* self, Syntax Func, JB_String* Name);
+void JB_Msg_ConstructorªSyntaxStr(Message* self, Syntax Func, JB_String* Name);
 
 void JB_Msg_ConstructorParser(Message* self, Message* Parent, Syntax Func, int BytePos, JB_String* Name);
 
@@ -2442,7 +2437,7 @@ void JB_Msg_SThg__(Message* self, FastString* fs);
 
 void JB_Msg_Str__(Message* self, FastString* fs);
 
-Message* JB_Msg_SyntaxAccessªSyntaxªSyntaxªSyntax(Message* self, Syntax s);
+Message* JB_Msg_SyntaxAccessªSyntax(Message* self, Syntax s);
 
 bool JB_Msg_SyntaxEqualsªStrBool(Message* self, JB_String* name, bool Aware);
 
@@ -2482,7 +2477,7 @@ Message* JB_Msg__LayerAlloc(JB_MemoryLayer* _L);
 
 Message* JB_Msg__NewCopy(Message* other);
 
-Message* JB_Msg__NewªSyntaxStrªSyntaxStr(Syntax Func, JB_String* Name);
+Message* JB_Msg__NewªSyntaxStr(Syntax Func, JB_String* Name);
 
 Message* JB_Msg__NewParser(Message* Parent, Syntax Func, int BytePos, JB_String* Name);
 
@@ -2592,50 +2587,49 @@ JB_String* jb_readfile(_cstring path, bool AllowMissingFile);
 
 
 //// HEADER SyntaxConstants.h
-#define kSyxCol 0
-#define kSyxArg 1
-#define kSyxAcc 2
-#define kSyxAdj 3
-#define kSyxARel 4
-#define kSyxArr 5
-#define kSyxBack 6
-#define kSyxSStr 7
-#define kSyxBra 8
-#define kSyxBRel 9
-#define kSyxChar 10
-#define kSyxDecl 11
-#define kSyxDot 12
-#define kSyxEmb 13
-#define kSyxERel 14
-#define kSyxFunc 15
-#define kSyxItem 16
-#define kSyxList 17
-#define kSyxName 18
-#define kSyxNum 19
-#define kSyxUnit 20
-#define kSyxOat 21
-#define kSyxOpp 22
-#define kSyxSOpp 23
-#define kSyxRel 24
-#define kSyxTRel 25
-#define kSyxSDot 26
-#define kSyxSCom 27
-#define kSyxSheb 28
-#define kSyxStr 29
-#define kSyxSThg 30
-#define kSyxThg 31
-#define kSyxTmp 32
-#define kSyxAna 33
-#define kSyxSCnj 34
-#define kSyxCnj 35
-#define kSyxType 36
-#define kSyxYoda 37
-#define kSyxYopp 38
-#define kSyxAsk 39
-#define kSyxMsg 40
-#define kSyxBnch 41
-#define kSyxTodo 42
-#define kSyxBin 43
+#define kSyxArg 0
+#define kSyxAcc 1
+#define kSyxAdj 2
+#define kSyxARel 3
+#define kSyxArr 4
+#define kSyxBack 5
+#define kSyxSStr 6
+#define kSyxBra 7
+#define kSyxBRel 8
+#define kSyxChar 9
+#define kSyxDecl 10
+#define kSyxDot 11
+#define kSyxEmb 12
+#define kSyxERel 13
+#define kSyxFunc 14
+#define kSyxItem 15
+#define kSyxList 16
+#define kSyxName 17
+#define kSyxNum 18
+#define kSyxUnit 19
+#define kSyxOat 20
+#define kSyxOpp 21
+#define kSyxSOpp 22
+#define kSyxRel 23
+#define kSyxTRel 24
+#define kSyxSDot 25
+#define kSyxSCom 26
+#define kSyxSheb 27
+#define kSyxStr 28
+#define kSyxSThg 29
+#define kSyxThg 30
+#define kSyxTmp 31
+#define kSyxAna 32
+#define kSyxSCnj 33
+#define kSyxCnj 34
+#define kSyxType 35
+#define kSyxYoda 36
+#define kSyxYopp 37
+#define kSyxAsk 38
+#define kSyxMsg 39
+#define kSyxBnch 40
+#define kSyxTodo 41
+#define kSyxBin 42
 
 
 }

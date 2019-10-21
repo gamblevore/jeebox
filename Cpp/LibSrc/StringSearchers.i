@@ -358,8 +358,9 @@ int JB_Str_OutByte( JB_String* self, int StartOff, int AfterOff, int SearchChar 
 //}
 //
 
-int JB_Str_ByteValue(JB_String* self, int offset) {
-    if (self) { // should be taken out once nil detection exists.
+
+int JB_Str_ByteValue2(JB_String* self, int offset, int Default) {
+    if (self) { // take out once nil detection exists.
         if ((u32)offset < (u32)self->Length) {
             return (int) (self->Addr[offset]) ;
 
@@ -371,7 +372,11 @@ int JB_Str_ByteValue(JB_String* self, int offset) {
         }
     }
 
-    return UNI_BADOFFSET;
+    return Default;
+}
+
+int JB_Str_ByteValue(JB_String* self, int offset) {
+	return JB_Str_ByteValue2(self, offset, -1);
 }
 
 
