@@ -393,13 +393,13 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_224)
+#define kJB__ErrorColors_bold (JB_str_225)
 extern bool JB__ErrorColors_Enabled;
-#define kJB__ErrorColors_error (JB_str_225)
-#define kJB__ErrorColors_good (JB_str_226)
-#define kJB__ErrorColors_normal (JB_str_223)
-#define kJB__ErrorColors_underline (JB_str_226)
-#define kJB__ErrorColors_warn (JB_str_227)
+#define kJB__ErrorColors_error (JB_str_226)
+#define kJB__ErrorColors_good (JB_str_227)
+#define kJB__ErrorColors_normal (JB_str_224)
+#define kJB__ErrorColors_underline (JB_str_227)
+#define kJB__ErrorColors_warn (JB_str_228)
 //
 
 
@@ -495,7 +495,7 @@ extern SyntaxObj* JB__FuncArray_[64];
 extern u8 JB__FuncParent_[64];
 extern Dictionary* JB__SyxDict_;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_222)
+#define kJB_SaverStart1 (JB_str_223)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -751,6 +751,7 @@ extern JB_String* JB_str_324;
 extern JB_String* JB_str_325;
 extern JB_String* JB_str_326;
 extern JB_String* JB_str_327;
+extern JB_String* JB_str_328;
 extern JB_String* JB_str_33;
 extern JB_String* JB_str_34;
 extern JB_String* JB_str_35;
@@ -1542,11 +1543,11 @@ Message* JB_Tk__ReRoute(Message* cnj, Message* output);
 
 void JB_Tk__StopParse();
 
-void JB_Tk__Tokens$arrayintparsehandler(Array* arr, int bits, ParseHandler func);
+void JB_Tk__TokensªArrayIntParsehandler(Array* arr, int bits, ParseHandler func);
 
-void JB_Tk__Tokens$arrayth(Array* arr, TokHan* H);
+void JB_Tk__TokensªArrayTh(Array* arr, TokHan* H);
 
-void JB_Tk__Tokenz$strintparsehandler(JB_String* s, int bits, ParseHandler func);
+void JB_Tk__TokenzªStrIntParsehandler(JB_String* s, int bits, ParseHandler func);
 
 bool JB_Tk__WillEnd();
 
@@ -1631,9 +1632,9 @@ inline bool JB_int_Found(int self);
 
 int JB_int_OperatorMin(int self, int other);
 
-JB_String* JB_int_Render$fs(int self, FastString* fs_in);
+JB_String* JB_int_RenderªFs(int self, FastString* fs_in);
 
-JB_String* JB_int_Render$intfs(int self, int zeros, FastString* fs_in);
+JB_String* JB_int_RenderªIntFs(int self, int zeros, FastString* fs_in);
 
 
 
@@ -1690,7 +1691,7 @@ JB_String* JB_Loader_ItemName(ObjectLoader* self);
 
 JB_Object* JB_Loader_ItemObject(ObjectLoader* self);
 
-void JB_Loader_LinkedList$linkedlist(ObjectLoader* self, JB_LinkedList** Place);
+void JB_Loader_LinkedListªLinkedlist(ObjectLoader* self, JB_LinkedList** Place);
 
 Message* JB_Loader_Next(ObjectLoader* self);
 
@@ -1793,6 +1794,8 @@ bool JB_byte_IsNumeric(byte self);
 
 JB_String* JB_byte_Render(byte self, FastString* fs_in);
 
+byte JB_byte_UpperCase(byte self);
+
 
 
 // DataTypeCode
@@ -1810,9 +1813,9 @@ int JB_Syntax_Lineflags(Syntax self);
 
 JB_String* JB_Syntax_LongName(Syntax self);
 
-Message* JB_Syntax_Msg$str$str(Syntax self, JB_String* name);
+Message* JB_Syntax_MsgªStrªStr(Syntax self, JB_String* name);
 
-Message* JB_Syntax_Msg$msgstr(Syntax self, Message* parent, JB_String* name);
+Message* JB_Syntax_MsgªMsgStr(Syntax self, Message* parent, JB_String* name);
 
 JB_String* JB_Syntax_Name(Syntax self);
 
@@ -1935,7 +1938,7 @@ ByteMap* JB_BM__NewCharset(JB_String* charset, bool Ranges);
 
 
 // JB_DataTypeWrapper
-void JB_Wrap_Constructor$int64(DTWrap* self, int64 v);
+void JB_Wrap_ConstructorªInt64(DTWrap* self, int64 v);
 
 double JB_Wrap_FloatValue(DTWrap* self);
 
@@ -1945,7 +1948,7 @@ int64 JB_Wrap_Value(DTWrap* self);
 
 DTWrap* JB_Wrap__Alloc();
 
-DTWrap* JB_Wrap__New$int64(int64 v);
+DTWrap* JB_Wrap__NewªInt64(int64 v);
 
 
 
@@ -1959,7 +1962,7 @@ void JB_FS_AppendEscape(FastString* self, JB_String* s);
 
 void JB_FS_AppendFastString(FastString* self, FastString* data);
 
-void JB_FS_AppendHexData$str(FastString* self, JB_String* Data);
+void JB_FS_AppendHexDataªStr(FastString* self, JB_String* Data);
 
 void JB_FS_AppendObjectID(FastString* self, Saveable* o);
 
@@ -1969,13 +1972,13 @@ void JB_FS_MsgErrorName(FastString* self, JB_String* name);
 
 JB_String* JB_FS_Render(FastString* self, FastString* fs_in);
 
-void JB_FS_SyntaxAppend$int64(FastString* self, int64 data);
+void JB_FS_SyntaxAppendªInt64(FastString* self, int64 data);
 
-void JB_FS_SyntaxAppend$int(FastString* self, int data);
+void JB_FS_SyntaxAppendªInt(FastString* self, int data);
 
 void JB_FS_AppendFloatAsText(FastString* self, float F);
 
-void JB_FS_SyntaxAppend$msg(FastString* self, Message* msg);
+void JB_FS_SyntaxAppendªMsg(FastString* self, Message* msg);
 
 inline JB_String* JB_FS_SyntaxCastString(FastString* self);
 
@@ -2044,9 +2047,9 @@ JB_String* JB_Str_Escape(JB_String* self);
 
 JB_String* JB_Str_EscapeChr(JB_String* self);
 
-int JB_Str_Find$byteintint(JB_String* self, byte find, int Start, int After);
+int JB_Str_FindªByteIntInt(JB_String* self, byte find, int Start, int After);
 
-int JB_Str_Find$bmintint(JB_String* self, ByteMap* cs, int Start, int After);
+int JB_Str_FindªBmIntInt(JB_String* self, ByteMap* cs, int Start, int After);
 
 int JB_Str_IsHexLike(JB_String* self, int N);
 
@@ -2056,7 +2059,7 @@ byte JB_Str_Last(JB_String* self);
 
 int JB_Str_LineCount(JB_String* self);
 
-bool JB_Str_OperatorContains$str$str(JB_String* self, JB_String* s);
+bool JB_Str_OperatorContainsªStrªStr(JB_String* self, JB_String* s);
 
 int JB_Str_OutCharSet(JB_String* self, ByteMap* cs, int Start, int After);
 
@@ -2074,7 +2077,11 @@ bool JB_Str_SyntaxEquals(JB_String* self, JB_String* Other, bool Aware);
 
 void JB_Str_SyntaxExpect(JB_String* self);
 
+JB_String* JB_Str_TitleCase(JB_String* self, FastString* fs_in);
+
 JB_String* JB_Str_Unescape(JB_String* self);
+
+ByteMap* JB_Str_UniCS(JB_String* self);
 
 Array* JB_Str_Words(JB_String* self);
 
@@ -2170,11 +2177,11 @@ void JB_Dict_SaveWrite(Dictionary* self, ObjectSaver* Saver);
 
 JB_Object* JB_Dict_Syntax(Dictionary* self, JB_String* Key);
 
-JB_Object* JB_Dict_SyntaxAccess$str(Dictionary* self, JB_String* Key);
+JB_Object* JB_Dict_SyntaxAccessªStr(Dictionary* self, JB_String* Key);
 
 void JB_Dict_SyntaxAccessSet(Dictionary* self, int64 Key, JB_Object* Result);
 
-JB_Object* JB_Dict_SyntaxAccess$int64(Dictionary* self, int64 Key);
+JB_Object* JB_Dict_SyntaxAccessªInt64(Dictionary* self, int64 Key);
 
 Dictionary* JB_Dict__Alloc();
 
@@ -2305,7 +2312,7 @@ FastAppenderChunk* JB_FAC__New();
 // JB_Message
 void JB_Msg_Acc__(Message* self, FastString* fs);
 
-void JB_Msg_AccessErr$syntaxstr(Message* self, Syntax s, JB_String* name);
+void JB_Msg_AccessErrªSyntaxStr(Message* self, Syntax s, JB_String* name);
 
 void JB_Msg_Adj__(Message* self, FastString* fs);
 
@@ -2341,7 +2348,7 @@ void JB_Msg_Col__(Message* self, FastString* fs);
 
 void JB_Msg_ConstructorCopy(Message* self, Message* other);
 
-void JB_Msg_Constructor$syntaxstr$syntaxstr(Message* self, Syntax Func, JB_String* Name);
+void JB_Msg_ConstructorªSyntaxStrªSyntaxStr(Message* self, Syntax Func, JB_String* Name);
 
 void JB_Msg_ConstructorParser(Message* self, Message* Parent, Syntax Func, int BytePos, JB_String* Name);
 
@@ -2435,11 +2442,11 @@ void JB_Msg_SThg__(Message* self, FastString* fs);
 
 void JB_Msg_Str__(Message* self, FastString* fs);
 
-Message* JB_Msg_SyntaxAccess$syntax$syntax$syntax(Message* self, Syntax s);
+Message* JB_Msg_SyntaxAccessªSyntaxªSyntaxªSyntax(Message* self, Syntax s);
 
-bool JB_Msg_SyntaxEquals$strbool(Message* self, JB_String* name, bool Aware);
+bool JB_Msg_SyntaxEqualsªStrBool(Message* self, JB_String* name, bool Aware);
 
-bool JB_Msg_SyntaxEquals$syntaxbool(Message* self, Syntax X, bool Aware);
+bool JB_Msg_SyntaxEqualsªSyntaxBool(Message* self, Syntax X, bool Aware);
 
 void JB_Msg_SyntaxExpect(Message* self, JB_String* Error);
 
@@ -2475,7 +2482,7 @@ Message* JB_Msg__LayerAlloc(JB_MemoryLayer* _L);
 
 Message* JB_Msg__NewCopy(Message* other);
 
-Message* JB_Msg__New$syntaxstr$syntaxstr(Syntax Func, JB_String* Name);
+Message* JB_Msg__NewªSyntaxStrªSyntaxStr(Syntax Func, JB_String* Name);
 
 Message* JB_Msg__NewParser(Message* Parent, Syntax Func, int BytePos, JB_String* Name);
 
