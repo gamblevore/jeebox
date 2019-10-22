@@ -1962,6 +1962,7 @@ bool JB_Tk__ParseLoopMode(Message* Output, Syntax Syx) {
 
 Message* JB_Tk__ProcessThing(int Ops, bool Expect) {
 	int ColonFlags = Ops & kJB__Tk_colonarg;
+	Ops = (Ops & (~kJB__Tk_colonarg));
 	Message* result = JB_Incr(JB_Tk__Process(kJB__Tk_Thing | ColonFlags, Expect));
 	if ((!result) or JB_Tk__WillEnd()) {
 		JB_SafeDecr(result);
@@ -6041,7 +6042,7 @@ __lib__ int jb_shutdown() {
 }
 
 __lib__ int jb_version() {
-	return (2019102123);
+	return (2019102219);
 }
 
 __lib__ JB_String* jb_readfile(_cstring path, bool AllowMissingFile) {
