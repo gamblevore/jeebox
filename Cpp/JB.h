@@ -469,11 +469,12 @@ extern bool JB__Tk_IndentationAware;
 #define kJB__Tk_Temporal (16384 | 32768)
 #define kJB__Tk_TemporalSyx (32768)
 #define kJB__Tk_TemporalWord (16384)
-#define kJB__Tk_Thing (65536 | 131072)
-#define kJB__Tk_ThingSyx (65536)
-#define kJB__Tk_ThingWord (131072)
+#define kJB__Tk_temporalwordcolon (65536)
+#define kJB__Tk_Thing (131072 | 262144)
+#define kJB__Tk_ThingSyx (131072)
+#define kJB__Tk_ThingWord (262144)
 #define kJB__Tk_TmpOpp (2048 | 32768)
-#define kJB__Tk_LargestFlag (18)
+#define kJB__Tk_LargestFlag (19)
 extern int JB__Tk_StopBars;
 extern int JB__Tk_UsingPos;
 //
@@ -1479,6 +1480,12 @@ Message* JB_Tk__fSDot(int Start);
 
 Message* JB_Tk__fShebang(int Start);
 
+Message* JB_Tk__fStatement(int Start);
+
+Message* JB_Tk__fStatementColon(int Start);
+
+Message* JB_Tk__fStatementSub(int Start, int Flags);
+
 Message* JB_Tk__fString(int Start);
 
 Message* JB_Tk__fStrSub(int Start, JB_String* Ender, Syntax syx);
@@ -1488,8 +1495,6 @@ Message* JB_Tk__fSuperStr(int Start);
 Message* JB_Tk__fTemporalRel(int Start);
 
 Message* JB_Tk__fTemporalRelSyx(int Start);
-
-Message* JB_Tk__fTemporalStatement(int Start);
 
 Message* JB_Tk__fThingSyx(int Start);
 
