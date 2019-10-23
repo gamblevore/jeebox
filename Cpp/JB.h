@@ -32,6 +32,8 @@ extern "C" {
 //// HEADER AllTypes.h
 
 
+struct AstResult;
+
 struct AstUtil;
 
 struct JB_Class;
@@ -181,6 +183,12 @@ typedef void (*__Saveable_SaveCollect__)(Saveable* self, ObjectSaver* Saver);
 typedef void (*__Saveable_SaveWrite__)(Saveable* self, ObjectSaver* Saver);
 
 //// HEADER Proj.h
+
+struct AstResult {
+	Message* Children;
+	JB_String* Name;
+	Syntax Func;
+};
 
 struct AstUtil {
 	Dictionary* Mem;
@@ -879,6 +887,9 @@ extern Syntax JB_SyxYopp;
 
 
 // module: _voidptr_
+
+
+// module: AstResult_
 
 
 // module: AstUtil_
@@ -1592,8 +1603,17 @@ bool JB_TestCasting();
 // _voidptr
 
 
+// JB_AstResult
+void JB_AstResult_Destructor(AstResult* self);
+
+inline bool JB_AstResult_SyntaxCast(AstResult* self);
+
+
+
 // JB_AstUtil
 void JB_AstUtil_Destructor(AstUtil* self);
+
+AstResult JB_AstUtil_Get(AstUtil* self, Message* node);
 
 void JB_AstUtil_UseLayer(AstUtil* self, Message* src);
 
@@ -1960,7 +1980,7 @@ DTWrap* JB_Wrap__NewªInt64(int64 v);
 
 
 // JB_DictionaryReader
-inline bool JB_DictionaryReader_SyntaxCastBool(DictionaryReader* self);
+inline bool JB_DictionaryReader_SyntaxCast(DictionaryReader* self);
 
 
 
@@ -1987,7 +2007,7 @@ void JB_FS_AppendFloatAsText(FastString* self, float F);
 
 void JB_FS_SyntaxAppendªMsg(FastString* self, Message* msg);
 
-inline JB_String* JB_FS_SyntaxCastString(FastString* self);
+inline JB_String* JB_FS_SyntaxCast(FastString* self);
 
 FastString* JB_FS__Alloc();
 
@@ -2220,6 +2240,8 @@ int JB_FAP__Init_();
 bool JB_LinkedList_ListSanity(JB_LinkedList* self);
 
 void JB_LinkedList_LoadProperties(JB_LinkedList* self, ObjectLoader* Loader);
+
+JB_LinkedList* JB_LinkedList_Next(JB_LinkedList* self);
 
 void JB_LinkedList_SaveWrite(JB_LinkedList* self, ObjectSaver* Saver);
 
