@@ -393,13 +393,13 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_226)
+#define kJB__ErrorColors_bold (JB_str_228)
 extern bool JB__ErrorColors_Enabled;
-#define kJB__ErrorColors_error (JB_str_227)
-#define kJB__ErrorColors_good (JB_str_228)
-#define kJB__ErrorColors_normal (JB_str_225)
-#define kJB__ErrorColors_underline (JB_str_228)
-#define kJB__ErrorColors_warn (JB_str_229)
+#define kJB__ErrorColors_error (JB_str_229)
+#define kJB__ErrorColors_good (JB_str_230)
+#define kJB__ErrorColors_normal (JB_str_227)
+#define kJB__ErrorColors_underline (JB_str_230)
+#define kJB__ErrorColors_warn (JB_str_231)
 //
 
 
@@ -496,7 +496,7 @@ extern SyntaxObj* JB__FuncArray_[64];
 extern u8 JB__FuncParent_[64];
 extern Dictionary* JB__SyxDict_;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_224)
+#define kJB_SaverStart1 (JB_str_226)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -752,6 +752,8 @@ extern JB_String* JB_str_324;
 extern JB_String* JB_str_325;
 extern JB_String* JB_str_326;
 extern JB_String* JB_str_327;
+extern JB_String* JB_str_328;
+extern JB_String* JB_str_329;
 extern JB_String* JB_str_33;
 extern JB_String* JB_str_34;
 extern JB_String* JB_str_35;
@@ -1512,6 +1514,8 @@ Message* JB_Tk__MakeYoda(Message* first, int Bits, Message* Rel);
 
 int JB_Tk__MessageErrorSub(FastString* fs, int num, int ButFound);
 
+Message* JB_Tk__Msglist(int ops, bool Expect);
+
 Message* JB_Tk__NewParent(Message* Parent, Syntax Func, int Start, int End);
 
 Message* JB_Tk__NewParent0(Message* Parent, Syntax Func, int Start);
@@ -2063,6 +2067,8 @@ byte JB_Str_Last(JB_String* self);
 int JB_Str_LineCount(JB_String* self);
 
 bool JB_Str_OperatorContainsªStr(JB_String* self, JB_String* s);
+
+bool JB_Str_OperatorEndsWith(JB_String* self, JB_String* s);
 
 int JB_Str_OutCharSet(JB_String* self, ByteMap* cs, int Start, int After);
 
