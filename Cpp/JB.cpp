@@ -520,10 +520,6 @@ bool JB__Rec_BreakOnError;
 
 
 
-inline bool JB_AstResult_SyntaxCast(AstResult* self) {
-	return ((bool)self->Func);
-}
-
 inline bool JB_int_Found(int self) {
 	return self >= 0;
 }
@@ -740,16 +736,16 @@ JB_String* JB_Constants__Test() {
 	JB_String* str = JB_Incr(JB_FS_GetResult(fs));
 	JB_Decr(fs);
 	if ((!(({
-		JB_String* _tmP414 = JB_Incr(({
-			JB_String* _tmP416 = JB_Incr(JB_Str_Escape(str));
-			JB_String* _tmP415 = JB_Incr(JB_Str_Unescape(_tmP416));
-			JB_Decr(_tmP416);
-			JB_SafeDecr(_tmP415);
-			 _tmP415;
+		JB_String* _tmP412 = JB_Incr(({
+			JB_String* _tmP414 = JB_Incr(JB_Str_Escape(str));
+			JB_String* _tmP413 = JB_Incr(JB_Str_Unescape(_tmP414));
+			JB_Decr(_tmP414);
+			JB_SafeDecr(_tmP413);
+			 _tmP413;
 		}));
-		bool _tmP413 = JB_Str_SyntaxEquals(_tmP414, str, false);
-		JB_Decr(_tmP414);
-		 _tmP413;
+		bool _tmP411 = JB_Str_SyntaxEquals(_tmP412, str, false);
+		JB_Decr(_tmP412);
+		 _tmP411;
 	})))) {
 		JB_Object_SyntaxExpect(nil);
 		JB_Decr(str);
@@ -788,11 +784,11 @@ JB_String* JB_Constants__Test() {
 		JB_Msg_TreeCompare(root, cpy);
 		JB_Decr(cpy);
 		Message* list = JB_Incr(({
-			Message* _tmP418 = JB_Incr(JB_Str_Parse(list_input, nil));
-			Message* _tmP417 = JB_Incr(JB_Msg_ParseAST(_tmP418));
-			JB_Decr(_tmP418);
-			JB_SafeDecr(_tmP417);
-			 _tmP417;
+			Message* _tmP416 = JB_Incr(JB_Str_Parse(list_input, nil));
+			Message* _tmP415 = JB_Incr(JB_Msg_ParseAST(_tmP416));
+			JB_Decr(_tmP416);
+			JB_SafeDecr(_tmP415);
+			 _tmP415;
 		}));
 		JB_Msg_TreeCompare(root, list);
 		JB_Decr(list);
@@ -1001,11 +997,11 @@ void JB_Tk__ErrorEvent2(int Start, int ExpectedBits, int RealBits) {
 			JB_FS_AppendByte(Err, '\'');
 			int N = JB_int_OperatorMin(JB_Tk__NextStart(), (Start + 100));
 			JB_String* _tmP1 = JB_Incr(({
-				JB_String* _tmP406 = JB_Incr(JB_Str_Range(JB__Tk_Data, Start, N));
-				JB_String* _tmP405 = JB_Incr(JB_Str_Escape(_tmP406));
-				JB_Decr(_tmP406);
-				JB_SafeDecr(_tmP405);
-				 _tmP405;
+				JB_String* _tmP404 = JB_Incr(JB_Str_Range(JB__Tk_Data, Start, N));
+				JB_String* _tmP403 = JB_Incr(JB_Str_Escape(_tmP404));
+				JB_Decr(_tmP404);
+				JB_SafeDecr(_tmP403);
+				 _tmP403;
 			}));
 			JB_FS_AppendString(Err, _tmP1);
 			JB_Decr(_tmP1);
@@ -1013,11 +1009,11 @@ void JB_Tk__ErrorEvent2(int Start, int ExpectedBits, int RealBits) {
 		}
 	}
 	JB_FreeIfDead(({
-		JB_String* _tmP408 = JB_Incr(JB_FS_SyntaxCast(Err));
-		Message* _tmP407 = JB_Incr(JB_Tk__ErrorAdd(_tmP408, Start));
-		JB_Decr(_tmP408);
-		JB_SafeDecr(_tmP407);
-		 _tmP407;
+		JB_String* _tmP406 = JB_Incr(JB_FS_SyntaxCast(Err));
+		Message* _tmP405 = JB_Incr(JB_Tk__ErrorAdd(_tmP406, Start));
+		JB_Decr(_tmP406);
+		JB_SafeDecr(_tmP405);
+		 _tmP405;
 	}));
 	JB_Decr(Err);
 }
@@ -1188,11 +1184,11 @@ Message* JB_Tk__fChr(int Start) {
 	}
 	(JB_Tk__NextStartSet(After + 1));
 	JB_String* name = JB_Incr(({
-		JB_String* _tmP385 = JB_Incr(JB_Str_Range(JB__Tk_Data, Start + 1, After));
-		JB_String* _tmP384 = JB_Incr(JB_Str_Unescape(_tmP385));
-		JB_Decr(_tmP385);
-		JB_SafeDecr(_tmP384);
-		 _tmP384;
+		JB_String* _tmP383 = JB_Incr(JB_Str_Range(JB__Tk_Data, Start + 1, After));
+		JB_String* _tmP382 = JB_Incr(JB_Str_Unescape(_tmP383));
+		JB_Decr(_tmP383);
+		JB_SafeDecr(_tmP382);
+		 _tmP382;
 	}));
 	Message* _tmP = JB_Incr(JB_Tk__NewParentName(nil, JB_SyxChar, Start, name));
 	JB_Decr(name);
@@ -1294,14 +1290,24 @@ int JB_Tk__FindError(int num) {
 }
 
 Message* JB_Tk__fMsgList(int Start) {
+	Message* name = JB_Incr(JB_Tk__Process(kJB__Tk_TemporalWord, true));
+	if ((!name)) {
+		JB_Decr(name);
+		return nil;
+	}
+	Message* bad = JB_Incr(((Message*)JB_Tree_SyntaxAccessªInt(name, 1)));
+	if (bad) {
+		JB_Decr(name);
+		Message* _tmP = JB_Incr(JB_Tk__ErrorAdd(JB_str_133, bad->Position));
+		JB_Decr(bad);
+		JB_SafeDecr(_tmP);
+		return _tmP;
+	}
+	JB_Decr(bad);
 	Message* Result = JB_Incr(JB_Tk__NewParent0(nil, JB_SyxMsg, Start));
+	JB_Tree_SyntaxAppend(Result, name);
+	JB_Decr(name);
 	int Ops = kJB__Tk_OppSyx | (kJB__Tk_OppTemporal | kJB__Tk_OppYoda);
-	Message* _tmP = JB_Incr(JB_Tk__Msglist(Ops, true));
-	JB_Tree_SyntaxAppend(Result, _tmP);
-	JB_Decr(_tmP);
-	Message* _tmP1 = JB_Incr(JB_Tk__Msglist(Ops, false));
-	JB_Tree_SyntaxAppend(Result, _tmP1);
-	JB_Decr(_tmP1);
 	while (JB_Tk__ConsumeLines(JB_SyxList)) {
 		Message* item = JB_Incr(JB_Tk__ProcessThing(Ops, false));
 		if ((!item)) {
@@ -1310,10 +1316,10 @@ Message* JB_Tk__fMsgList(int Start) {
 		}
 		if (JB_Str_OperatorEndsWith(item->Name, JB_str_74)) {
 			JB_Decr(Result);
-			Message* _tmP2 = JB_Incr(JB_Tk__ErrorAdd(JB_str_134, item->Position));
+			Message* _tmP1 = JB_Incr(JB_Tk__ErrorAdd(JB_str_134, item->Position));
 			JB_Decr(item);
-			JB_SafeDecr(_tmP2);
-			return _tmP2;
+			JB_SafeDecr(_tmP1);
+			return _tmP1;
 		}
 		JB_Tree_SyntaxAppend(Result, item);
 		JB_Decr(item);
@@ -1842,21 +1848,6 @@ int JB_Tk__MessageErrorSub(FastString* fs, int num, int ButFound) {
 	return 0;
 }
 
-Message* JB_Tk__Msglist(int ops, bool Expect) {
-	Message* result = JB_Incr(JB_Tk__ProcessThing(ops, Expect));
-	if (JB_Msg_SyntaxEqualsªSyntaxBool(result, JB_SyxMsg, false)) {
-		Message* _tmP = JB_Incr(JB_Tk__ErrorAdd(JB_str_133, result->Position));
-		JB_Decr(result);
-		JB_SafeDecr(_tmP);
-		return _tmP;
-	}
-	if ((!(result))) {
-		JB_SetRef(result, JB_Tk__NewParent0(nil, JB_SyxStr, JB_Tk__NextStart()));
-	}
-	JB_SafeDecr(result);
-	return result;
-}
-
 Message* JB_Tk__NewParent(Message* Parent, Syntax Func, int Start, int End) {
 	JB_String* Name = JB_Str_Range(JB__Tk_Data, Start, End);
 	Message* Result = JB_Msg__NewParser(Parent, Func, Start, Name);
@@ -1991,10 +1982,10 @@ bool JB_Tk__ParseLoopMode(Message* Output, Syntax Syx) {
 		result++;
 		JB_Tree_SyntaxAppend(Output, Item);
 		if (({
-			Message* _tmP399 = JB_Incr(((Message*)JB_Ring_PrevSib(Item)));
-			bool _tmP398 = JB_Msg_SyntaxEqualsªSyntaxBool(_tmP399, JB_SyxTmp, false);
-			JB_Decr(_tmP399);
-			 _tmP398;
+			Message* _tmP397 = JB_Incr(((Message*)JB_Ring_PrevSib(Item)));
+			bool _tmP396 = JB_Msg_SyntaxEqualsªSyntaxBool(_tmP397, JB_SyxTmp, false);
+			JB_Decr(_tmP397);
+			 _tmP396;
 		})) {
 			int spaces = JB_Tk__MessageIndent(Item->Position);
 		}
@@ -2424,7 +2415,7 @@ int JB_Init_() {
 		JB_SetRef(JB_str_179, JB_Str3("Can’t parse number '", 22));
 		JB_SetRef(JB_str_178, JB_Str3("Manual inspection:\n\n", 20));
 		JB_SetRef(JB_str_177, JB_Str3("entities", 8));
-		JB_SetRef(JB_str_176, JB_Str3("«tmp \"how\"\n\t«oat\n\t\t«opp \"can\"»\n\t\t«trel\n\t\t\t«rel\n\t\t\t\t«thg \"someone\"»\n\t\t\t\t«opp \"fall\"»\n\t\t\t\t«adj\n\t\t\t\t\t«thg \"so\"»\n\t\t\t\t\t«thg \"far\"»\n\t\t\t\t»\n\t\t\t»\n\t\t\t«cnj \"without\"»\n\t\t\t«oat\n\t\t\t\t«opp \"realising\"»\n\t\t\t\t«ana \"it\"»\n\t\t\t»\n\t\t»\n\t»\n»\n«tmp \"story\"\n\t«thg \"X\"»\n\t«list\n\t\t«trel\n\t\t\t«rel\n\t\t\t\t«thg \"x\"»\n\t\t\t\t«bra\n\t\t\t\t\t«adj\n\t\t\t\t\t\t«opp \"a\"»\n\t\t\t\t\t\t«opp \"b\"»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t\t«thg \"c\"»\n\t\t\t»\n\t\t\t«scnj \"-->\"»\n\t\t\t«rel\n\t\t\t\t«name \"sonic\"\n\t\t\t\t\t«adj\n\t\t\t\t\t\t«thg \"the\"»\n\t\t\t\t\t\t«thg \"hedgedog\"»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t\t«opp \"or\"»\n\t\t\t\t«name \"jeebox\"»\n\t\t\t»\n\t\t»\n\t\t«trel\n\t\t\t«rel\n\t\t\t\t«thg \"A\"»\n\t\t\t\t«bra\n\t\t\t\t\t«rel\n\t\t\t\t\t\t«adj\n\t\t\t\t\t\t\t«bra\n\t\t\t\t\t\t\t\t«adj\n\t\t\t\t\t\t\t\t\t«opp \"B\"»\n\t\t\t\t\t\t\t\t\t«opp \"C\"»\n\t\t\t\t\t\t\t\t»\n\t\t\t\t\t\t\t»\n\t\t\t\t\t\t\t«opp \"D\"»\n\t\t\t\t\t\t»\n\t\t\t\t\t\t«opp \"E\"»\n\t\t\t\t\t\t«adj\n\t\t\t\t\t\t\t«opp \"F\"»\n\t\t\t\t\t\t\t«opp \"G\"»\n\t\t\t\t\t\t»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t\t«thg \"I\"»\n\t\t\t»\n\t\t\t«cnj \"W\"»\n\t\t\t«rel\n\t\t\t\t«thg \"A\"»\n\t\t\t\t«opp \"t\"»\n\t\t\t\t«list\n\t\t\t\t\t«item\n\t\t\t\t\t\t«thg \"o\"»\n\t\t\t\t\t\t«thg \"c\"»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t»\n\t\t»\n\t»\n»\n«tmp \"za\"\n\t«thg \"a\"»\n\t«arg\n\t\t«decl\n\t\t\t«num \"1\"»\n\t\t\t«rel\n\t\t\t\t«thg \"x\"»\n\t\t\t\t«opp \"*\"»\n\t\t\t\t«rel\n\t\t\t\t\t«thg \"y\"»\n\t\t\t\t\t«opp \"*\"»\n\t\t\t\t\t«rel\n\t\t\t\t\t\t«thg \"z\"»\n\t\t\t\t\t\t«opp \"=\"»\n\t\t\t\t\t\t«brel \"\?\"\n\t\t\t\t\t\t\t«arel \"\?\"\n\t\t\t\t\t\t\t\t«list »\n\t\t\t\t\t\t\t»\n\t\t\t\t\t\t»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t»\n\t\t»\n\t\t«decl\n\t\t\t«emb »\n\t\t\t«rel\n\t\t\t\t«thg \"a\"»\n\t\t\t\t«opp \"=\"»\n\t\t\t\t«rel\n\t\t\t\t\t«thg \"c\"»\n\t\t\t\t\t«opp \"or\"»\n\t\t\t\t\t«thg \"d\"»\n\t\t\t\t»\n\t\t\t»\n\t\t»\n\t\t«list\n\t\t\t«thg \"a\"»\n\t\t»\n\t\t«list\n\t\t\t«trel\n\t\t\t\t«arr »\n\t\t\t\t«scnj \"-->\"»\n\t\t\t\t«rel\n\t\t\t\t\t«thg \"a\"»\n\t\t\t\t\t«opp \"+\"»\n\t\t\t\t\t«thg \"a\"»\n\t\t\t\t»\n\t\t\t»\n\t\t\t«thg \"b\"»\n\t\t\t«item\n\t\t\t\t«thg \"d\"»\n\t\t\t\t«thg \"e\"»\n\t\t\t»\n\t\t»\n\t\t«arr\n\t\t\t«type\n\t\t\t\t«thg \"d\"»\n\t\t\t\t«num \"0\"»\n\t\t\t»\n\t\t\t«item\n\t\t\t\t«rel\n\t\t\t\t\t«thg \"a\"»\n\t\t\t\t\t«opp \"+\"»\n\t\t\t\t\t«thg \"b\"»\n\t\t\t\t»\n\t\t\t\t«thg \"c\"»\n\t\t\t»\n\t\t\t«arr\n\t\t\t\t«thg \"c\"»\n\t\t\t\t«thg \"d\"»\n\t\t\t»\n\t\t»\n\t»\n»\n«bin \"binary encoding oof\"»\n«tmp \"function\"\n\t«thg \"name\"»\n\t«list\n\t\t«decl\n\t\t\t«item\n\t\t\t\t«thg \"x\"»\n\t\t\t\t«rel\n\t\t\t\t\t«thg \"y\"»\n\t\t\t\t\t«opp \"+\"»\n\t\t\t\t\t«thg \"z\"»\n\t\t\t\t»\n\t\t\t»\n\t\t\t«adj\n\t\t\t\t«thg \"a\"»\n\t\t\t\t«thg \"b\"»\n\t\t\t»\n\t\t»\n\t\t«decl\n\t\t\t«emb »\n\t\t»\n\t»\n\t«arg\n\t\t«item\n\t\t\t«thg \"label\"»\n\t\t\t«func\n\t\t\t\t«thg \"func\"»\n\t\t\t\t«list »\n\t\t\t»\n\t\t»\n\t\t«str \"'\\\"striñg test\\\"'\"»\n\t\t«back \"\\\\n\\\\(\\&#x134;\\&#xEB;\\\\C3\\\\AA\\\\C6\\\\81o\\&#9447;\\\\)\"»\n\t\t«erel\n\t\t\t«brel \"--\"\n\t\t\t\t«arel \"--\"\n\t\t\t\t\t«thg \"x\"»\n\t\t\t\t»\n\t\t\t»\n\t\t\t«opp \"mod\"»\n\t\t\t«char \"ioi '\\\"\\\"'oio\"»\n\t\t»\n\t\t«dot \"y\"\n\t\t\t«dot \"size\"\n\t\t\t\t«thg \"y\"»\n\t\t\t\t«list\n\t\t\t\t\t«arel \"\?\"\n\t\t\t\t\t\t«sthg \"...\"»\n\t\t\t\t\t»\n\t\t\t\t\t«sthg \"...\"»\n\t\t\t\t\t«sstr \"s`t`r\"»\n\t\t\t\t»\n\t\t\t»\n\t\t\t«list\n\t\t\t\t«brel \"-\"\n\t\t\t\t\t«thg \"z\"»\n\t\t\t\t»\n\t\t\t»\n\t\t»\n\t\t«rel\n\t\t\t«thg \"x\"»\n\t\t\t«opp \"=\"»\n\t\t\t«rel\n\t\t\t\t«str\n\t\t\t\t\t«emb \"{ab\"»\n\t\t\t\t\t«thg \"x\"»\n\t\t\t\t\t«emb \" \"»\n\t\t\t\t\t«thg \"y\"»\n\t\t\t\t\t«thg \"z\"»\n\t\t\t\t\t«emb \"ab}\"»\n\t\t\t\t»\n\t\t\t\t«opp \"+\"»\n\t\t\t\t«back \"abc\"»\n\t\t\t»\n\t\t»\n\t\t«erel\n\t\t\t«type\n\t\t\t\t«thg \"z\"»\n\t\t\t\t«list\n\t\t\t\t\t«thg \"a\"»\n\t\t\t\t»\n\t\t\t»\n\t\t\t«opp \"+\"»\n\t\t\t«sdot \"exit\"\n\t\t\t\t«list\n\t\t\t\t\t«item\n\t\t\t\t\t\t«thg \"code\"»\n\t\t\t\t\t\t«num \"-3\"»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t»\n\t\t»\n\t\t«tmp \"for\"\n\t\t\t«bra\n\t\t\t\t«rel\n\t\t\t\t\t«thg \"a\"»\n\t\t\t\t\t«opp \"in\"»\n\t\t\t\t\t«thg \"b\"»\n\t\t\t\t»\n\t\t\t»\n\t\t\t«arg\n\t\t\t\t«rel\n\t\t\t\t\t«brel \"$\"\n\t\t\t\t\t\t«arel \"$\"\n\t\t\t\t\t\t\t«thg \"a\"»\n\t\t\t\t\t\t»\n\t\t\t\t\t»\n\t\t\t\t\t«opp \"=\"»\n\t\t\t\t\t«rel\n\t\t\t\t\t\t«brel \"&\"\n\t\t\t\t\t\t\t«arel \"&\"\n\t\t\t\t\t\t\t\t«thg \"b\"»\n\t\t\t\t\t\t\t»\n\t\t\t\t\t\t»\n\t\t\t\t\t\t«opp \"+\"»\n\t\t\t\t\t\t«brel \"!\"\n\t\t\t\t\t\t\t«arel \"!\"\n\t\t\t\t\t\t\t\t«thg \"c\"»\n\t\t\t\t\t\t\t»\n\t\t\t\t\t\t»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t»\n\t\t»\n\t\t«tmp \"if\"\n\t\t\t«rel\n\t\t\t\t«bra\n\t\t\t\t\t«rel\n\t\t\t\t\t\t«char \"a\"»\n\t\t\t\t\t\t«opp \"&&&\"»\n\t\t\t\t\t\t«rel\n\t\t\t\t\t\t\t«thg \"b\"»\n\t\t\t\t\t\t\t«opp \"===\"»\n\t\t\t\t\t\t\t«rel\n\t\t\t\t\t\t\t\t«brel \"!\"\n\t\t\t\t\t\t\t\t\t«brel \"!\"\n\t\t\t\t\t\t\t\t\t\t«brel \"!\"\n\t\t\t\t\t\t\t\t\t\t\t«thg \"b\"»\n\t\t\t\t\t\t\t\t\t\t»\n\t\t\t\t\t\t\t\t\t»\n\t\t\t\t\t\t\t\t»\n\t\t\t\t\t\t\t\t«opp \"|||\"»\n\t\t\t\t\t\t\t\t«thg \"c\"»\n\t\t\t\t\t\t\t»\n\t\t\t\t\t\t»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t\t«opp \"^^^\"»\n\t\t\t\t«bra\n\t\t\t\t\t«rel\n\t\t\t\t\t\t«thg \"a\"»\n\t\t\t\t\t\t«opp \"~>=\"»\n\t\t\t\t\t\t«thg \"b\"»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t»\n\t\t\t«arg\n\t\t\t\t«tmp \"if\"\n\t\t\t\t\t«thg \"a\"»\n\t\t\t\t\t«arg \":\"\n\t\t\t\t\t\t«tmp \"return\"\n\t\t\t\t\t\t\t«rel\n\t\t\t\t\t\t\t\t«unit \"cm\"\n\t\t\t\t\t\t\t\t\t«num \"0xff_\"»\n\t\t\t\t\t\t\t\t»\n\t\t\t\t\t\t\t\t«opp \"+\"»\n\t\t\t\t\t\t\t\t«unit \"miles\"\n\t\t\t\t\t\t\t\t\t«num \"10_\"»\n\t\t\t\t\t\t\t\t»\n\t\t\t\t\t\t\t»\n\t\t\t\t\t\t»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t»\n\t\t»\n\t»\n»\n", 4216));
+		JB_SetRef(JB_str_176, JB_Str3("«tmp \"how\"\n\t«oat \n\t\t«opp \"can\"»\n\t\t«trel \n\t\t\t«rel \n\t\t\t\t«thg \"someone\"»\n\t\t\t\t«opp \"fall\"»\n\t\t\t\t«adj \n\t\t\t\t\t«thg \"so\"»\n\t\t\t\t\t«thg \"far\"»\n\t\t\t\t»\n\t\t\t»\n\t\t\t«cnj \"without\"»\n\t\t\t«oat \n\t\t\t\t«opp \"realising\"»\n\t\t\t\t«ana \"it\"»\n\t\t\t»\n\t\t»\n\t»\n»\n«tmp \"story\"\n\t«thg \"X\"»\n\t«list \n\t\t«trel \n\t\t\t«rel \n\t\t\t\t«thg \"x\"»\n\t\t\t\t«bra \n\t\t\t\t\t«adj \n\t\t\t\t\t\t«opp \"a\"»\n\t\t\t\t\t\t«opp \"b\"»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t\t«thg \"c\"»\n\t\t\t»\n\t\t\t«scnj \"-->\"»\n\t\t\t«rel \n\t\t\t\t«name \"sonic\"\n\t\t\t\t\t«adj \n\t\t\t\t\t\t«thg \"the\"»\n\t\t\t\t\t\t«thg \"hedgedog\"»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t\t«opp \"or\"»\n\t\t\t\t«name \"jeebox\"»\n\t\t\t»\n\t\t»\n\t\t«trel \n\t\t\t«rel \n\t\t\t\t«thg \"A\"»\n\t\t\t\t«bra \n\t\t\t\t\t«rel \n\t\t\t\t\t\t«adj \n\t\t\t\t\t\t\t«bra \n\t\t\t\t\t\t\t\t«adj \n\t\t\t\t\t\t\t\t\t«opp \"B\"»\n\t\t\t\t\t\t\t\t\t«opp \"C\"»\n\t\t\t\t\t\t\t\t»\n\t\t\t\t\t\t\t»\n\t\t\t\t\t\t\t«opp \"D\"»\n\t\t\t\t\t\t»\n\t\t\t\t\t\t«opp \"E\"»\n\t\t\t\t\t\t«adj \n\t\t\t\t\t\t\t«opp \"F\"»\n\t\t\t\t\t\t\t«opp \"G\"»\n\t\t\t\t\t\t»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t\t«thg \"I\"»\n\t\t\t»\n\t\t\t«cnj \"W\"»\n\t\t\t«rel \n\t\t\t\t«thg \"A\"»\n\t\t\t\t«opp \"t\"»\n\t\t\t\t«list \n\t\t\t\t\t«item \n\t\t\t\t\t\t«thg \"o\"»\n\t\t\t\t\t\t«thg \"c\"»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t»\n\t\t»\n\t»\n»\n«tmp \"za\"\n\t«thg \"a\"»\n\t«arg \n\t\t«decl \n\t\t\t«num \"1\"»\n\t\t\t«rel \n\t\t\t\t«thg \"x\"»\n\t\t\t\t«opp \"*\"»\n\t\t\t\t«rel \n\t\t\t\t\t«thg \"y\"»\n\t\t\t\t\t«opp \"*\"»\n\t\t\t\t\t«rel \n\t\t\t\t\t\t«thg \"z\"»\n\t\t\t\t\t\t«opp \"=\"»\n\t\t\t\t\t\t«brel \"\?\"\n\t\t\t\t\t\t\t«arel \"\?\"\n\t\t\t\t\t\t\t\t«list »\n\t\t\t\t\t\t\t»\n\t\t\t\t\t\t»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t»\n\t\t»\n\t\t«decl \n\t\t\t«emb »\n\t\t\t«rel \n\t\t\t\t«thg \"a\"»\n\t\t\t\t«opp \"=\"»\n\t\t\t\t«rel \n\t\t\t\t\t«thg \"c\"»\n\t\t\t\t\t«opp \"or\"»\n\t\t\t\t\t«thg \"d\"»\n\t\t\t\t»\n\t\t\t»\n\t\t»\n\t\t«list \n\t\t\t«thg \"a\"»\n\t\t»\n\t\t«list \n\t\t\t«trel \n\t\t\t\t«arr »\n\t\t\t\t«scnj \"-->\"»\n\t\t\t\t«rel \n\t\t\t\t\t«thg \"a\"»\n\t\t\t\t\t«opp \"+\"»\n\t\t\t\t\t«thg \"a\"»\n\t\t\t\t»\n\t\t\t»\n\t\t\t«thg \"b\"»\n\t\t\t«item \n\t\t\t\t«thg \"d\"»\n\t\t\t\t«thg \"e\"»\n\t\t\t»\n\t\t»\n\t\t«arr \n\t\t\t«type \n\t\t\t\t«thg \"d\"»\n\t\t\t\t«num \"0\"»\n\t\t\t»\n\t\t\t«item \n\t\t\t\t«rel \n\t\t\t\t\t«thg \"a\"»\n\t\t\t\t\t«opp \"+\"»\n\t\t\t\t\t«thg \"b\"»\n\t\t\t\t»\n\t\t\t\t«thg \"c\"»\n\t\t\t»\n\t\t\t«arr \n\t\t\t\t«thg \"c\"»\n\t\t\t\t«thg \"d\"»\n\t\t\t»\n\t\t»\n\t»\n»\n«bin \"binary encoding oof\"»\n«tmp \"function\"\n\t«thg \"name\"»\n\t«list \n\t\t«decl \n\t\t\t«item \n\t\t\t\t«thg \"x\"»\n\t\t\t\t«rel \n\t\t\t\t\t«thg \"y\"»\n\t\t\t\t\t«opp \"+\"»\n\t\t\t\t\t«thg \"z\"»\n\t\t\t\t»\n\t\t\t»\n\t\t\t«adj \n\t\t\t\t«thg \"a\"»\n\t\t\t\t«thg \"b\"»\n\t\t\t»\n\t\t»\n\t\t«decl \n\t\t\t«emb »\n\t\t»\n\t»\n\t«arg \n\t\t«item \n\t\t\t«thg \"label\"»\n\t\t\t«func \n\t\t\t\t«thg \"func\"»\n\t\t\t\t«list »\n\t\t\t»\n\t\t»\n\t\t«str \"'\\\"striñg test\\\"'\"»\n\t\t«back \"\\\\n\\\\(\\&#x134;\\&#xEB;\\\\C3\\\\AA\\\\C6\\\\81o\\&#9447;\\\\)\"»\n\t\t«erel \n\t\t\t«brel \"--\"\n\t\t\t\t«arel \"--\"\n\t\t\t\t\t«thg \"x\"»\n\t\t\t\t»\n\t\t\t»\n\t\t\t«opp \"mod\"»\n\t\t\t«char \"ioi '\\\"\\\"'oio\"»\n\t\t»\n\t\t«dot \"y\"\n\t\t\t«dot \"size\"\n\t\t\t\t«thg \"y\"»\n\t\t\t\t«list \n\t\t\t\t\t«arel \"\?\"\n\t\t\t\t\t\t«sthg \"...\"»\n\t\t\t\t\t»\n\t\t\t\t\t«sthg \"...\"»\n\t\t\t\t\t«sstr \"s`t`r\"»\n\t\t\t\t»\n\t\t\t»\n\t\t\t«list \n\t\t\t\t«brel \"-\"\n\t\t\t\t\t«thg \"z\"»\n\t\t\t\t»\n\t\t\t»\n\t\t»\n\t\t«rel \n\t\t\t«thg \"x\"»\n\t\t\t«opp \"=\"»\n\t\t\t«rel \n\t\t\t\t«str \n\t\t\t\t\t«emb \"{ab\"»\n\t\t\t\t\t«thg \"x\"»\n\t\t\t\t\t«emb \" \"»\n\t\t\t\t\t«thg \"y\"»\n\t\t\t\t\t«thg \"z\"»\n\t\t\t\t\t«emb \"ab}\"»\n\t\t\t\t»\n\t\t\t\t«opp \"+\"»\n\t\t\t\t«back \"abc\"»\n\t\t\t»\n\t\t»\n\t\t«erel \n\t\t\t«type \n\t\t\t\t«thg \"z\"»\n\t\t\t\t«list \n\t\t\t\t\t«thg \"a\"»\n\t\t\t\t»\n\t\t\t»\n\t\t\t«opp \"+\"»\n\t\t\t«sdot \"exit\"\n\t\t\t\t«list \n\t\t\t\t\t«item \n\t\t\t\t\t\t«thg \"code\"»\n\t\t\t\t\t\t«num \"-3\"»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t»\n\t\t»\n\t\t«tmp \"for\"\n\t\t\t«bra \n\t\t\t\t«rel \n\t\t\t\t\t«thg \"a\"»\n\t\t\t\t\t«opp \"in\"»\n\t\t\t\t\t«thg \"b\"»\n\t\t\t\t»\n\t\t\t»\n\t\t\t«arg \n\t\t\t\t«rel \n\t\t\t\t\t«brel \"$\"\n\t\t\t\t\t\t«arel \"$\"\n\t\t\t\t\t\t\t«thg \"a\"»\n\t\t\t\t\t\t»\n\t\t\t\t\t»\n\t\t\t\t\t«opp \"=\"»\n\t\t\t\t\t«rel \n\t\t\t\t\t\t«brel \"&\"\n\t\t\t\t\t\t\t«arel \"&\"\n\t\t\t\t\t\t\t\t«thg \"b\"»\n\t\t\t\t\t\t\t»\n\t\t\t\t\t\t»\n\t\t\t\t\t\t«opp \"+\"»\n\t\t\t\t\t\t«brel \"!\"\n\t\t\t\t\t\t\t«arel \"!\"\n\t\t\t\t\t\t\t\t«thg \"c\"»\n\t\t\t\t\t\t\t»\n\t\t\t\t\t\t»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t»\n\t\t»\n\t\t«tmp \"if\"\n\t\t\t«rel \n\t\t\t\t«bra \n\t\t\t\t\t«rel \n\t\t\t\t\t\t«char \"a\"»\n\t\t\t\t\t\t«opp \"&&&\"»\n\t\t\t\t\t\t«rel \n\t\t\t\t\t\t\t«thg \"b\"»\n\t\t\t\t\t\t\t«opp \"===\"»\n\t\t\t\t\t\t\t«rel \n\t\t\t\t\t\t\t\t«brel \"!\"\n\t\t\t\t\t\t\t\t\t«brel \"!\"\n\t\t\t\t\t\t\t\t\t\t«brel \"!\"\n\t\t\t\t\t\t\t\t\t\t\t«thg \"b\"»\n\t\t\t\t\t\t\t\t\t\t»\n\t\t\t\t\t\t\t\t\t»\n\t\t\t\t\t\t\t\t»\n\t\t\t\t\t\t\t\t«opp \"|||\"»\n\t\t\t\t\t\t\t\t«thg \"c\"»\n\t\t\t\t\t\t\t»\n\t\t\t\t\t\t»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t\t«opp \"^^^\"»\n\t\t\t\t«bra \n\t\t\t\t\t«rel \n\t\t\t\t\t\t«thg \"a\"»\n\t\t\t\t\t\t«opp \"~>=\"»\n\t\t\t\t\t\t«thg \"b\"»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t»\n\t\t\t«arg \n\t\t\t\t«tmp \"if\"\n\t\t\t\t\t«thg \"a\"»\n\t\t\t\t\t«arg \":\"\n\t\t\t\t\t\t«tmp \"return\"\n\t\t\t\t\t\t\t«rel \n\t\t\t\t\t\t\t\t«unit \"cm\"\n\t\t\t\t\t\t\t\t\t«num \"0xff_\"»\n\t\t\t\t\t\t\t\t»\n\t\t\t\t\t\t\t\t«opp \"+\"»\n\t\t\t\t\t\t\t\t«unit \"miles\"\n\t\t\t\t\t\t\t\t\t«num \"10_\"»\n\t\t\t\t\t\t\t\t»\n\t\t\t\t\t\t\t»\n\t\t\t\t\t\t»\n\t\t\t\t\t»\n\t\t\t\t»\n\t\t\t»\n\t\t»\n\t»\n»\n", 4291));
 		JB_SetRef(JB_str_175, JB_Str3("// Jeebox self-test file.\n// Tests all syntax in small amount of code.\n// Does not make sense in any other way.\n\nhow %can someone fall so~far #without %realising –it\n\n\nstory X (\n\tx (a ~ b) c\n\t\t\t-->\n\tsonic@the~hedgedog or @jeebox\n\n\tA ((B~C)~D E F~G) I #W A t (o:c)\n)\n\n\n\n\nza a {\n\t|1| x * y * z = \?()\?\n\t|| a = c or d\n\t(a,)\n\t([] --> a + a,b,d:e)\n\t[d|0|, a+b:c, [c, d]] /* /*\n\t\tnested comments!\n\t\t*/ I found it useful.*/\n\n\t// }\n}\n\n#(OcbkON9v86LkOszaQMvd86zlPW)#\n\nfunction name (|x:y+z| a ~ b, ||) {\n\tlabel: func()\n\t\"'\\\"stri\\c3\\b1g test\\\"'\"\n\t`\\n\\(&#x134;&#xEB;\\C3\\AA\\C6\\81o&#9447;\\)`\n\t--x-- mod= 'ioi \\'\"\"\\'oio'\n\t\n\ty.size(...\?, ..., <(`s`t`r`)>).y(-z)\n\n\tx = \"{ab$\{x} $\{y}$\{z}ab}\" + `abc`\n\tz|(a,)| += .exit(code: -3)\n\n\tfor (a in b) {\n\t\t\$a$ = &b& + !c!\n\t}\n\n\tif ('a' &&& b === !!!b ||| c) ^^^ (a ~>= b) {\n\t\tif a: return 0xff_cm + 10_miles\n\t}\n}\n\n\n", 839));
 		JB_SetRef(JB_str_174, JB_Str3(": Failed\n\n", 10));
 		JB_SetRef(JB_str_173, JB_Str3("Test ", 5));
@@ -2467,7 +2458,7 @@ int JB_Init_() {
 		JB_SetRef(JB_str_136, JB_Str3(")", 1));
 		JB_SetRef(JB_str_135, JB_Str3("String did not close.", 21));
 		JB_SetRef(JB_str_134, JB_Str3("Needs a space here.", 19));
-		JB_SetRef(JB_str_133, JB_Str3("This can't be a message's type or name!", 39));
+		JB_SetRef(JB_str_133, JB_Str3("Unexpected syntax", 17));
 		JB_SetRef(JB_str_132, JB_Str3("]", 1));
 		JB_SetRef(JB_str_131, JB_Str3("Missing '", 9));
 		JB_SetRef(JB_str_130, JB_Str3("\n ", 2));
@@ -2747,30 +2738,17 @@ void JB_AstUtil_Destructor(AstUtil* self) {
 AstResult JB_AstUtil_Get(AstUtil* self, Message* node) {
 	AstResult Result = ((AstResult){
 	});
-	Message* func = nil;
-	if (JB_Msg_SyntaxEqualsªSyntaxBool(node, JB_SyxMsg, false)) {
-		func = ((Message*)JB_Ring_First(node));
-		Message* name = ((Message*)JB_Ring_NextSib(func));
-		if (name) {
-			JB_SetRef(Result.Name, JB_Msg_Nyme(name));
-			Result.Children = ((Message*)JB_Ring_NextSib(name));
-		}
-	} else if (JB_Msg_Expect(node, JB_SyxList, JB_str_0)) {
-		Message* itm = JB_Msg_SyntaxAccessªSyntax(node, JB_SyxItem);
-		if ((!itm)) {
+	if (JB_Msg_Expect(node, JB_SyxMsg, JB_str_0)) {
+		Message* func = ((Message*)JB_Ring_First(node));
+		SyntaxObj* fn = JB_Msg__GetSyx(func);
+		if ((!fn)) {
 			return ((AstResult){
 			});
 		}
-		func = ((Message*)JB_Ring_First(itm));
-		JB_SetRef(Result.Name, JB_Msg_Nyme(((Message*)JB_Ring_NextSib(func))));
-		Result.Children = ((Message*)JB_Ring_NextSib(itm));
+		Result.Children = ((Message*)JB_Ring_NextSib(func));
+		JB_SetRef(Result.Name, JB_Msg_Nyme(((Message*)JB_Ring_First(func))));
+		Result.Func = fn->ID;
 	}
-	SyntaxObj* fn = JB_Msg__GetSyx(func);
-	if ((!fn)) {
-		return ((AstResult){
-		});
-	}
-	Result.Func = fn->ID;
 	return Result;
 }
 
@@ -3835,11 +3813,11 @@ Message* JB_Str_ParseAs(JB_String* self, JB_String* name) {
 		return JB_Str_Parse(self, nil);
 	} else if (JB_Str_SyntaxEquals(name, JB_str_172, true)) {
 		return ({
-			Message* _tmP412 = JB_Incr(JB_Str_Parse(self, nil));
-			Message* _tmP411 = JB_Incr(JB_Msg_ParseAST(_tmP412));
-			JB_Decr(_tmP412);
-			JB_SafeDecr(_tmP411);
-			 _tmP411;
+			Message* _tmP410 = JB_Incr(JB_Str_Parse(self, nil));
+			Message* _tmP409 = JB_Incr(JB_Msg_ParseAST(_tmP410));
+			JB_Decr(_tmP410);
+			JB_SafeDecr(_tmP409);
+			 _tmP409;
 		});
 	}
 	return nil;
@@ -4252,6 +4230,20 @@ bool JB_Tree_HasOneChild(RingTree* self) {
 
 void JB_Tree_Remove(RingTree* self) {
 	(JB_Ring_ParentSet(self, nil));
+}
+
+RingTree* JB_Tree_SyntaxAccessªInt(RingTree* self, int n) {
+	if ((!self)) {
+		return nil;
+	}
+	if (n < 0) {
+		return JB_Ring_Last(self);
+	}
+	RingTree* result = JB_Ring_First(self);
+	while (((bool)result) and (n-- >= 1)) {
+		result = JB_Ring_NextSib(result);
+	};
+	return result;
 }
 
 void JB_Tree_SyntaxAppend(RingTree* self, RingTree* Last) {
@@ -4817,8 +4809,8 @@ JB_String* JB_Msg_AST(Message* self, FastString* fs_in) {
 		JB_String* _tmP4 = JB_Incr(JB_Syntax_Name(self->Func));
 		JB_FS_AppendString(fs, _tmP4);
 		JB_Decr(_tmP4);
+		JB_FS_AppendByte(fs, ' ');
 		if (JB_Str_Exists(self->Name)) {
-			JB_FS_AppendByte(fs, ' ');
 			JB_FS_AppendByte(fs, '"');
 			JB_FS_AppendEscape(fs, self->Name);
 			JB_FS_AppendByte(fs, '"');
@@ -4840,8 +4832,6 @@ JB_String* JB_Msg_AST(Message* self, FastString* fs_in) {
 			fs->Indent--;
 			JB_FS_AppendByte(fs, '\n');
 			JB_FS_AppendIndent(fs);
-		} else if ((!JB_Str_Exists(self->Name))) {
-			JB_FS_AppendByte(fs, ' ');
 		}
 		JB_FS_AppendString(fs, JB_str_74);
 	}
@@ -5252,7 +5242,7 @@ JB_String* JB_Msg_Locate(Message* self) {
 
 void JB_Msg_Msg__(Message* self, FastString* fs) {
 	JB_FS_AppendString(fs, JB_str_72);
-	JB_Msg_FSListSep(self, fs, JB_str_14);
+	JB_Msg_FSListSep(self, fs, JB_str_61);
 	JB_FS_AppendString(fs, JB_str_73);
 }
 
@@ -5359,16 +5349,13 @@ void JB_Msg_ParseAST_(Message* self, Message* Src, AstUtil* Util) {
 			Message* MsgDesc = JB_Incr(Src);
 			while (MsgDesc) {
 				AstResult info = JB_AstUtil_Get(Util, MsgDesc);
-				if ((!JB_AstResult_SyntaxCast((&info)))) {
-					JB_Decr(MsgDesc);
-					JB_AstResult_Destructor((&info));
-					return;
+				if (info.Func) {
+					Message* Result = JB_Incr(JB_Msg__NewParser(self, info.Func, self->Position, info.Name));
+					if (info.Children) {
+						JB_Msg_ParseAST_(Result, info.Children, Util);
+					}
+					JB_Decr(Result);
 				}
-				Message* Result = JB_Incr(JB_Msg__NewParser(self, info.Func, self->Position, info.Name));
-				if (info.Children) {
-					JB_Msg_ParseAST_(Result, info.Children, Util);
-				}
-				JB_Decr(Result);
 				JB_SetRef(MsgDesc, ((Message*)JB_Ring_NextSib(MsgDesc)));
 				JB_AstResult_Destructor((&info));
 			};
@@ -5491,18 +5478,6 @@ void JB_Msg_Str__(Message* self, FastString* fs) {
 		JB_Decr(ch);
 	};
 	JB_FS_AppendByte(fs, '"');
-}
-
-Message* JB_Msg_SyntaxAccessªSyntax(Message* self, Syntax s) {
-	if ((!self)) {
-		return nil;
-	}
-	Message* ch = ((Message*)JB_Ring_First(self));
-	if (((bool)ch) and ((ch->Func == s) or (!s))) {
-		return ch;
-	}
-	JB_Msg_AccessErrªSyntaxStr(ch, s, nil);
-	return nil;
 }
 
 bool JB_Msg_SyntaxEqualsªStrBool(Message* self, JB_String* name, bool Aware) {
@@ -6113,7 +6088,7 @@ __lib__ int jb_shutdown() {
 }
 
 __lib__ int jb_version() {
-	return (2019102323);
+	return (2019102410);
 }
 
 __lib__ JB_String* jb_readfile(_cstring path, bool AllowMissingFile) {
@@ -6126,4 +6101,4 @@ __lib__ JB_String* jb_readfile(_cstring path, bool AllowMissingFile) {
 //// API END! ////
 }
 
-// 3490376491474110898 -9084882966727240232
+// 3490376491474110898 -3869956851073386572

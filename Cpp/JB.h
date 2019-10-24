@@ -1525,8 +1525,6 @@ Message* JB_Tk__MakeYoda(Message* first, int Bits, Message* Rel);
 
 int JB_Tk__MessageErrorSub(FastString* fs, int num, int ButFound);
 
-Message* JB_Tk__Msglist(int ops, bool Expect);
-
 Message* JB_Tk__NewParent(Message* Parent, Syntax Func, int Start, int End);
 
 Message* JB_Tk__NewParent0(Message* Parent, Syntax Func, int Start);
@@ -1605,8 +1603,6 @@ bool JB_TestCasting();
 
 // JB_AstResult
 void JB_AstResult_Destructor(AstResult* self);
-
-inline bool JB_AstResult_SyntaxCast(AstResult* self);
 
 
 
@@ -2254,6 +2250,8 @@ bool JB_Tree_HasOneChild(RingTree* self);
 
 void JB_Tree_Remove(RingTree* self);
 
+RingTree* JB_Tree_SyntaxAccessªInt(RingTree* self, int n);
+
 void JB_Tree_SyntaxAppend(RingTree* self, RingTree* Last);
 
 
@@ -2470,8 +2468,6 @@ void JB_Msg_SStr__(Message* self, FastString* fs);
 void JB_Msg_SThg__(Message* self, FastString* fs);
 
 void JB_Msg_Str__(Message* self, FastString* fs);
-
-Message* JB_Msg_SyntaxAccessªSyntax(Message* self, Syntax s);
 
 bool JB_Msg_SyntaxEqualsªStrBool(Message* self, JB_String* name, bool Aware);
 
