@@ -245,20 +245,34 @@ Message* JB_Tk__Process( u32 AskBits, long Mode ) {
 
 int JB_Tk__CleanSpacesSub (  ) {
 	JB_String* D = JB__Tk_Data;
+
     u8* A = D->Addr;
 	int S = self->NextStart;
 	int N = D->Length;
 	
 	while (S < N) {
-		int C = A[S++];
-		if (C==' ' || C=='\t') {
-			continue;
+//		if (A[S]!='\t' and A[S]!=' ') {
+		if (A[S]!='\t') { // use this instead to get "no tab after space" checking.
+			break;
 		}
-		return S-1;
+		S++;
 	}
 
-    self->NextStart = N;
-	return N;
+	while (S < N) {
+		if (A[S]!=' ') {
+			break;
+		}
+		S++;
+	}
+
+//	if (S < N and A[S]=='\t') {
+//		spacing_error(A+S);
+//	}
+//
+	if (S == N) {
+		self->NextStart = S;
+	}
+	return S;
 }
 
 

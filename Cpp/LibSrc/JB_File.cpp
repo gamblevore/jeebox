@@ -39,17 +39,17 @@ extern "C" {
 		#define O_EXCL         0x0400  /* open only if file doesn't already exist */
 
 		#define	S_IRWXU	0x0E00		/* Permissions for file owner class */
-		#define 	S_IRUSR 0x0800	/* Read permission file owner class */
-		#define 	S_IWUSR 0x0400	/* writ permission file owner class */
-		#define 	S_IXUSR 0x0200	/* exec permission file owner class */
+		#define	S_IRUSR 0x0800	/* Read permission file owner class */
+		#define	S_IWUSR 0x0400	/* writ permission file owner class */
+		#define	S_IXUSR 0x0200	/* exec permission file owner class */
 		#define S_IRWXG 0x01C0		/* permissions for file group class */
-		#define 	S_IRGRP 0x0100	/* Read permission file group class */
-		#define 	S_IWGRP 0x0080	/* writ permission file group class */
-		#define 	S_IXGRP 0x0040	/* exec permission file group class */
+		#define	S_IRGRP 0x0100	/* Read permission file group class */
+		#define	S_IWGRP 0x0080	/* writ permission file group class */
+		#define	S_IXGRP 0x0040	/* exec permission file group class */
 		#define S_IRWXO 0x0038		/* permissions for file other class */
-		#define 	S_IROTH 0x0020	/* Read permission file other class */
-		#define 	S_IWOTH 0x0010	/* writ permission file other class */
-		#define 	S_IXOTH 0x0008	/* exec permission file other class */
+		#define	S_IROTH 0x0020	/* Read permission file other class */
+		#define	S_IWOTH 0x0010	/* writ permission file other class */
+		#define	S_IXOTH 0x0008	/* exec permission file other class */
 	#endif
 
 #include <time.h>
@@ -66,16 +66,16 @@ extern "C" {
 	#define open( a, b, c ) _wopen( a, b, c ) 
 	#define fstat( a, b ) _fstat( a, b )
 	#define stat( a, b ) _wstat( a, b ) 
-	int __cdecl 		_commit(int);
-	int __cdecl 		_wopen(const unsigned short*, int, int);
-	int __cdecl 		_wstat(const unsigned short*, struct _stat*);
-	int __cdecl 		_wchdir(const unsigned short*);
-	int __stdcall 		GetCurrentDirectoryW(int Length, unsigned short* Buffer);
-	u32 __stdcall 		GetLongPathNameW(unsigned short* A, unsigned short* B, int Length);
+	int __cdecl		_commit(int);
+	int __cdecl		_wopen(const unsigned short*, int, int);
+	int __cdecl		_wstat(const unsigned short*, struct _stat*);
+	int __cdecl		_wchdir(const unsigned short*);
+	int __stdcall		GetCurrentDirectoryW(int Length, unsigned short* Buffer);
+	u32 __stdcall		GetLongPathNameW(unsigned short* A, unsigned short* B, int Length);
 
 	#define trchdir chdir
 
-	int* __cdecl 		_errno();
+	int* __cdecl		_errno();
 
 // __declspec(dllimport)
 	#define errno (*_errno())

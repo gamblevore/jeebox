@@ -401,13 +401,13 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_231)
+#define kJB__ErrorColors_bold (JB_str_230)
 extern bool JB__ErrorColors_Enabled;
-#define kJB__ErrorColors_error (JB_str_232)
-#define kJB__ErrorColors_good (JB_str_233)
-#define kJB__ErrorColors_normal (JB_str_230)
-#define kJB__ErrorColors_underline (JB_str_233)
-#define kJB__ErrorColors_warn (JB_str_234)
+#define kJB__ErrorColors_error (JB_str_231)
+#define kJB__ErrorColors_good (JB_str_232)
+#define kJB__ErrorColors_normal (JB_str_229)
+#define kJB__ErrorColors_underline (JB_str_232)
+#define kJB__ErrorColors_warn (JB_str_233)
 //
 
 
@@ -504,7 +504,7 @@ extern SyntaxObj* JB__FuncArray_[64];
 extern u8 JB__FuncParent_[64];
 extern Dictionary* JB__SyxDict_;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_229)
+#define kJB_SaverStart1 (JB_str_228)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -765,7 +765,6 @@ extern JB_String* JB_str_329;
 extern JB_String* JB_str_33;
 extern JB_String* JB_str_330;
 extern JB_String* JB_str_331;
-extern JB_String* JB_str_332;
 extern JB_String* JB_str_34;
 extern JB_String* JB_str_35;
 extern JB_String* JB_str_36;

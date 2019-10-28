@@ -4,7 +4,7 @@
 
 
 /*
- 		Unicode Ranges:
+		Unicode Ranges:
 
 		// Functions that appreciate unicode numbers!
 These must be unified in appreciation of the numbers, or chaos will bomb us!
@@ -17,16 +17,16 @@ These must be unified in appreciation of the numbers, or chaos will bomb us!
 
 Table 3.1B. Legal UTF-8 Byte Sequences
  Code Points		1st Byte	2nd Byte	3rd Byte	4th Byte
-U+0000..U+007F		00..7F	 	 	 
-U+0080..U+07FF		C2..DF		80..BF 	 	 
-U+0800..U+0FFF		E0			A0..BF		80..BF 	 
-U+1000..U+CFFF		E1..EC		80..BF		80..BF 	 
-U+D000..U+D7FF		ED			80..9F		80..BF 	 
+U+0000..U+007F		00..7F			 
+U+0080..U+07FF		C2..DF		80..BF		 
+U+0800..U+0FFF		E0			A0..BF		80..BF	 
+U+1000..U+CFFF		E1..EC		80..BF		80..BF	 
+U+D000..U+D7FF		ED			80..9F		80..BF	 
 U+D800..U+DFFF		ill-formed
-U+E000..U+FFFF		EE..EF		80..BF		80..BF 	 
+U+E000..U+FFFF		EE..EF		80..BF		80..BF	 
 U+10000..U+3FFFF	F0			90..BF		80..BF		80..BF
 U+40000..U+FFFFF	F1..F3		80..BF		80..BF		80..BF
-U+100000..U+10FFFF	F4			80..8F		80..BF	 	80..BF
+U+100000..U+10FFFF	F4			80..8F		80..BF		80..BF
 
 */
 
@@ -329,7 +329,7 @@ u8* LegalUTF8_(u8 FirstChar, u8* source) {
 //	for (int n = Len; n > 0; n--) {
 //		if ( *s++ >= kUTF8FirstMin ) {
 //			Count++;
-//		 	if ( Count > CharCount ) {
+//			if ( Count > CharCount ) {
 //				return ((u8*)s - a) - 1;
 //			}
 //		}

@@ -21,8 +21,8 @@ static int ReadBOM_( u8* StartPos, int Len, int* Flags ) {
 			}
 		}
 		if (Char1 == kUTF8BOM1 and Char2 == kUTF8BOM2 and kUTF8BOM3 == Char3) {
- 			*Flags = kEncUTF8 | kEncBE; //0xEFBBBF
- 			return 3;
+			*Flags = kEncUTF8 | kEncBE; //0xEFBBBF
+			return 3;
 		} else if (Char4 == 0xFF and Char3 == 0xFE and !Char2 and !Char1) {
 			*Flags = kEncUTF32 | kEncBE; //0x0000FEFF
 			return 4;

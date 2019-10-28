@@ -89,7 +89,7 @@ JB_String* JB_Str_Hex(JB_String* s) {
 		*OutPos++ = NextChar;
 	}
 
- 	return r;
+	return r;
 }
 
 JB_String* JB_Str_MapBytes(JB_String* s, ByteMap* CS) {
@@ -116,7 +116,7 @@ JB_String* JB_Str_MapBytes(JB_String* s, ByteMap* CS) {
 		*OutPos++ = map[ *SelfPos++ ];
 	}
 
- 	return r;
+	return r;
 }
 
 
