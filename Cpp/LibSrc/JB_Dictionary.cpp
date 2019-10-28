@@ -67,10 +67,6 @@ static JB_Object* WasLeaf_(DictionaryLeaf* Obj) {
     return (JB_Object*) (((IntPtr)Obj) | 0x02);
 }
 
-static JB_Object* WasInt_(u64 Num) {
-    return (JB_Object*) ((Num << 2) | 0x01);
-}
-
 static Dictionary* Dict_(JB_Object* Obj) {
     return (Dictionary*) ((IntPtr)(Obj) &~ 0x03);
 }

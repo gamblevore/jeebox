@@ -198,6 +198,8 @@ JB_MemoryLayer* JB_Mem__New( JB_Class* Cls );
 JB_MemoryLayer* JB_Mem__NewObj(JB_Class* Cls, JB_Object* Obj);
 void JB_Mem_EnabledSet( JB_MemoryLayer* self, bool Enabled );
 void JB_Mem_Use( JB_MemoryLayer* self );
+void JB_Mem_Unmark( );
+void JB_Mem_Mark( );
 void JB_Mem_OwnedSet(JB_MemoryLayer* Mem, bool b);
 bool JB_ObjIsOwned(JB_Object* Obj);
 JB_Class* JB_ObjClass(JB_Object* Obj);

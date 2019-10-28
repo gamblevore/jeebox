@@ -66,6 +66,12 @@ struct JBAllocTable {       // for pretending to be realloc. (we aren't)
 };
 
 
+struct MemStats {
+    int Objs;
+    int Blocks;
+};
+
+
 enum {
     kFineBins = 3,
     kCoarseBins = 2,
@@ -136,6 +142,52 @@ JB_Class JBClassInit(JB_Class& Cls, const char* Name, int Size, JB_Class* Parent
     Cls.NextClass = AllClasses;
     AllClasses = &Cls;
     return Cls;
+}
+
+
+MemStats JB_MemoryStats(JB_MemoryWorld* World, bool CountObjs, u16 Mark) {
+    SuperBlock* First = World->CurrSuper;			// issue?
+    SuperBlock* Super = First;						// issue?
+    MemStats Result = {0, 0};
+    if (!Super) { return Result; }
+    
+	u16 ActualMark = Mark &~ 0xf000;
+	bool IsCheck = Mark & 0xf000;
+    do {
+        Result.Blocks += (Super->BlocksActive);
+        
+        if (CountObjs) {
+            AllocationBlock* Start = StartBlock_(Super);
+            AllocationBlock* Finish = EndBlock_(Super);
+
+            do {
+				if (Start->Owner) {
+					if (IsCheck and Start->Unused_ != ActualMark) {
+//						puts((const char*)(Start->Owner->Class->Name));
+//						debugger;
+					}
+					if (IsCheck) {
+						Start->Unused_ = 0;
+					} else {
+						Start->Unused_ = ActualMark;
+					}
+				}
+                int C = Start->ObjCount + Start->HiddenObjCount;
+                Result.Objs += C;
+                Start = JBShift(Start, 1 << World->BlockSize);
+            } while (Start < Finish);
+        }
+
+        Super = Super->Next;
+    } while (Super != First);
+	
+    return Result;
+}
+
+
+u32 JB_MemCount() {
+    JB_MemoryWorld* World = JB_MemStandardWorld();
+    return ( JB_MemoryStats(World, false, 0).Blocks ) << World->BlockSize;
 }
 
 
@@ -353,6 +405,17 @@ void JB_Mem_Use( JB_MemoryLayer* self ) {
         JB_Incr_((JB_Object*)self);
         JB_Decr(ClsBlock->Owner);
     }
+}
+
+
+void JB_Mem_Unmark( ) {
+	JB_MemoryStats(&MemoryManager, true, 1234|0xf000);
+	JB_MemoryStats(&MemoryManager, true, 0);
+}
+
+
+void JB_Mem_Mark( ) {
+	JB_MemoryStats(&MemoryManager, true, 1234);
 }
 
 
@@ -1022,42 +1085,6 @@ void JB_MemFree(JB_MemoryWorld* World) {
     }
 }
 
-
-struct MemStats {
-    int Objs;
-    int Blocks;
-};
-
-MemStats JB_MemoryStats(bool CountObjs, bool ListAllClasses, JB_MemoryWorld* World) {
-    SuperBlock* First = World->CurrSuper; // issue?
-    SuperBlock* Super = First; // issue?
-    MemStats Result = {0, 0};
-    if (!Super) { return Result; }
-    
-    do {
-        Result.Blocks += (Super->BlocksActive);
-        
-        if (CountObjs) {
-            AllocationBlock* Start = StartBlock_(Super);
-            AllocationBlock* Finish = EndBlock_(Super);
-
-            do {
-                int C = Start->ObjCount + Start->HiddenObjCount;
-                Result.Objs += C;
-                Start = JBShift(Start, 1 << World->BlockSize);
-            } while (Start < Finish);
-        }
-
-        Super = Super->Next;
-    } while (Super != First);
-    return Result;
-}
-
-
-u32 JB_MemCount() {
-    JB_MemoryWorld* World = JB_MemStandardWorld();
-    return ( JB_MemoryStats(false, 0, World).Blocks ) << World->BlockSize;
-}
 
 
 

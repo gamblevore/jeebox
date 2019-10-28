@@ -304,7 +304,7 @@ bool JB_Tk__CheckEnded ( u32 AskBits ) { // has to be called with an "ender". ")
 
 
 int spacing_error(u8* Place) {
-	JB_Tk__ErrorEvent2( Place - JB__Tk_Data->Addr, 0, 0 );
+	JB_Tk__ErrorEvent2( (int)(Place - JB__Tk_Data->Addr), 0, 0 );
 	return -1;// error: inconsistant spacing.
 }
 

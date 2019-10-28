@@ -245,7 +245,6 @@ int InterRead(int fd, void* buffer, int N, JB_String* Path) {
 void JB_FS_AppendRead(FastString* self, int fd) {
     // so.... just allocate?
     const int ReadLength = 64 * 1024;
-    int Count = 0;
     while (true) {
         u8* Buffer = JB_FS_WriteAlloc_(self, ReadLength);
         if (!Buffer) {
