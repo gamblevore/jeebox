@@ -381,7 +381,7 @@ struct Message_Behaviour: RingTree_Behaviour {
 JBClass ( Message , RingTree , 
 	JB_String* Name;
 	Syntax Func;
-	u8 UserFlags;
+	u8 Indent;
 	u16 MoreFlags;
 	int Position;
 	JB_Object* Obj;
@@ -401,13 +401,13 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_230)
+#define kJB__ErrorColors_bold (JB_str_231)
 extern bool JB__ErrorColors_Enabled;
-#define kJB__ErrorColors_error (JB_str_231)
-#define kJB__ErrorColors_good (JB_str_232)
-#define kJB__ErrorColors_normal (JB_str_229)
-#define kJB__ErrorColors_underline (JB_str_232)
-#define kJB__ErrorColors_warn (JB_str_233)
+#define kJB__ErrorColors_error (JB_str_232)
+#define kJB__ErrorColors_good (JB_str_233)
+#define kJB__ErrorColors_normal (JB_str_230)
+#define kJB__ErrorColors_underline (JB_str_233)
+#define kJB__ErrorColors_warn (JB_str_234)
 //
 
 
@@ -501,10 +501,9 @@ extern int JB__Tk_UsingPos;
 
 // module: JB
 extern SyntaxObj* JB__FuncArray_[64];
-extern u8 JB__FuncParent_[64];
 extern Dictionary* JB__SyxDict_;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_228)
+#define kJB_SaverStart1 (JB_str_229)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -765,6 +764,7 @@ extern JB_String* JB_str_329;
 extern JB_String* JB_str_33;
 extern JB_String* JB_str_330;
 extern JB_String* JB_str_331;
+extern JB_String* JB_str_332;
 extern JB_String* JB_str_34;
 extern JB_String* JB_str_35;
 extern JB_String* JB_str_36;
@@ -1520,6 +1520,8 @@ Message* JB_Tk__fThingWord(int Start);
 
 Message* JB_Tk__GetFuncAfter(Message* input);
 
+void JB_Tk__IndentAppend(Message* output, Message* ch);
+
 void JB_Tk__Init();
 
 int JB_Tk__Init_();
@@ -1556,13 +1558,15 @@ Message* JB_Tk__ParseItem(Message* ch, int TemporalFlags);
 
 bool JB_Tk__ParseLoop(Message* Output, JB_String* Ender);
 
-bool JB_Tk__ParseLoopMode(Message* Output, Syntax Syx);
+int JB_Tk__ParseLoopMode(Message* Output, Syntax Syx);
 
 Message* JB_Tk__ProcessThing(int Ops, bool Expect);
 
 Message* JB_Tk__ReRoute(Message* cnj, Message* output);
 
 void JB_Tk__StopParse();
+
+Message* JB_Tk__ThingOrItem(int Flags);
 
 void JB_Tk__TokensWithArrayIntParsehandler(Array* arr, int bits, ParseHandler func);
 

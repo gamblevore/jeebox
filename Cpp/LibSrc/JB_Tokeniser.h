@@ -40,8 +40,8 @@ extern "C" {
 	
 	struct Message;
     void JB_Tk__TokenNilSet( JB_String* Key, JB_Object* Value );
+	int JB_Tk__ClearIndent ();
     void JB_Tk__CleanSpaces (  );
-    int JB_Tk__CleanSpacesSub ( );
 	void JB_Tk__Constructor(  );
 	void JB_Tk__Destructor(  );
 	void JB_Tk__TokenSet( JB_String* TokStr, TokHan* Stuff );

@@ -80,8 +80,8 @@ jbstring* jb_msg_ast(jbmessage* self); /* Renders the structure of the tree in a
 jbmessage* jb_msg_parseast(jbmessage* self); /* Takes the output of jb_msg_ast and converts it back into a proper Jeebox tree. Used like this: tree = jb_msg_parseast(jb_str_parse(str)). */
 jbmessage* jb_msg_copy(jbmessage* self); /* Copies the node's entire tree structure, positions, names and all. */
 jbmessage* jb_msg_create(jbmessage* self, jbsyntax Type, jbstring* Name); /* Creates a new node with the type and name provided.
-	
-The node is created as the last child of 'self'. If 'self' is nil... the node is created with no parent (this is fine). */
+
+		The node is created as the last child of 'self'. If 'self' is nil... the node is created with no parent (this is fine). */
 void jb_msg_error(jbmessage* self, jbstring* ErrorMsg); /* Lets you add your own error messages to the tree. */
 jbmessage* jb_msg_expect(jbmessage* self, jbsyntax Type, jbstring* name, jbmessage* ErrPlace); /* Test the name and type, (or existance) of a message node. */
 jbmessage* jb_msg_access(jbmessage* self, jbsyntax Type, jbstring* name, bool IsError);

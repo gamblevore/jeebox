@@ -205,12 +205,75 @@ inline fpTok FindBits_( TokHan* FatData, u32 AskBits ) {
 }
 
 
+///
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+int JB_Tk__CleanSpacesSub ( int S ) {
+	JB_String* D = JB__Tk_Data;
+
+    u8* A = D->Addr;
+	int N = D->Length;
+	
+	while (S < N) {
+		if (A[S] != '\t') {
+			while (S < N) {
+				if (A[S]!=' ') {
+					return S;
+				}
+				S++;
+			}
+		}
+		S++;
+	}
+
+	self->NextStart = N;
+	return S;
+}
+
+
+int JB_Tk__ClearIndent() {
+	// merge with CleanSpacesSub!
+	// make it return two numbers! set in process!
+	JB_String* D = JB__Tk_Data;
+
+    u8* A = D->Addr;
+	u8* Finish = A + D->Length;
+	A += self->NextStart;
+	int Count = 0;
+	
+	while (A < Finish) {
+		if (*A != '\t') {
+			while (A < Finish) {
+				if (*A != ' ') {
+					return Count;
+				}
+				Count++;
+				A++;
+			}
+		}
+		Count += 4;
+		A++;
+	}
+
+	return 0;
+}
+
+
+void JB_Tk__CleanSpaces() {
+	self->NextStart = JB_Tk__CleanSpacesSub(self->NextStart);
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
 Message* JB_Tk__Process( u32 AskBits, long Mode ) {
 	if_rare ( self->ErrorStart >= 0 ) {
 		return 0;
 	}
 	
-	u32 Start = JB_Tk__CleanSpacesSub( );
+	u32 Start = JB_Tk__CleanSpacesSub( self->NextStart );
     MiniStr AL = Mini(JB__Tk_Data, Start);
     ObjLength Found = JB_Dict_LongestKey_( self->WordDict, AL );
     TokHan* FatData = (TokHan*)Found.Obj;
@@ -238,48 +301,6 @@ Message* JB_Tk__Process( u32 AskBits, long Mode ) {
 	
 	return 0;
 }
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-
-int JB_Tk__CleanSpacesSub (  ) {
-	JB_String* D = JB__Tk_Data;
-
-    u8* A = D->Addr;
-	int S = self->NextStart;
-	int N = D->Length;
-	
-	while (S < N) {
-//		if (A[S]!='\t' and A[S]!=' ') {
-		if (A[S]!='\t') { // use this instead to get "no tab after space" checking.
-			break;
-		}
-		S++;
-	}
-
-	while (S < N) {
-		if (A[S]!=' ') {
-			break;
-		}
-		S++;
-	}
-
-//	if (S < N and A[S]=='\t') {
-//		spacing_error(A+S);
-//	}
-//
-	if (S == N) {
-		self->NextStart = S;
-	}
-	return S;
-}
-
-
-void JB_Tk__CleanSpaces (  ) {
-	self->NextStart = JB_Tk__CleanSpacesSub();
-}
-
 
 	
 ////////////////////////////////////////////////////////////////////////////////
@@ -315,55 +336,6 @@ bool JB_Tk__CheckEnded ( u32 AskBits ) { // has to be called with an "ender". ")
 	self->NextStart = NextStart;
 	return Result;
 }
-
-
-int spacing_error(u8* Place) {
-	JB_Tk__ErrorEvent2( (int)(Place - JB__Tk_Data->Addr), 0, 0 );
-	return -1;// error: inconsistant spacing.
-}
-
-
-int dark_error(u8* Place) {
-	debugger;
-	return -1;// internal error.
-}
-
-
-int JB_Tk__MessageIndent ( u32 N ) {
-	return -1;
-	if_rare (JB__Tk_Data->Length <= N) {
-		debugger;
-		return -1; // what?
-	} 
-
-	u8* Start = JB__Tk_Data->Addr;
-	u8* Place = Start + N - 1;
-
-
-// SPACES
-	uint Tabs = 0;
-	uint Spaces = 0;
-	while (Place >= Start) {
-		int c = *Place--; 
-		if (c == ' ') {
-			Spaces++;
-			if_rare (Tabs) {
-				return spacing_error(Place);
-			}
-		} else if (c == '\t') {
-			Tabs++;
-
-		} else if (c == '\n' or c == '\r') {
-			break; // end of line;
-
-		} else {
-			return dark_error(Place);
-		}
-	}
-
-	return Spaces + Tabs * 4;
-}
-
 
 
 
