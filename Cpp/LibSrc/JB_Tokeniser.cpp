@@ -44,7 +44,7 @@ inline bool Running_( u32 NextStart ) {
 ////////////////////////////////////////////////////////////////////////////////
 
 struct Message;
-void JB_Tk__ErrorEvent2(int A, int B, int C);
+void JB_Tk__ErrorEvent(int A, int B, int C);
 //void JB_Tk__ErrorImprove(Message* Msg);
 
 
@@ -234,8 +234,7 @@ int JB_Tk__CleanSpacesSub ( int S ) {
 
 
 int JB_Tk__ClearIndent() {
-	// merge with CleanSpacesSub!
-	// make it return two numbers! set in process!
+	// merge with CleanSpacesSub?
 	JB_String* D = JB__Tk_Data;
 
     u8* A = D->Addr;
@@ -247,6 +246,7 @@ int JB_Tk__ClearIndent() {
 		if (*A != '\t') {
 			while (A < Finish) {
 				if (*A != ' ') {
+					self->NextStart = A - D->Addr; 
 					return Count;
 				}
 				Count++;
@@ -295,7 +295,7 @@ Message* JB_Tk__Process( u32 AskBits, long Mode ) {
 	
 	if_rare ( Mode == 1 or FoundBits == -1) {
         if ( self->ErrorStart < 0 ) {
-            JB_Tk__ErrorEvent2( Start, AskBits, FoundBits );
+            JB_Tk__ErrorEvent( Start, AskBits, FoundBits );
         }
 	}
 	

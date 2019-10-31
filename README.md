@@ -29,7 +29,10 @@ Jeebox tries to fulfil the goal of describing everything.     `You can %describe
     function funcname (|int| n) {arr[n] = obj.func(var)}
     
                         /***   Data example   ***/
-	user_list { user fred (id:85719) (inventory:(spoon)), user mlg_haxx_420 (id:97653) (inventory:(rifle, boots)) }
+	user_list {
+		user fred (id:85719) (inventory:(spoon))
+		user mlg_haxx_420 (id:97653) (inventory:(rifle, boots))
+	}
 
 [Learn Jeebox syntax here](http://jeebox.org/stuff/introduction).
 

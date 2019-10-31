@@ -348,7 +348,8 @@ struct Error_Behaviour: LinkedList_Behaviour {
 
 JBClass ( JB_Error , JB_LinkedList , 
 	int Position;
-	int ErrorLevel;
+	u8 ErrorLevel;
+	bool DontStrip;
 	JB_String* Path;
 	JB_String* Description;
 	JB_String* OriginalData;
@@ -401,13 +402,13 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_231)
+#define kJB__ErrorColors_bold (JB_str_234)
 extern bool JB__ErrorColors_Enabled;
-#define kJB__ErrorColors_error (JB_str_232)
-#define kJB__ErrorColors_good (JB_str_233)
-#define kJB__ErrorColors_normal (JB_str_230)
-#define kJB__ErrorColors_underline (JB_str_233)
-#define kJB__ErrorColors_warn (JB_str_234)
+#define kJB__ErrorColors_error (JB_str_235)
+#define kJB__ErrorColors_good (JB_str_236)
+#define kJB__ErrorColors_normal (JB_str_233)
+#define kJB__ErrorColors_underline (JB_str_236)
+#define kJB__ErrorColors_warn (JB_str_237)
 //
 
 
@@ -503,7 +504,7 @@ extern int JB__Tk_UsingPos;
 extern SyntaxObj* JB__FuncArray_[64];
 extern Dictionary* JB__SyxDict_;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_229)
+#define kJB_SaverStart1 (JB_str_232)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -540,6 +541,7 @@ extern JB_String* JB_str_126;
 extern JB_String* JB_str_127;
 extern JB_String* JB_str_128;
 extern JB_String* JB_str_129;
+extern JB_String* JB_str_13;
 extern JB_String* JB_str_130;
 extern JB_String* JB_str_131;
 extern JB_String* JB_str_132;
@@ -550,7 +552,6 @@ extern JB_String* JB_str_136;
 extern JB_String* JB_str_137;
 extern JB_String* JB_str_138;
 extern JB_String* JB_str_139;
-extern JB_String* JB_str_14;
 extern JB_String* JB_str_140;
 extern JB_String* JB_str_141;
 extern JB_String* JB_str_142;
@@ -765,6 +766,9 @@ extern JB_String* JB_str_33;
 extern JB_String* JB_str_330;
 extern JB_String* JB_str_331;
 extern JB_String* JB_str_332;
+extern JB_String* JB_str_333;
+extern JB_String* JB_str_334;
+extern JB_String* JB_str_335;
 extern JB_String* JB_str_34;
 extern JB_String* JB_str_35;
 extern JB_String* JB_str_36;
@@ -1328,9 +1332,10 @@ extern bool JB__FAP_Tested;
 
 // module: Err_
 #define kJB__Err_CriticalError (0)
-#define kJB__Err_MightBeAnError (5)
+#define kJB__Err_MightBeAnError (4)
 #define kJB__Err_NormalError (1)
-#define kJB__Err_WarningError (4)
+#define kJB__Err_SlightError (2)
+#define kJB__Err_WarningError (3)
 //
 
 
@@ -1416,7 +1421,9 @@ int JB_Tk__EmbeddedCode(JB_String* close, Message* dest, Syntax Syx);
 
 Message* JB_Tk__ErrorAdd(JB_String* s, int Start);
 
-void JB_Tk__ErrorEvent2(int Start, int ExpectedBits, int RealBits);
+Message* JB_Tk__ErrorAlwaysAdd(JB_String* s, int Start);
+
+void JB_Tk__ErrorEvent(int Start, int ExpectedBits, int RealBits);
 
 void JB_Tk__ErrorLetter(int Start);
 
@@ -1520,11 +1527,15 @@ Message* JB_Tk__fThingWord(int Start);
 
 Message* JB_Tk__GetFuncAfter(Message* input);
 
-void JB_Tk__IndentAppend(Message* output, Message* ch);
-
 void JB_Tk__Init();
 
 int JB_Tk__Init_();
+
+Message* JB_Tk__InvisArgEscapeNested(Message* curr);
+
+Message* JB_Tk__InvisArgNest(Message* self, Message* curr);
+
+Message* JB_Tk__MakeInvisArg(Message* parent, int indent);
 
 Message* JB_Tk__MakeRel(Message* first, int Bits);
 
@@ -1546,7 +1557,7 @@ bool JB_Tk__NoFuncAfter(byte b);
 
 Message* JB_Tk__NumberSub(int Start, int RealStart);
 
-int JB_Tk__NumEnd(JB_String* D, int Start);
+int JB_Tk__NumEnd(JB_String* NumStr, int Start);
 
 bool JB_Tk__OK();
 
@@ -1661,6 +1672,8 @@ JB_String* JB_f_Render(float self, FastString* fs_in);
 
 // int
 inline bool JB_int_Found(int self);
+
+bool JB_int_OperatorIsMul(int self, int x);
 
 int JB_int_OperatorMin(int self, int other);
 
@@ -2405,6 +2418,8 @@ void JB_Msg_Emb__(Message* self, FastString* fs);
 
 void JB_Msg_ERel__(Message* self, FastString* fs);
 
+Message* JB_Msg_ExitInvisArg(Message* self, int missing);
+
 bool JB_Msg_Expect(Message* self, Syntax type, JB_String* name);
 
 Message* JB_Msg_FindFlat(Message* self, Syntax s, JB_String* name, bool Err);
@@ -2418,6 +2433,10 @@ void JB_Msg_FSListSep(Message* self, FastString* fs, JB_String* sep);
 void JB_Msg_Func__(Message* self, FastString* fs);
 
 JB_String* JB_Msg_FuncName(Message* self);
+
+Message* JB_Msg_GoIntoInvisArg(Message* self);
+
+bool JB_Msg_InInvisArg(Message* self);
 
 int64 JB_Msg_Int(Message* self);
 
@@ -2456,6 +2475,8 @@ Message* JB_Msg_ParseAST(Message* self);
 void JB_Msg_ParseAST_(Message* self, Message* Src, AstUtil* Util);
 
 Message* JB_Msg_PoorAnt(Message* self);
+
+int JB_Msg_PrevIndentCheck(Message* self);
 
 void JB_Msg_Rel__(Message* self, FastString* fs);
 
