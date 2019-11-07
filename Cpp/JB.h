@@ -78,6 +78,8 @@ typedef u8 DataTypeCode;
 
 typedef int64 Date;
 
+typedef u8 ErrorSeverity;
+
 typedef u8 Syntax;
 
 struct Array_Behaviour;
@@ -348,7 +350,7 @@ struct Error_Behaviour: LinkedList_Behaviour {
 
 JBClass ( JB_Error , JB_LinkedList , 
 	int Position;
-	u8 ErrorLevel;
+	ErrorSeverity ErrorLevel;
 	bool DontStrip;
 	JB_String* Path;
 	JB_String* Description;
@@ -402,13 +404,13 @@ JBClass ( Message , RingTree ,
 
 
 // module: ErrorColors
-#define kJB__ErrorColors_bold (JB_str_234)
+#define kJB__ErrorColors_bold (JB_str_236)
 extern bool JB__ErrorColors_Enabled;
-#define kJB__ErrorColors_error (JB_str_235)
-#define kJB__ErrorColors_good (JB_str_236)
-#define kJB__ErrorColors_normal (JB_str_233)
-#define kJB__ErrorColors_underline (JB_str_236)
-#define kJB__ErrorColors_warn (JB_str_237)
+#define kJB__ErrorColors_error (JB_str_237)
+#define kJB__ErrorColors_good (JB_str_238)
+#define kJB__ErrorColors_normal (JB_str_235)
+#define kJB__ErrorColors_underline (JB_str_238)
+#define kJB__ErrorColors_warn (JB_str_239)
 //
 
 
@@ -504,7 +506,7 @@ extern int JB__Tk_UsingPos;
 extern SyntaxObj* JB__FuncArray_[64];
 extern Dictionary* JB__SyxDict_;
 #define kJB_SaverEnd (JB_str_0)
-#define kJB_SaverStart1 (JB_str_232)
+#define kJB_SaverStart1 (JB_str_234)
 extern JB_ErrorReceiver* JB_StdErr;
 extern JB_String* JB_str_0;
 extern JB_String* JB_str_1;
@@ -769,6 +771,8 @@ extern JB_String* JB_str_332;
 extern JB_String* JB_str_333;
 extern JB_String* JB_str_334;
 extern JB_String* JB_str_335;
+extern JB_String* JB_str_336;
+extern JB_String* JB_str_337;
 extern JB_String* JB_str_34;
 extern JB_String* JB_str_35;
 extern JB_String* JB_str_36;
@@ -1127,6 +1131,20 @@ extern Dictionary* JB__DataTypeCode_Types_Dict;
 
 
 
+// module: ErrorSeverity_
+#define kJB__ErrorSeverity_Critical (1)
+#define kJB__ErrorSeverity_Deprecated (3)
+#define kJB__ErrorSeverity_Error (2)
+#define kJB__ErrorSeverity_Hint (5)
+#define kJB__ErrorSeverity_MaxError (6)
+extern Array* JB__ErrorSeverity_names;
+#define kJB__ErrorSeverity_OK (0)
+#define kJB__ErrorSeverity_Warning (4)
+//
+
+
+
+
 // module: Syntax_
 extern int JB__Syntax_CurrFuncID;
 //
@@ -1331,14 +1349,6 @@ extern bool JB__FAP_Tested;
 
 
 // module: Err_
-#define kJB__Err_CriticalError (0)
-#define kJB__Err_MightBeAnError (4)
-#define kJB__Err_NormalError (1)
-#define kJB__Err_SlightError (2)
-#define kJB__Err_WarningError (3)
-//
-
-
 
 
 // module: Rec_
@@ -1622,14 +1632,14 @@ bool JB_TestCasting();
 
 
 // JB_AstResult
-void JB_AstResult_Destructor(AstResult* self);
-
 
 
 // JB_AstUtil
 void JB_AstUtil_Destructor(AstUtil* self);
 
 AstResult JB_AstUtil_Get(AstUtil* self, Message* node);
+
+AstResult JB_AstUtil_GetTmp(AstUtil* self, Message* node);
 
 void JB_AstUtil_UseLayer(AstUtil* self, Message* src);
 
@@ -1853,6 +1863,13 @@ bool JB_DataTypeCode_IsFloat(DataTypeCode self);
 
 // Date
 JB_String* JB_Date_Render(Date self, FastString* fs_in);
+
+
+
+// ErrorSeverity
+JB_String* JB_ErrorSeverity_Render(ErrorSeverity self, FastString* fs_in);
+
+int JB_ErrorSeverity__Init_();
 
 
 
@@ -2209,6 +2226,8 @@ void JB_Array_LoadProperties(Array* self, ObjectLoader* Loader);
 void JB_Array_SaveCollect(Array* self, ObjectSaver* Saver);
 
 void JB_Array_SaveWrite(Array* self, ObjectSaver* Saver);
+
+inline bool JB_Array_SyntaxCast(Array* self);
 
 Array* JB_Array__Alloc();
 
