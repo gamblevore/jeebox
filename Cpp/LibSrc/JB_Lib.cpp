@@ -80,7 +80,6 @@ static char**       Env_;
 
 
 Array* JB_App__Args() { 
-//    const char* aasds[] = {"a", "b", "c"};
     static Array* App_Args;
     if (!App_Args) {
         App_Args = JB_Str_ArgV(ArgV_ + 1); // seems to take no ram?
@@ -102,7 +101,7 @@ Dictionary* JB_App__Env() {
 
 
 int JB_LibInit() {
-    if (sizeof(int)!=4) {
+    if (!(sizeof(int) == 4  and  sizeof(int64) == 8)) {
         puts("sizeof(int) is not 4! Jeebox not compiled properly.");
     }
     if (JB_MemStandardWorld()->CurrSuper) {
@@ -127,8 +126,8 @@ int JB_LibInit() {
 }
 
 
-extern bool JB_ErrorsPrinted; // terminals complain if printerror without return -1;
 int JB_LibShutdown() {
+	extern bool JB_ErrorsPrinted; // terminals complain if printerror without return -1;
     JB_MemFree(JB_MemStandardWorld());
     return -JB_ErrorsPrinted;
 }
@@ -140,7 +139,7 @@ void JB_App__Quit (int Code) {
 }
 
 
-int main (int ArgC, char** ArgV, char** Env) {    
+int main (int ArgC, char** ArgV, char** Env) {
     ArgV_ = ArgV;
     Env_ = Env;
     JB_Pipe__InstallStackTrace();

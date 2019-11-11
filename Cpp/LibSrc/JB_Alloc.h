@@ -253,15 +253,15 @@ u32 JB_ObjCount();
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define JB_Incr(Obj)        ({ auto _tMp_ = Obj; JB_Incr_(_tMp_); (_tMp_);})
-#define JB_Decr(Obj)        JB_Decr_((JB_Object*)(Obj))
-#define JB_SafeDecr(Obj)    JB_SafeDecr_((JB_Object*)(Obj))
-#define JB_FreeIfDead(Obj)  ((__typeof__(Obj))JB_FreeIfDead_((JB_Object*)(Obj)))
-#define JB_SetRef(a,b)      JB_SetRef_((JB_Object**)(&a), (JB_Object*)(b))
-#define JB_InitRef(a,b)     JB_InitRef_((JB_Object**)(&a), (JB_Object*)(b))
-#define JB_ClearRef(a)      JB_ClearRef_((JB_Object**)(&a))
-#define JB_RefCount(a)      JB_RefCount_((JB_Object*)(a))
-
+#define JB_Incr(Obj)			({ auto _tMp_ = Obj; JB_Incr_(_tMp_); (_tMp_);})
+#define JB_Decr(Obj)			JB_Decr_((JB_Object*)(Obj))
+#define JB_SafeDecr(Obj)		JB_SafeDecr_((JB_Object*)(Obj))
+#define JB_FreeIfDead(Obj)		((__typeof__(Obj))JB_FreeIfDead_((JB_Object*)(Obj)))
+#define JB_SetRef(a,b)			JB_SetRef_((JB_Object**)(&a), (JB_Object*)(b))
+#define JB_InitRef(a,b)			JB_InitRef_((JB_Object**)(&a), (JB_Object*)(b))
+#define JB_ClearRef(a)			JB_ClearRef_((JB_Object**)(&a))
+#define JB_RefCount(a)			JB_RefCount_((JB_Object*)(a))
+#define JB_Ternary(cond,a,b)	((cond)?(a):(b))
 #define JB_LongObjOr(A, B)            ({ \
     JB_Object* _T = (A);                 \
     if (!_T) {                           \

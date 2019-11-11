@@ -9,7 +9,6 @@
 
 extern "C" {
 
-
 inline void InitCharset_(ByteMap* cs, u8* SelfPos, u32 Len, bool Ranges) {
 	Len = Min(Len, 256);
 	u8* Cache = cs->Cache;

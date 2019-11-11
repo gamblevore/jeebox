@@ -969,8 +969,8 @@ extern Syntax JB_SyxYopp;
 // module: MsgPos_
 
 
-// module: Loader_
-extern Dictionary* JB__Loader_ClassList;
+// module: ObjectLoader_
+extern Dictionary* JB__ObjectLoader_ClassList;
 //
 
 
@@ -1145,8 +1145,8 @@ extern Array* JB__ErrorSeverity_names;
 
 
 
-// module: Syntax_
-extern int JB__Syntax_CurrFuncID;
+// module: Syx_
+extern int JB__Syx_CurrFuncID;
 //
 
 
@@ -1732,29 +1732,29 @@ void JB_LLRef_SyntaxAppend(LLRef* self, JB_LinkedList* L);
 
 
 // JB_ObjectLoader
-void JB_Loader_Destructor(ObjectLoader* self);
+void JB_ObjectLoader_Destructor(ObjectLoader* self);
 
-bool JB_Loader_HasItem(ObjectLoader* self);
+bool JB_ObjectLoader_HasItem(ObjectLoader* self);
 
-int64 JB_Loader_Int(ObjectLoader* self);
+int64 JB_ObjectLoader_Int(ObjectLoader* self);
 
-int64 JB_Loader_ItemInt(ObjectLoader* self);
+int64 JB_ObjectLoader_ItemInt(ObjectLoader* self);
 
-bool JB_Loader_ItemIsInt(ObjectLoader* self);
+bool JB_ObjectLoader_ItemIsInt(ObjectLoader* self);
 
-JB_String* JB_Loader_ItemName(ObjectLoader* self);
+JB_String* JB_ObjectLoader_ItemName(ObjectLoader* self);
 
-JB_Object* JB_Loader_ItemObject(ObjectLoader* self);
+JB_Object* JB_ObjectLoader_ItemObject(ObjectLoader* self);
 
-void JB_Loader_LinkedListWithLinkedlist(ObjectLoader* self, JB_LinkedList** Place);
+void JB_ObjectLoader_LinkedListWithLinkedlist(ObjectLoader* self, JB_LinkedList** Place);
 
-Message* JB_Loader_Next(ObjectLoader* self);
+Message* JB_ObjectLoader_Next(ObjectLoader* self);
 
-JB_Object* JB_Loader_Object(ObjectLoader* self);
+JB_Object* JB_ObjectLoader_Object(ObjectLoader* self);
 
-JB_Object* JB_Loader_ObjectSub(ObjectLoader* self, Message* c);
+JB_Object* JB_ObjectLoader_ObjectSub(ObjectLoader* self, Message* c);
 
-JB_String* JB_Loader_String(ObjectLoader* self);
+JB_String* JB_ObjectLoader_String(ObjectLoader* self);
 
 
 
@@ -1874,29 +1874,29 @@ int JB_ErrorSeverity__Init_();
 
 
 // Syntax
-int JB_Syntax_Lineflags(Syntax self);
+int JB_Syx_Lineflags(Syntax self);
 
-JB_String* JB_Syntax_LongName(Syntax self);
+JB_String* JB_Syx_LongName(Syntax self);
 
-Message* JB_Syntax_MsgWithStr(Syntax self, JB_String* name);
+Message* JB_Syx_MsgWithStr(Syntax self, JB_String* name);
 
-Message* JB_Syntax_Msg(Syntax self, Message* parent, JB_String* name);
+Message* JB_Syx_Msg(Syntax self, Message* parent, JB_String* name);
 
-JB_String* JB_Syntax_Name(Syntax self);
+JB_String* JB_Syx_Name(Syntax self);
 
 inline bool JB_Syx_NilCheck(Syntax self);
 
-SyntaxObj* JB_Syntax_Obj(Syntax self);
+SyntaxObj* JB_Syx_Obj(Syntax self);
 
-int JB_Syntax_Parseflags(Syntax self);
+int JB_Syx_Parseflags(Syntax self);
 
-JB_String* JB_Syntax_Render(Syntax self, FastString* fs_in);
+JB_String* JB_Syx_Render(Syntax self, FastString* fs_in);
 
-fpMsgRender JB_Syntax_RenderAddr(Syntax self);
+fpMsgRender JB_Syx_RenderAddr(Syntax self);
 
-int JB_Syntax__Init_();
+int JB_Syx__Init_();
 
-Syntax JB_Syntax__StdNew(fpMsgRender msg, JB_String* name, JB_String* LongName);
+Syntax JB_Syx__StdNew(fpMsgRender msg, JB_String* name, JB_String* LongName);
 
 
 
@@ -2385,7 +2385,7 @@ FastAppenderChunk* JB_FAC__New();
 // JB_Message
 void JB_Msg_Acc__(Message* self, FastString* fs);
 
-void JB_Msg_AccessErrWithSyntaxStr(Message* self, Syntax s, JB_String* name);
+void JB_Msg_AccessErrWithSyxStr(Message* self, Syntax s, JB_String* name);
 
 void JB_Msg_Adj__(Message* self, FastString* fs);
 
@@ -2419,7 +2419,7 @@ void JB_Msg_Cnj__(Message* self, FastString* fs);
 
 void JB_Msg_ConstructorCopy(Message* self, Message* other);
 
-void JB_Msg_ConstructorWithSyntaxStr(Message* self, Syntax Func, JB_String* Name);
+void JB_Msg_ConstructorWithSyxStr(Message* self, Syntax Func, JB_String* Name);
 
 void JB_Msg_ConstructorParser(Message* self, Message* Parent, Syntax Func, int BytePos, JB_String* Name);
 
@@ -2523,7 +2523,7 @@ void JB_Msg_Str__(Message* self, FastString* fs);
 
 bool JB_Msg_SyntaxEqualsWithStrBool(Message* self, JB_String* name, bool Aware);
 
-bool JB_Msg_SyntaxEqualsWithSyntaxBool(Message* self, Syntax X, bool Aware);
+bool JB_Msg_SyntaxEqualsWithSyxBool(Message* self, Syntax X, bool Aware);
 
 void JB_Msg_SyntaxExpect(Message* self, JB_String* Error);
 
@@ -2559,7 +2559,7 @@ Message* JB_Msg__LayerAlloc(JB_MemoryLayer* _L);
 
 Message* JB_Msg__NewCopy(Message* other);
 
-Message* JB_Msg__NewWithSyntaxStr(Syntax Func, JB_String* Name);
+Message* JB_Msg__NewWithSyxStr(Syntax Func, JB_String* Name);
 
 Message* JB_Msg__NewParser(Message* Parent, Syntax Func, int BytePos, JB_String* Name);
 
