@@ -53,27 +53,13 @@ I built a programming language `Speedie` around Jeebox, so I know using Jeebox i
 
 Being open-sourced on github means that I'm not controlling the future of Jeebox users.
 
-The downsides to using Jeebox? Well... it is another language to learn, its an eye-opening experience but not everyone has time to learn.
+The downsides to using Jeebox? Well... it is another language to learn, its an eye-opening experience.
 
-The other downside is that there isn't a community right now. I hope things will change in the future so that a community forms naturally.
 
-# The Future Path For Jeebox?
-
-Jeebox would benefit greatly from real-world translation app. But I'm waiting for events in real life to change so that it could become possible to find people to work with.
-
-I mean the way my mind works is like "Hey, this could make everything better for everyone, surely we should be supported for that? Considering the value of our translation stuff could probably saving people billions of dollars time-worth".
-
-Unfortunately that's not how the world works, but it is how **my mind** works, and I'm not gonna change how I work or feel, because I just get frazzled and ruined if I have to think about how to be accepted "just for money". And I get ruined long before even getting any success. It just doesn't work to tell me to become someone else.
-
-Jeebox has a lot of potential. By capturing the grammatical structure of a sentence, Jeebox can improve translation accuracy by 10x-100x, and the syntax is light. Jeebox could be very useful for medical documents, or technical documents (electronics/engineering/etc) which need precise translation.
-
-In the future this ability of Jeebox will be used. I guess it's a matter of destiny or fate, to allow the world time for things to happen. There is an element of delay, but that shouldn't be seen as a negative thing, more that the world needs time to sort matters out before its possible for me to work on something so potentially transformative.
 
 # Notes
 
 Jeebox has a C-API and a C++ API. Jeebox can compile for 64-bit or 32-bit environments. Tested on OS X, and Ubuntu Linux. Windows will come when I have people interested in it. Jeebox is single-threaded right now.
 
 The C++ version is easier, because it has automatic memory-management. The C version requires you to manually do memory-management, which is best avoided. The C version is intended for writing a Jeebox binding for another languages (python/ruby/etc).
-
-Jeebox is being used for two large real-world projects right now, my unreleased compiler `Speedie` and a computer game. In fact, the source code for Jeebox, is written in Jeebox!
 
